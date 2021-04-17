@@ -29,14 +29,18 @@
 		</div>
 		<div class="ui grid" style="max-width: 80%">
 			<div class="four wide column" style="padding-left: 10%;">
-				<div class="ui segment" style="position: fixed; min-width: 10%">
+				<div class="ui segment column" style="position: fixed; min-width: 10%">
 					<h4>Đánh giá sao</h4>
 					<div class="ui checkbox">
-						<input type="checkbox" name="example"> <label>5
-							sao</label><br> <input type="checkbox" name="example"> <label>4
-							sao</label><br> <input type="checkbox" name="example"> <label>3
-							sao</label> <br> <input type="checkbox" name="example"> <label>2
-							sao</label> <br> <input type="checkbox" name="example"> <label>1
+						<input type="checkbox" name="example1"> <label>5
+							sao</label>
+					</div>
+					<div class="ui checkbox">
+						<input type="checkbox" name="example1"> <label>4
+							sao</label>
+					</div>
+					<div class="ui checkbox">
+						<input type="checkbox" name="example1"> <label>3
 							sao</label>
 					</div>
 					<h4>Số lượt đánh giá</h4>

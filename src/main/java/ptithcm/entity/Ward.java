@@ -1,20 +1,34 @@
 package ptithcm.entity;
 
+import java.util.Collection;
+
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 
 @Entity
 	
 public class Ward {
-	@Id @GeneratedValue
+	@Id 
 	private int id;
 	private String name;
 	private String type;
 	@ManyToOne @JoinColumn(name = "district_id")
 	private District district;
+	
+	@OneToMany(mappedBy = "ward",fetch = FetchType.EAGER)
+	private Collection<DiaChi> diaChi;
+	
+	
+	public Collection<DiaChi> getDiaChi() {
+		return diaChi;
+	}
+	public void setDiaChi(Collection<DiaChi> diaChi) {
+		this.diaChi = diaChi;
+	}
 	public int getId() {
 		return id;
 	}

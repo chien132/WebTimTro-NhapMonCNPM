@@ -47,7 +47,7 @@ body>.grid {
 
 
 				<form:form class="ui large form" action="register.htm"
-					modelAttribute="user" method="post">
+					modelAttribute="account" method="post">
 					<div class="ui stacked segment">
 						<h2 class="ui big">
 							<i class="signup icon"></i> Tạo bài đăng
@@ -56,7 +56,7 @@ body>.grid {
 							<label style="float: left;">Tiêu đề<b style="color: red;">*</b></label>
 							<div class="ui left input">
 								<!-- <i class="user icon"></i> -->
-								<form:input path="username" value="${user.username}" type="text" />
+								<form:input path="username" value="${account.username}" type="text" />
 								<i><form:errors style="color: red;font-size: 15px;"
 										path="username" /></i>
 							</div>
@@ -67,11 +67,11 @@ body>.grid {
 
 								<div class="grid eight wide column">
 									<label><b>Số nhà: </b></label>
-									<form:input path="password" value="${user.password}" />
+									<form:input path="password" value="${account.password}" />
 								</div>
 								<div class="grid eight wide column">
 									<label style="align-self: center;"><b>Đường: </b></label>
-									<form:input path="password" value="${user.password}" />
+									<form:input path="password" value="${account.password}" />
 								</div>
 
 								<div style="margin-left: 30px">
@@ -87,7 +87,7 @@ body>.grid {
 								<label style="float: left;"><b>Số phòng cho thuê</b> <i
 									style="color: red;"> *</i> </label>
 								<div class="ui left input">
-									<form:input path="email" value="${user.email}" type="number" />
+									<form:input path="email" value="${account.email}" type="number" />
 									<form:errors style="color: red;font-size: 15px;" path="email" />
 								</div>
 							</div>
@@ -96,7 +96,7 @@ body>.grid {
 								<label style="float: left;"><b>Số người mỗi phòng</b><i
 									style="color: red;"> *</i> </label>
 								<div class="ui left input">
-									<form:input path="email" value="${user.email}" type="number" />
+									<form:input path="email" value="${account.email}" type="number" />
 									<form:errors style="color: red;font-size: 15px;" path="email" />
 								</div>
 							</div>
@@ -104,7 +104,7 @@ body>.grid {
 								<label style="float: left;"><b>Diện tích</b><i
 									style="color: red;"> *</i> </label>
 								<div class="ui left input">
-									<form:input path="email" value="${user.email}" type="email" />
+									<form:input path="email" value="${account.email}" type="email" />
 									<form:errors style="color: red;font-size: 15px;" path="email" />
 								</div>
 							</div>
@@ -114,7 +114,7 @@ body>.grid {
 								<label style="float: left;"><b>Tiền cọc</b> <i
 									style="color: red;"> *</i> </label>
 								<div class="ui left input">
-									<form:input path="email" value="${user.email}" type="email" />
+									<form:input path="email" value="${account.email}" type="email" />
 									<form:errors style="color: red;font-size: 15px;" path="email" />
 								</div>
 							</div>
@@ -122,7 +122,7 @@ body>.grid {
 								<label style="float: left;"><b>Tiền thuê</b> <i
 									style="color: red;"> *</i> </label>
 								<div class="ui left input">
-									<form:input path="email" value="${user.email}" type="email" />
+									<form:input path="email" value="${account.email}" type="email" />
 									<form:errors style="color: red;font-size: 15px;" path="email" />
 								</div>
 							</div>
@@ -131,7 +131,7 @@ body>.grid {
 							<label style="float: left;">Mô tả<b style="color: red;">*</b></label>
 							<div class="ui left input">
 								<!-- <i class="user icon"></i> -->
-								<form:textarea path="username" value="${user.username}"
+								<form:textarea path="username" value="${account.username}"
 									type="text" />
 								<i><form:errors style="color: red;font-size: 15px;"
 										path="username" /></i>
@@ -142,7 +142,7 @@ body>.grid {
 							<label style="float: left;">Hình ảnh<b style="color: red;">*</b></label>
 							<div class="ui left input">
 								<!-- <i class="user icon"></i> -->
-								<form:input path="username" value="${user.username}"
+								<form:input path="username" value="${account.username}"
 									type="file" />
 								<i><form:errors style="color: red;font-size: 15px;"
 										path="username" /></i>

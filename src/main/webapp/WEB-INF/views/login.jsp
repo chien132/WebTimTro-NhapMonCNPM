@@ -82,7 +82,7 @@ body>.grid {
 	<div class="ui middle aligned center aligned grid">
 		<div class="column">
 			<form:form class="ui large form" action="login.htm"
-				modelAttribute="user">
+				modelAttribute="account">
 				<div class="ui stacked segment">
 					<h2 class="ui big">
 						<i class="signup icon"></i> Đăng nhập

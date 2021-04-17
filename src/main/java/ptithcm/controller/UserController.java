@@ -28,7 +28,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
-import ptithcm.entity.User;
+import ptithcm.entity.Account;
 
 @Transactional
 @Controller
@@ -48,43 +48,43 @@ public class UserController {
 
 	@RequestMapping(value = "login", method = RequestMethod.GET)
 	public String login(ModelMap model) {
-		model.addAttribute("user", new User());
+		model.addAttribute("account", new Account());
 		return "login";
 	}
 
 	@RequestMapping(value = "login", method = RequestMethod.POST)
-	public String login(ModelMap model, @ModelAttribute("user") User user, BindingResult errors,
+	public String login(ModelMap model, @ModelAttribute("account") Account user, BindingResult errors,
 			HttpSession httpSession) {
 		user.setUsername(user.getUsername().trim());
 		user.setPassword(user.getPassword().trim());
 		if (user.getUsername().isEmpty()) {
-			errors.rejectValue("username", "user", "Please enter your username !");
+			errors.rejectValue("username", "account", "Please enter your username !");
 		} else if (user.getUsername().contains(" ")) {
-			errors.rejectValue("username", "user", "Username must not contain space !");
+			errors.rejectValue("username", "account", "Username must not contain space !");
 		}
 		if (user.getPassword().isEmpty()) {
-			errors.rejectValue("password", "user", "Please enter your password !");
+			errors.rejectValue("password", "account", "Please enter your password !");
 		} else if (user.getPassword().contains(" ")) {
-			errors.rejectValue("password", "user", "Password must not contain space !");
+			errors.rejectValue("password", "account", "Password must not contain space !");
 		}
 		if (!errors.hasErrors()) {
 			Session session = factory.getCurrentSession();
-			String hql = String.format("from User where username='%s' and password='%s'", user.getUsername(),
+			String hql = String.format("from Account where username='%s' and password='%s'", user.getUsername(),
 					user.getPassword());
 			System.out.println(hql);
 			Query query = session.createQuery(hql);
-			List<User> list = query.list();
+			List<Account> list = query.list();
 			if (!list.isEmpty()) {
 				System.out.println(list.get(0).getClass());
-				httpSession.setAttribute("user", list.get(0));
-				if (list.get(0).isAdmin()) {
+				httpSession.setAttribute("account", list.get(0));
+				if (list.get(0).getRole().equals("chutro")) {
 					return "redirect:/admin/index.htm";
 				}
 				return "redirect:/index.htm";
 
 			} else {
 
-				errors.rejectValue("username", "user", "Username of password is incorrect !");
+				errors.rejectValue("username", "account", "Username of password is incorrect !");
 				return "login";
 			}
 		}
@@ -93,51 +93,51 @@ public class UserController {
 
 	@RequestMapping("logout")
 	public String logout(ModelMap model, HttpSession session) {
-		session.removeAttribute("user");
+		session.removeAttribute("account");
 		return "redirect:/index.htm";
 	}
 
 	@RequestMapping(value = "register", method = RequestMethod.GET)
 	public String register(ModelMap model) {
-		model.addAttribute("user", new User());
+		model.addAttribute("account", new Account());
 		return "register";
 	}
 
 	@RequestMapping(value = "register", method = RequestMethod.POST)
-	public String register(ModelMap model, @ModelAttribute User user, BindingResult errors, HttpSession httpSession) {
+	public String register(ModelMap model, @ModelAttribute Account user, BindingResult errors, HttpSession httpSession) {
 		if (user.getUsername().trim().isEmpty()) {
-			errors.rejectValue("username", "user", "Please enter your username !");
+			errors.rejectValue("username", "account", "Please enter your username !");
 		} else if (user.getUsername().trim().contains(" ")) {
-			errors.rejectValue("username", "user", "Username must not contain space !");
+			errors.rejectValue("username", "account", "Username must not contain space !");
 		}
 		if (user.getPassword().trim().isEmpty()) {
-			errors.rejectValue("password", "user", "Please enter your password !");
+			errors.rejectValue("password", "account", "Please enter your password !");
 		} else if (user.getPassword().trim().contains(" ")) {
-			errors.rejectValue("password", "user", "Password must not contain space !");
+			errors.rejectValue("password", "account", "Password must not contain space !");
 		}
 		if (!user.getEmail().isEmpty()) {
 			Pattern VALID_EMAIL_ADDRESS_REGEX = Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$",
 					Pattern.CASE_INSENSITIVE);
 			Matcher matcher = VALID_EMAIL_ADDRESS_REGEX.matcher(user.getEmail());
 			if (!matcher.find()) {
-				errors.rejectValue("email", "user", "Please enter a valid email !");
+				errors.rejectValue("email", "account", "Please enter a valid email !");
 			}
 		}
 		if (!errors.hasErrors()) {
 			user.setAvatar("resources/images/avatar/user-default.png");
 			Session session = factory.getCurrentSession();
-			String hql = String.format("from User where username='%s'", user.getUsername());
+			String hql = String.format("from Account where username='%s'", user.getUsername());
 			Query query = session.createQuery(hql);
-			List<User> list = query.list();
+			List<Account> list = query.list();
 			if (list.isEmpty()) {
 				Session session2 = factory.openSession();
 				Transaction t = session2.beginTransaction();
-				user.setAdmin(false);
+				user.setRole("khach");
 				try {
 					session2.save(user);
 					t.commit();
 					model.addAttribute("message", "Thêm mới thành công !");
-					httpSession.setAttribute("user", user);
+					httpSession.setAttribute("account", user);
 					return "redirect:/index.htm";
 				} catch (Exception e) {
 					t.rollback();
@@ -148,7 +148,7 @@ public class UserController {
 				}
 
 			} else {
-				errors.rejectValue("username", "user", "This username is not available !");
+				errors.rejectValue("username", "account", "This username is not available !");
 			}
 
 		}
@@ -162,7 +162,7 @@ public class UserController {
 
 	@RequestMapping(value = "password", params = "email", method = RequestMethod.GET)
 	public String forgotpassword(ModelMap model, @PathParam("email") String email) {
-		String hql = String.format("from User where email='%s'", email);
+		String hql = String.format("from Account where email='%s'", email);
 		List<Object> list = getList(hql);
 		if (list.isEmpty()) {
 			model.addAttribute("message", "No account have this email");
@@ -171,7 +171,7 @@ public class UserController {
 			try {
 				String body = "This is your account infomation: \n";
 				for (int i = 0; i < list.size(); i++) {
-					User u = (User) list.get(0);
+					Account u = (Account) list.get(0);
 
 					body += "Username: " + u.getUsername() + "\nEmail: " + u.getEmail() + "\nPassword: "
 							+ u.getPassword() + "\n\n";

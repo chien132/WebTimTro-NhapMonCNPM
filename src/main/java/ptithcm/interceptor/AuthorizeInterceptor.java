@@ -6,7 +6,7 @@ import javax.servlet.http.HttpSession;
 
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
-import ptithcm.entity.User;
+import ptithcm.entity.Account;
 
 public class AuthorizeInterceptor extends HandlerInterceptorAdapter {
 	@Override
@@ -18,8 +18,8 @@ public class AuthorizeInterceptor extends HandlerInterceptorAdapter {
 			System.out.println("Khong co user");
 			return false;
 		}else {
-			User user = (User) session.getAttribute("user");
-			if (!user.isAdmin()) {
+			Account user = (Account) session.getAttribute("user");
+			if (!user.getRole().equals("chutro")) {
 				response.sendRedirect(request.getContextPath() + "/index.htm");
 				System.out.println("User khong phai admin");
 				return false;

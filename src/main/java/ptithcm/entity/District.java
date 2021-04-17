@@ -12,7 +12,7 @@ import javax.persistence.OneToMany;
 
 @Entity
 public class District {
-	@Id @GeneratedValue
+	@Id 
 	private int id;
 	private String name;
 	private String type;
