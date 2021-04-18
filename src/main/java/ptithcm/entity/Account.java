@@ -6,6 +6,8 @@ import java.util.Collection;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -25,7 +27,6 @@ public class Account {
 	private String dienThoai;
 	private String email;
 	private String avatar;
-	private String role;
 	@Temporal(TemporalType.DATE)
 //	@DateTimeFormat(pattern = "dd/MM/yyyy")
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
@@ -39,6 +40,9 @@ public class Account {
 	
 	@OneToOne(mappedBy = "account")
 	private KhachThue khachThue;
+	
+	@ManyToOne @JoinColumn(name = "idrole")
+	private Role role;
 
 	public String getUsername() {
 		return username;
@@ -96,13 +100,6 @@ public class Account {
 		this.avatar = avatar;
 	}
 
-	public String getRole() {
-		return role;
-	}
-
-	public void setRole(String role) {
-		this.role = role;
-	}
 
 	public Date getNgayDangKy() {
 		return ngayDangKy;
@@ -134,6 +131,14 @@ public class Account {
 
 	public void setKhachThue(KhachThue khachThue) {
 		this.khachThue = khachThue;
+	}
+
+	public Role getRole() {
+		return role;
+	}
+
+	public void setRole(Role role) {
+		this.role = role;
 	}
 	
 	

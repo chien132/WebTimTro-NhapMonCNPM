@@ -46,7 +46,7 @@ body>.grid {
 
 
 			<form:form class="ui large form" action="register.htm"
-				modelAttribute="user" method="post">
+				modelAttribute="account" method="post">
 				<div class="ui stacked segment">
 					<h2 class="ui big">
 						<i class="signup icon"></i> Tạo tài khoản

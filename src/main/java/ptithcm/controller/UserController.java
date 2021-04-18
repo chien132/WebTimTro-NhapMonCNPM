@@ -75,11 +75,13 @@ public class UserController {
 			Query query = session.createQuery(hql);
 			List<Account> list = query.list();
 			if (!list.isEmpty()) {
-				System.out.println(list.get(0).getClass());
-				httpSession.setAttribute("account", list.get(0));
-				if (list.get(0).getRole().equals("chutro")) {
-					return "redirect:/admin/index.htm";
+				System.out.println(list.get(0).getRole().getName());
+				
+				if (list.get(0).getRole().getId()==1) {
+					httpSession.setAttribute("account", list.get(0).getChuTro());
+					return "redirect:/index.htm";
 				}
+				httpSession.setAttribute("account", list.get(0).getKhachThue());
 				return "redirect:/index.htm";
 
 			} else {
@@ -103,98 +105,98 @@ public class UserController {
 		return "register";
 	}
 
-	@RequestMapping(value = "register", method = RequestMethod.POST)
-	public String register(ModelMap model, @ModelAttribute Account user, BindingResult errors, HttpSession httpSession) {
-		if (user.getUsername().trim().isEmpty()) {
-			errors.rejectValue("username", "account", "Please enter your username !");
-		} else if (user.getUsername().trim().contains(" ")) {
-			errors.rejectValue("username", "account", "Username must not contain space !");
-		}
-		if (user.getPassword().trim().isEmpty()) {
-			errors.rejectValue("password", "account", "Please enter your password !");
-		} else if (user.getPassword().trim().contains(" ")) {
-			errors.rejectValue("password", "account", "Password must not contain space !");
-		}
-		if (!user.getEmail().isEmpty()) {
-			Pattern VALID_EMAIL_ADDRESS_REGEX = Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$",
-					Pattern.CASE_INSENSITIVE);
-			Matcher matcher = VALID_EMAIL_ADDRESS_REGEX.matcher(user.getEmail());
-			if (!matcher.find()) {
-				errors.rejectValue("email", "account", "Please enter a valid email !");
-			}
-		}
-		if (!errors.hasErrors()) {
-			user.setAvatar("resources/images/avatar/user-default.png");
-			Session session = factory.getCurrentSession();
-			String hql = String.format("from Account where username='%s'", user.getUsername());
-			Query query = session.createQuery(hql);
-			List<Account> list = query.list();
-			if (list.isEmpty()) {
-				Session session2 = factory.openSession();
-				Transaction t = session2.beginTransaction();
-				user.setRole("khach");
-				try {
-					session2.save(user);
-					t.commit();
-					model.addAttribute("message", "Thêm mới thành công !");
-					httpSession.setAttribute("account", user);
-					return "redirect:/index.htm";
-				} catch (Exception e) {
-					t.rollback();
-					model.addAttribute("message", "Thêm mới thất bại !" + e);
-					return "redirect:/register.htm";
-				} finally {
-					session2.close();
-				}
+//	@RequestMapping(value = "register", method = RequestMethod.POST)
+//	public String register(ModelMap model, @ModelAttribute Account user, BindingResult errors, HttpSession httpSession) {
+//		if (user.getUsername().trim().isEmpty()) {
+//			errors.rejectValue("username", "account", "Please enter your username !");
+//		} else if (user.getUsername().trim().contains(" ")) {
+//			errors.rejectValue("username", "account", "Username must not contain space !");
+//		}
+//		if (user.getPassword().trim().isEmpty()) {
+//			errors.rejectValue("password", "account", "Please enter your password !");
+//		} else if (user.getPassword().trim().contains(" ")) {
+//			errors.rejectValue("password", "account", "Password must not contain space !");
+//		}
+//		if (!user.getEmail().isEmpty()) {
+//			Pattern VALID_EMAIL_ADDRESS_REGEX = Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$",
+//					Pattern.CASE_INSENSITIVE);
+//			Matcher matcher = VALID_EMAIL_ADDRESS_REGEX.matcher(user.getEmail());
+//			if (!matcher.find()) {
+//				errors.rejectValue("email", "account", "Please enter a valid email !");
+//			}
+//		}
+//		if (!errors.hasErrors()) {
+//			user.setAvatar("resources/images/avatar/user-default.png");
+//			Session session = factory.getCurrentSession();
+//			String hql = String.format("from Account where username='%s'", user.getUsername());
+//			Query query = session.createQuery(hql);
+//			List<Account> list = query.list();
+//			if (list.isEmpty()) {
+//				Session session2 = factory.openSession();
+//				Transaction t = session2.beginTransaction();
+//				user.setRole(null);
+//				try {
+//					session2.save(user);
+//					t.commit();
+//					model.addAttribute("message", "Thêm mới thành công !");
+//					httpSession.setAttribute("account", user);
+//					return "redirect:/index.htm";
+//				} catch (Exception e) {
+//					t.rollback();
+//					model.addAttribute("message", "Thêm mới thất bại !" + e);
+//					return "redirect:/register.htm";
+//				} finally {
+//					session2.close();
+//				}
+//
+//			} else {
+//				errors.rejectValue("username", "account", "This username is not available !");
+//			}
+//
+//		}
+//		return "register";
+//	}
 
-			} else {
-				errors.rejectValue("username", "account", "This username is not available !");
-			}
-
-		}
-		return "register";
-	}
-
-	@RequestMapping("password")
-	public String password() {
-		return "password";
-	}
-
-	@RequestMapping(value = "password", params = "email", method = RequestMethod.GET)
-	public String forgotpassword(ModelMap model, @PathParam("email") String email) {
-		String hql = String.format("from Account where email='%s'", email);
-		List<Object> list = getList(hql);
-		if (list.isEmpty()) {
-			model.addAttribute("message", "No account have this email");
-			return "password";
-		} else {
-			try {
-				String body = "This is your account infomation: \n";
-				for (int i = 0; i < list.size(); i++) {
-					Account u = (Account) list.get(0);
-
-					body += "Username: " + u.getUsername() + "\nEmail: " + u.getEmail() + "\nPassword: "
-							+ u.getPassword() + "\n\n";
-				}
-//				System.out.println(body);
-				// String from = "XGear - PC & Laptop Gaming";
-				MimeMessage mail = mailer.createMimeMessage();
-
-				MimeMessageHelper helper = new MimeMessageHelper(mail);
-				// helper.setFrom(from, from);
-				helper.setTo(email);
-				// helper.setReplyTo(from,from);
-				helper.setSubject("Forgot Password");
-				helper.setText(body, true);
-
-				mailer.send(mail);
-			} catch (Exception e) {
-				model.addAttribute("message", e);
-			}
-			model.addAttribute("message", "We have sent the password to your email.");
-		}
-		return "password";
-
-	}
+//	@RequestMapping("password")
+//	public String password() {
+//		return "password";
+//	}
+//
+//	@RequestMapping(value = "password", params = "email", method = RequestMethod.GET)
+//	public String forgotpassword(ModelMap model, @PathParam("email") String email) {
+//		String hql = String.format("from Account where email='%s'", email);
+//		List<Object> list = getList(hql);
+//		if (list.isEmpty()) {
+//			model.addAttribute("message", "No account have this email");
+//			return "password";
+//		} else {
+//			try {
+//				String body = "This is your account infomation: \n";
+//				for (int i = 0; i < list.size(); i++) {
+//					Account u = (Account) list.get(0);
+//
+//					body += "Username: " + u.getUsername() + "\nEmail: " + u.getEmail() + "\nPassword: "
+//							+ u.getPassword() + "\n\n";
+//				}
+////				System.out.println(body);
+//				// String from = "XGear - PC & Laptop Gaming";
+//				MimeMessage mail = mailer.createMimeMessage();
+//
+//				MimeMessageHelper helper = new MimeMessageHelper(mail);
+//				// helper.setFrom(from, from);
+//				helper.setTo(email);
+//				// helper.setReplyTo(from,from);
+//				helper.setSubject("Forgot Password");
+//				helper.setText(body, true);
+//
+//				mailer.send(mail);
+//			} catch (Exception e) {
+//				model.addAttribute("message", e);
+//			}
+//			model.addAttribute("message", "We have sent the password to your email.");
+//		}
+//		return "password";
+//
+//	}
 
 }
