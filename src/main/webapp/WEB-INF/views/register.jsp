@@ -6,14 +6,14 @@
 
 <head>
 <meta charset="utf-8" />
-<title>Login</title>
+<title>Register</title>
 <!-- <link href="resources/css/styles.css" rel="stylesheet" /> -->
 
 <base href="${pageContext.servletContext.contextPath}/">
-<script src="resources/js/jquery-3.6.0.js"></script>
+<script src="resources/js/jquery-3.6.0.js" type="text/javascript"></script>
 <link rel="stylesheet" type="text/css"
 	href="resources/semantic/semantic.min.css">
-<script src="resources/semantic/semantic.min.js"></script>
+<script src="resources/semantic/semantic.min.js" type="text/javascript"></script>
 <style type="text/css">
 #homelogin {
 	background: url(resources/images/homeloan.jpg) center top no-repeat;
@@ -55,7 +55,7 @@ body>.grid {
 						<label style="float: left;">Tài khoản<b
 							style="color: red;">*</b></label>
 						<div class="ui left input">
-							<!-- <i class="user icon"></i> -->
+							<i class="user icon"></i>
 							<form:input path="username" value="${user.username}" type="text"
 								placeholder="Tài khoản" />
 							<i><form:errors style="color: red;font-size: 15px;"
@@ -73,7 +73,7 @@ body>.grid {
 
 							<form:input path="password" value="${user.password}"
 								type="password" placeholder="Nhập lại mật khẩu" />
-							<form:errors style="color: red;font-size: 15px;" path="password" />
+							<form:errors style="color: red;font-size: 15px;" path="password" /> 
 						</div>
 					</div>
 
@@ -82,9 +82,9 @@ body>.grid {
 								*</i>
 						</label>
 						<div class="ui left input">
-							<form:input path="email" value="${user.email}" type="email"
+							<form:input path="hoTen" type="text"
 								placeholder="Họ tên" />
-							<form:errors style="color: red;font-size: 15px;" path="email" />
+							<form:errors style="color: red;font-size: 15px;" path="hoTen" />
 						</div>
 					</div>
 
@@ -93,9 +93,9 @@ body>.grid {
 								*</i>
 						</label>
 						<div class="ui left input">
-							<form:input path="email" value="${user.email}" type="email"
+							<form:input path="cmnd" type="text"
 								placeholder="CMND" />
-							<form:errors style="color: red;font-size: 15px;" path="email" />
+							<form:errors style="color: red;font-size: 15px;" path="cmnd" />
 						</div>
 					</div>
 
@@ -104,9 +104,9 @@ body>.grid {
 								*</i>
 						</label>
 						<div class="ui left input">
-							<form:input path="email" value="${user.email}" type="email"
+							<form:input path="dienThoai" type="text"
 								placeholder="SĐT" />
-							<form:errors style="color: red;font-size: 15px;" path="email" />
+							<form:errors style="color: red;font-size: 15px;" path="dienThoai" />
 						</div>
 					</div>
 
@@ -126,13 +126,13 @@ body>.grid {
 							<label style="float: left;">Mục đích của bạn là gì?</label>
 							<div class="field" style="float: left;">
 								<div class="ui radio checkbox">
-									<input type="radio" name="example2" checked="checked">
+									<input type="radio"  checked="checked" value="2" name="rolef">
 									<label>Tìm trọ</label>
 								</div>
 							</div>
 							<div class="field" style="float: left;">
 								<div class="ui radio checkbox">
-									<input type="radio" name="example2"> <label>Cho
+									<input type="radio" value="1" name="rolef"> <label>Cho
 										thuê trọ</label>
 								</div>
 							</div>

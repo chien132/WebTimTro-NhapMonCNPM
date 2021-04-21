@@ -14,6 +14,7 @@
 			<div class="ui text container">
 				<h1 class="ui inverted header">Padding</h1>
 				<h2>KÊNH THÔNG TIN PHÒNG TRỌ SỐ MỘT VIỆT NAM</h2>
+				${message}
 			</div>
 		</div>
 		<div class="ui grid ">
