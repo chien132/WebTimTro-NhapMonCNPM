@@ -55,12 +55,12 @@ body>.grid {
 						<label style="float: left;">Tài khoản<b
 							style="color: red;">*</b></label>
 						<div class="ui left input">
-							<i class="user icon"></i>
+							<!-- 	<i class="user icon"></i> -->
 							<form:input path="username" value="${user.username}" type="text"
 								placeholder="Tài khoản" />
-							<i><form:errors style="color: red;font-size: 15px;"
-									path="username" /></i>
 						</div>
+						<i style="float: right;"><form:errors
+								style="color: red;font-size: 15px;" path="username" /></i>
 					</div>
 
 					<div class="field">
@@ -71,10 +71,12 @@ body>.grid {
 								type="password" placeholder="Mật khẩu" />
 							<!-- 	<i class="lock icon"></i> -->
 
-							<form:input path="password" value="${user.password}"
-								type="password" placeholder="Nhập lại mật khẩu" />
-							<form:errors style="color: red;font-size: 15px;" path="password" /> 
+							<%-- <form:input path="password" value="${user.password}"
+								type="password" placeholder="Nhập lại mật khẩu" /> --%>
+
 						</div>
+						<i style="float: right;"><form:errors
+								style="color: red;font-size: 15px;" path="password" /></i>
 					</div>
 
 					<div class="field">
@@ -82,10 +84,10 @@ body>.grid {
 								*</i>
 						</label>
 						<div class="ui left input">
-							<form:input path="hoTen" type="text"
-								placeholder="Họ tên" />
-							<form:errors style="color: red;font-size: 15px;" path="hoTen" />
+							<form:input path="hoTen" type="text" placeholder="Họ tên" />
 						</div>
+						<i style="float: right;"><form:errors
+								style="color: red;font-size: 15px;" path="hoTen" /></i>
 					</div>
 
 					<div class="field">
@@ -93,10 +95,11 @@ body>.grid {
 								*</i>
 						</label>
 						<div class="ui left input">
-							<form:input path="cmnd" type="text"
-								placeholder="CMND" />
-							<form:errors style="color: red;font-size: 15px;" path="cmnd" />
+							<form:input path="cmnd" type="text" placeholder="CMND" />
+
 						</div>
+						<i style="float: right;"><form:errors
+								style="color: red;font-size: 15px;" path="cmnd" /></i>
 					</div>
 
 					<div class="field">
@@ -104,10 +107,11 @@ body>.grid {
 								*</i>
 						</label>
 						<div class="ui left input">
-							<form:input path="dienThoai" type="text"
-								placeholder="SĐT" />
-							<form:errors style="color: red;font-size: 15px;" path="dienThoai" />
+							<form:input path="dienThoai" type="text" placeholder="SĐT" />
+
 						</div>
+						<i style="float: right;"><form:errors
+								style="color: red;font-size: 15px;" path="dienThoai" /></i>
 					</div>
 
 					<div class="field">
@@ -117,8 +121,10 @@ body>.grid {
 						<div class="ui left input">
 							<form:input path="email" value="${user.email}" type="email"
 								placeholder="Email address" />
-							<form:errors style="color: red;font-size: 15px;" path="email" />
+
 						</div>
+						<i style="float: right;"><form:errors
+								style="color: red;font-size: 15px;" path="email" /></i>
 					</div>
 
 					<div class="ui form">
@@ -126,7 +132,7 @@ body>.grid {
 							<label style="float: left;">Mục đích của bạn là gì?</label>
 							<div class="field" style="float: left;">
 								<div class="ui radio checkbox">
-									<input type="radio"  checked="checked" value="2" name="rolef">
+									<input type="radio" checked="checked" value="2" name="rolef">
 									<label>Tìm trọ</label>
 								</div>
 							</div>
@@ -140,6 +146,7 @@ body>.grid {
 					</div>
 					<button class="ui fluid large teal submit button">Tạo tài
 						khoản</button>
+					<i style="color: red;">${message}</i>
 				</div>
 			</form:form>
 			<div class="card-footer text-center" style="margin-top: 5px">

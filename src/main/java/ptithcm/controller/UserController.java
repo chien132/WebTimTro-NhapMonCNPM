@@ -109,6 +109,7 @@ public class UserController {
 			HttpSession httpSession, HttpServletRequest request, RedirectAttributes re) {
 		user.setUsername(user.getUsername().trim());
 		user.setPassword(user.getPassword().trim());
+		user.setHoTen(user.getHoTen().trim());
 		user.setCmnd(user.getCmnd().trim());
 		user.setEmail(user.getEmail());
 		user.setDienThoai(user.getDienThoai().trim());
@@ -123,43 +124,46 @@ public class UserController {
 		}
 
 		if (user.getUsername().isEmpty()) {
-			errors.rejectValue("username", "account", "Please enter your username !");
+			errors.rejectValue("username", "account", "Hãy nhập username !");
 		} else if (user.getUsername().contains(" ")) {
-			errors.rejectValue("username", "account", "Username must not contain space !");
+			errors.rejectValue("username", "account", "Username không được chứa khoảng trắng !");
 		}
 		if (user.getPassword().isEmpty()) {
-			errors.rejectValue("password", "account", "Please enter your password !");
+			errors.rejectValue("password", "account", "Hãy nhập password !");
 		} else if (user.getPassword().contains(" ")) {
-			errors.rejectValue("password", "account", "Password must not contain space !");
+			errors.rejectValue("password", "account", "Password không được chứa khoảng trắng !");
+		}
+		if (user.getHoTen().isEmpty()) {
+			errors.rejectValue("hoTen", "account", "Hãy nhập họ tên !");
 		}
 		if (!user.getEmail().isEmpty()) {
 			Pattern VALID_EMAIL_ADDRESS_REGEX = Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$",
 					Pattern.CASE_INSENSITIVE);
 			Matcher matcher = VALID_EMAIL_ADDRESS_REGEX.matcher(user.getEmail());
 			if (!matcher.find()) {
-				errors.rejectValue("email", "account", "Please enter a valid email !");
+				errors.rejectValue("email", "account", "Email chưa đúng định dạng !");
 			}
 		} else {
-			errors.rejectValue("email", "account", "Please enter your email !");
+			errors.rejectValue("email", "account", "Hãy nhập email !");
 		}
 		if (!user.getDienThoai().isEmpty()) {
 			Pattern VALID_PHONE_NUMBER_REGEX = Pattern.compile("(03|05|07|08|09|01[2|6|8|9])+([0-9]{8})\\b",
 					Pattern.CASE_INSENSITIVE);
 			Matcher matcher = VALID_PHONE_NUMBER_REGEX.matcher(user.getDienThoai());
 			if (!matcher.find()) {
-				errors.rejectValue("dienThoai", "account", "Please enter a valid phone number !");
+				errors.rejectValue("dienThoai", "account", "Số điện thoại không đúng định dạng !");
 			}
 		} else {
-			errors.rejectValue("dienThoai", "account", "Please enter your phone number !");
+			errors.rejectValue("dienThoai", "account", "Hãy nhập số điện thoại !");
 		}
 		if (!user.getDienThoai().isEmpty()) {
 			Pattern VALID_ID_NUMBER_REGEX = Pattern.compile("([0-9]{9,12})\\b", Pattern.CASE_INSENSITIVE);
 			Matcher matcher = VALID_ID_NUMBER_REGEX.matcher(user.getDienThoai());
 			if (!matcher.find()) {
-				errors.rejectValue("cmnd", "account", "Please enter a valid phone number !");
+				errors.rejectValue("cmnd", "account", "Số điện thoại không đúng định dạng !");
 			}
 		} else {
-			errors.rejectValue("cmnd", "account", "Please enter your phone number !");
+			errors.rejectValue("cmnd", "account", "Hãy nhập số điện thoại !");
 		}
 		if (!errors.hasErrors()) {
 			System.out.println("Khong co loi");
@@ -178,6 +182,7 @@ public class UserController {
 					case 2: {
 						System.out.println("khach thue");
 						KhachThue khachThue = new KhachThue();
+						khachThue.setNamSinh(1950);
 						khachThue.setAccount(user);
 						user.setKhachThue(khachThue);
 						session2.save(user);
@@ -202,15 +207,16 @@ public class UserController {
 					return "redirect:/index.htm";
 				} catch (Exception e) {
 					t.rollback();
-					re.addFlashAttribute("message", "Tạo tài khoản không thành công!" + e);
-					System.out.println("loi " + e.getMessage());
-					return "redirect:/register.htm";
+					model.addAttribute("message", "Tạo tài khoản không thành công!\n" + e);
+					System.out.println("loi " + e);
+					model.put("account", user);
+					return "register";
 				} finally {
 					session2.close();
 				}
 
 			} else {
-				errors.rejectValue("username", "account", "This username is available !");
+				errors.rejectValue("username", "account", "This username is not available !");
 			}
 
 		}
