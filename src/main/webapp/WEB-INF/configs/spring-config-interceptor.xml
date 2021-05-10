@@ -19,6 +19,8 @@
 		<!-- Lọc tất cả các URL -->
 		<mvc:interceptor>
 			<mvc:mapping path="/admin/**" />
+<!--  			<mvc:mapping path="/khachthue/**" />
+			<mvc:mapping path="/chutro/**" /> -->
 <!-- 			<mvc:exclude-mapping path="/admin/bill/edititem/*/delete/*.htm" /> -->
 			<bean class="ptithcm.interceptor.AuthorizeInterceptor" />
 		</mvc:interceptor>

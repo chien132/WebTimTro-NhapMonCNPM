@@ -37,48 +37,9 @@ body>.grid {
 	max-width: 450px;
 }
 </style>
-<!-- <script>
-  $(document)
-    .ready(function() {
-      $('.ui.form')
-        .form({
-          fields: {
-            email: {
-              identifier  : 'email',
-              rules: [
-                {
-                  type   : 'empty',
-                  prompt : 'Please enter your e-mail'
-                },
-                {
-                  type   : 'email',
-                  prompt : 'Please enter a valid e-mail'
-                }
-              ]
-            },
-            password: {
-              identifier  : 'password',
-              rules: [
-                {
-                  type   : 'empty',
-                  prompt : 'Please enter your password'
-                },
-                {
-                  type   : 'length[6]',
-                  prompt : 'Your password must be at least 6 characters'
-                }
-              ]
-            }
-          }
-        })
-      ;
-    })
-  ;
-  </script> -->
 </head>
 
 <body id="homelogin">
-
 	<div class="ui middle aligned center aligned grid">
 		<div class="column">
 			<form:form class="ui large form" action="login.htm"
@@ -113,12 +74,13 @@ body>.grid {
 			<div class="card-footer text-center" style="margin-top: 5px">
 
 				<div class="ui message">
-					<!-- 					<a href="password.htm">Forgot Password?</a>
-					<hr> -->
+					<a href="password.htm">Forgot Password?</a>
+					<hr> 
 					Chưa có tài khoản? <a href="register.htm"> Đăng ký!</a>
 				</div>
-
+			
 			</div>
+			<div>${message}</div>
 		</div>
 	</div>
 </body>

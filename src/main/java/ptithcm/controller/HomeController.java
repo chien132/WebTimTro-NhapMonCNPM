@@ -1,7 +1,6 @@
 package ptithcm.controller;
 
-import java.io.File;
-import java.util.Collection;
+import java.math.BigDecimal;
 import java.util.List;
 
 import javax.servlet.ServletContext;
@@ -12,7 +11,7 @@ import javax.websocket.server.PathParam;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -21,11 +20,14 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import ptithcm.entity.Account;
+import ptithcm.entity.District;
+import ptithcm.entity.LichHen;
+import ptithcm.entity.NhaTro;
 import ptithcm.entity.Province;
+import ptithcm.entity.Ward;
 import ptithcm.service.ProvinceService;
 
 @Transactional
@@ -35,100 +37,289 @@ public class HomeController {
 	SessionFactory factory;
 	@Autowired
 	ServletContext context;
-
-	@RequestMapping("taobaidang")
-	public String taobaidang(ModelMap modelMap,HttpSession httpSession) {
-		modelMap.put("account", new Account());
-		return"formbaidang";
-	}
+	
+	List<Object> nhatros;
+	Province province;
+	District district;
+	Ward ward;
+	int page;
 	
 	@RequestMapping("")
 	public String welcome() {
-		//return "redirect:/index.htm?page=1&view=grid";
-		return "index";
-	}
-	
-
-	List<Object> getList(String hql) {
-		Session session = factory.getCurrentSession();
-		Query query = session.createQuery(hql);
-		List<Object> list = query.list();
-		return list;
+		return "redirect:index.htm";
 	}
 	
 	@ModelAttribute("provinces")
 	public List<Province> getProvinces(){
 		return ProvinceService.findAll(factory);
 	}
-
+	@ModelAttribute("ques")
+	public List<Province> getQues(){
+		return ProvinceService.findAll(factory);
+	}
+		
+	List<Object> getList(String hql) {
+		Session session = factory.getCurrentSession();
+		Query query = session.createQuery(hql);
+		List<Object> list = query.list();
+		return list;
+	}
 
 	@RequestMapping("index")
 	public String index(ModelMap model, HttpSession httpSession) {
-//		String hql = "FROM Product";
-//		List<Object> list = getList(hql);
-//		model.addAttribute("products", list);
-//		return "index";
-//		return "redirect:/index.htm?page=1&view=grid";
+		String hql="FROM NhaTro "
+				+ "WHERE tinhtrang=1 "
+				+ "ORDER BY diem DESC";
+		List<Object> listNhaTro = getList(hql);
+		if(listNhaTro.size()+10<page*10) {
+			model.addAttribute("message", "Không tìm thấy trang !");
+		}else {
+			this.nhatros = listNhaTro;
+			this.page = 1;
+			model.addAttribute("nhatros", listNhaTro);
+			model.addAttribute("page", 1);
+			model.addAttribute("end", listNhaTro.size()%10!=0?listNhaTro.size()/10+1:listNhaTro.size()/10);
+			this.province = null;
+			this.district = null;
+			this.ward = null;
+			model.addAttribute("feature","index");
+		}
 		return "index";
 	}
-
-	public void loadindex(ModelMap model, String query, Integer page, String view) {
-		query += " order by name";
-		List<Object> list = getList(query);
-		model.addAttribute("products", list.subList((page - 1) * 8, (page * 8 > list.size() ? list.size() : page * 8)));
+	@RequestMapping(value="timkiem", params = {"province","district","ward"})
+	public String timkiem(ModelMap model, 
+			@RequestParam("province") String p, 
+			@RequestParam("district") String d, 
+			@RequestParam("ward") String w) {
+		String hql = "FROM NhaTro "
+				+ "WHERE tinhtrang = 1 "
+				+ "ORDER BY diem DESC";
+		List<Object> listNhaTro = getList(hql);
+		try {
+			int province = Integer.parseInt(p);
+			int district = Integer.parseInt(d);
+			int ward = Integer.parseInt(w);
+			if(ward!=0) {
+				int dem=0;
+				while (true) {
+					for (Object nt:listNhaTro) {
+						NhaTro nhatro = (NhaTro) nt;
+						if(nhatro.getWardId()!=ward) {
+							listNhaTro.remove(nt);
+							break;
+						}else dem++;
+						
+					} if(dem==listNhaTro.size()) break;
+					else dem=0;
+				}
+			}
+		if(listNhaTro.size()+10<page*10) {
+			model.addAttribute("message", "Không tìm thấy trang !");
+		} else {
+			this.nhatros = listNhaTro;
+			this.page = 1;
+			Session session = factory.getCurrentSession();
+			this.province = (Province) session.get(Province.class, province);
+			this.district = (District) session.get(District.class, district);
+			this.ward = (Ward) session.get(Ward.class, ward);
+			model.addAttribute("nhatros", listNhaTro);
+			model.addAttribute("page", 1);
+			model.addAttribute("end", listNhaTro.size()%10!=0?listNhaTro.size()/10+1:listNhaTro.size()/10);
+			model.addAttribute("province", this.province);
+			model.addAttribute("district", this.district);
+			model.addAttribute("ward", this.ward);
+			model.addAttribute("feature","timkiem");
+		}
+		} catch (Exception e) {
+			model.addAttribute("message","Tìm kiếm thất bại!");
+		}
+		return "index";
+	}
+		
+	
+	@RequestMapping(value="timkiem", params = {"province","district"})
+	public String timkiem(ModelMap model,
+			@RequestParam("province") String p, 
+			@RequestParam("district") String d) {
+		String hql = "FROM NhaTro "
+				+ "WHERE tinhtrang = 1 "
+				+ "ORDER BY diem DESC";
+		List<Object> listNhaTro = getList(hql);
+		try {
+			int province = Integer.parseInt(p);
+			int district = Integer.parseInt(d);
+			if(district!=0) {
+				int dem=0;
+				while (true) {
+					for (Object nt:listNhaTro) {
+						NhaTro nhatro = (NhaTro) nt;
+						if(nhatro.getDistrictId()!=district) {
+							listNhaTro.remove(nt);
+							break;
+						}else dem++;
+						
+					} if(dem==listNhaTro.size()) break;
+					else dem=0;
+				}
+			}
+			if(listNhaTro.size()+10<page*10) {
+				model.addAttribute("message", "Không tìm thấy trang !");
+			}else {
+				this.nhatros = listNhaTro;
+				this.page = 1;
+				Session session = factory.getCurrentSession();
+				this.province = (Province) session.get(Province.class, province);
+				this.district = (District) session.get(District.class, district);
+				this.ward = null;
+				model.addAttribute("nhatros", listNhaTro);
+				model.addAttribute("page", 1);
+				model.addAttribute("end", listNhaTro.size()%10!=0?listNhaTro.size()/10+1:listNhaTro.size()/10);
+				model.addAttribute("province", this.province);
+				model.addAttribute("district", this.district);
+				model.addAttribute("ward", this.ward);
+				model.addAttribute("feature","timkiem");
+			}
+		} catch(Exception e) {
+			model.addAttribute("message", "Tìm kiếm thất bại!");
+		}
+		return "index";
+	}
+		
+	
+	@RequestMapping(value="timkiem", params = {"province"})
+	public String timkiem(ModelMap model,
+			@RequestParam("province") String p) {
+		String hql = "FROM NhaTro "
+				+ "WHERE tinhtrang = 1 "
+				+ "ORDER BY diem DESC";
+		List<Object> listNhaTro = getList(hql);
+		try {
+			int province = Integer.parseInt(p);
+			if(province!=0) {
+				int dem=0;
+				while (true) {
+					for (Object nt:listNhaTro) {
+						NhaTro nhatro = (NhaTro) nt;
+						if(nhatro.getProvinceId()!=province) {
+							listNhaTro.remove(nt);
+							break;
+						}else dem++;
+						
+					} if(dem==listNhaTro.size()) break;
+					else dem=0;
+				}
+			}
+			if(listNhaTro.size()+10<page*10) {
+				model.addAttribute("message", "Không tìm thấy trang !");
+			}else {
+				this.nhatros = listNhaTro;
+				this.page = 1;
+				Session session = factory.getCurrentSession();
+				this.province = (Province) session.get(Province.class, province);
+				this.district = null;
+				this.ward = null;
+				model.addAttribute("nhatros", listNhaTro);
+				model.addAttribute("page", 1);
+				model.addAttribute("end", listNhaTro.size()%10!=0?listNhaTro.size()/10+1:listNhaTro.size()/10);
+				model.addAttribute("province", this.province);
+				model.addAttribute("district", this.district);
+				model.addAttribute("ward", this.ward);
+				model.addAttribute("feature","timkiem");
+			}
+			} catch (Exception e) {
+				model.addAttribute("message", "Tìm kiếm thất bại!");
+			}
+		return "index";
+	}
+	@RequestMapping(value="timkiem")
+	public String timkiem() {
+		return "redirect:index.htm";
+	}
+	@RequestMapping("nhatro/{id}")
+	public String nhatro(ModelMap model, @PathVariable("id") int id, HttpSession session) {
+		Session session2 = factory.getCurrentSession();
+		NhaTro nhatro = (NhaTro) session2.get(NhaTro.class, id);
+		model.addAttribute("nhatro",nhatro);
+		LichHen lichhen = new LichHen();
+		model.addAttribute("lichhen", lichhen);
+		return "nhatro";
+	}
+	@RequestMapping(value="timkiem",params={"page"})
+	public String page(ModelMap model, @RequestParam("page") int page) {
+		model.addAttribute("nhatros", this.nhatros);
 		model.addAttribute("page", page);
-		model.addAttribute("maxpage", Math.ceil(list.size() / 8.0));
-		model.addAttribute("view", view);
-//		System.out.println(list.size());
-//		model.addAttribute("search", search);
-//		model.addAttribute("brand", brandid);
-//		model.addAttribute("cate", cateid);
-	}
-
-	@RequestMapping(value = "index", params = { "page", "view" })
-	public String indexpage(ModelMap model, @PathParam("view") String view, @PathParam("page") Integer page) {
-		String hql = "From Product";
-		loadindex(model, hql, page, view);
+		model.addAttribute("end", this.nhatros.size()%10!=0?this.nhatros.size()/10+1:this.nhatros.size()/10);
 		return "index";
 	}
-
-	@RequestMapping(value = "index", params = { "search", "page", "view" }, method = RequestMethod.GET)
-	public String searchproduct(@PathParam("search") String search, @PathParam("page") Integer page,
-			@PathParam("view") String view, ModelMap model) {
-		String hql = "From Product p where p.name like '%" + search + "%'";
-		loadindex(model, hql, page, view);
-		model.addAttribute("search", search);
+	@RequestMapping(value="loc", method=RequestMethod.POST)
+	public String loc(ModelMap model, 
+			@RequestParam("diem") String d,
+			@RequestParam("soluot") String sl,
+			@RequestParam("songuoi") String sn,
+			@RequestParam("giathue") String gt,
+			RedirectAttributes re) {
+		try {
+			if(!d.isEmpty()) {
+				float diem = Float.parseFloat(d);
+				int dem=0;
+				while(true) {
+					for (Object nt:this.nhatros) {
+						NhaTro nhatro = (NhaTro) nt;
+						if(nhatro.getDiem()<diem) {
+							this.nhatros.remove(nt);
+							break;
+						} else dem++;
+					}if(dem==this.nhatros.size()) break;
+					else dem=0;
+				}
+			}
+			if(!sl.isEmpty()) {
+				int soluot = Integer.parseInt(sl), dem=0;
+				while(true) {
+					for (Object nt:this.nhatros) {
+						NhaTro nhatro = (NhaTro) nt;
+						if(nhatro.getSoLuot()<soluot) {
+							this.nhatros.remove(nt);
+							break;
+						}else dem++;
+					}if(dem==this.nhatros.size()) break;
+					else dem=0;
+				}
+			}
+			if(!sn.isEmpty()) {
+				int songuoi = Integer.parseInt(sn), dem=0;
+				while(true) {
+					for (Object nt:this.nhatros) {
+						NhaTro nhatro = (NhaTro) nt;
+						if(nhatro.getSoNguoiTrenPhong()<songuoi) {
+							this.nhatros.remove(nt);
+							break;
+						}else dem++;
+					}if(dem==this.nhatros.size()) break;
+					else dem=0;
+				}
+			}
+			if(!gt.isEmpty()) {
+				BigDecimal giathue = new BigDecimal(gt);
+				int dem=0;
+				while(true) {
+					for (Object nt:this.nhatros) {
+						NhaTro nhatro = (NhaTro) nt;
+						if(nhatro.getTienThue().compareTo(giathue)>0) {
+							this.nhatros.remove(nt);
+							break;
+						}else dem++;
+					}if(dem==this.nhatros.size()) break;
+					else dem=0;
+				}
+			}
+			model.addAttribute("nhatros", nhatros);
+			model.addAttribute("page", 1);
+			model.addAttribute("end", nhatros.size()%10!=0?nhatros.size()/10+1:nhatros.size()/10);
+		}catch(Exception e) {
+			re.addFlashAttribute("message", "Không thể lọc ! " + e);
+			return "redirect:index.htm";
+		}
 		return "index";
 	}
-
-	@RequestMapping(value = "index", params = { "page", "view", "brand" }, method = RequestMethod.GET)
-	public String indexbrand(ModelMap model, @PathParam("brand") String brand, @PathParam("page") Integer page,
-			@PathParam("view") String view) {
-		String hql = String.format("FROM Product p where p.brand.id=%s", brand);
-		loadindex(model, hql, 1, view);
-		model.addAttribute("brand", brand);
-		return "index";
-	}
-
-	@RequestMapping(value = "index", params = { "page", "view", "cate" }, method = RequestMethod.GET)
-	public String indexcate(ModelMap model, @PathParam("cate") String cate, @PathParam("page") Integer page,
-			@PathParam("view") String view) {
-		String hql = String.format("FROM Product p where p.category.id=%s", cate);
-		loadindex(model, hql, 1, view);
-		model.addAttribute("cate", cate);
-		return "index";
-	}
-//	@RequestMapping(value = "brand/{id}", method = RequestMethod.GET)
-//	public String indexbrand(ModelMap model, @PathVariable("id") String id) {
-//		String hql = String.format("FROM Product p where p.brand.id=%s", id);
-//		loadindex(model, hql, 1, "grid");
-//		return "index";
-//	}
-//
-//	@RequestMapping(value = "category/{id}", method = RequestMethod.GET)
-//	public String indexcate(ModelMap model, @PathVariable("id") String id) {
-//		String hql = String.format("FROM Product p where p.category.id=%s", id);
-//		loadindex(model, hql, 1, "grid");
-//		return "index";
-//	}
 }

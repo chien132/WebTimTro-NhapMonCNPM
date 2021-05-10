@@ -1,11 +1,11 @@
 package ptithcm.entity;
 
+import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.Date;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -38,10 +38,11 @@ public class NhaTro {
 	private int soNguoiTrenPhong;
 	private int soPhongCoSan;
 	private float dienTich;
-	private int tienCoc;
-	private int tienThue;
+	private BigDecimal tienCoc;
+	private BigDecimal tienThue;
 	private String moTa;
 	private float diem;
+	private int tinhtrang;
 	@Temporal(TemporalType.DATE)
 //	@DateTimeFormat(pattern = "dd/MM/yyyy")
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
@@ -50,8 +51,6 @@ public class NhaTro {
 	@LazyCollection(LazyCollectionOption.FALSE)
 	@OneToMany(mappedBy = "nhaTro")
 	private Collection<LichHen> lichHen;
-	
-	
 	
 	public Collection<LichHen> getLichHen() {
 		return lichHen;
@@ -107,16 +106,17 @@ public class NhaTro {
 	public void setDienTich(float dienTich) {
 		this.dienTich = dienTich;
 	}
-	public int getTienCoc() {
+	
+	public BigDecimal getTienCoc() {
 		return tienCoc;
 	}
-	public void setTienCoc(int tienCoc) {
+	public void setTienCoc(BigDecimal tienCoc) {
 		this.tienCoc = tienCoc;
 	}
-	public int getTienThue() {
+	public BigDecimal getTienThue() {
 		return tienThue;
 	}
-	public void setTienThue(int tienThue) {
+	public void setTienThue(BigDecimal tienThue) {
 		this.tienThue = tienThue;
 	}
 	public String getMoTa() {
@@ -137,7 +137,35 @@ public class NhaTro {
 	public void setNgayThem(Date ngayThem) {
 		this.ngayThem = ngayThem;
 	}
-
-	
-	
+	public int getTinhtrang() {
+		return tinhtrang;
+	}
+	public void setTinhtrang(int tinhtrang) {
+		this.tinhtrang = tinhtrang;
+	}
+	public int getSoLuot() {
+		int soLuot = 0;
+		for (LichHen lan:this.getLichHen()) {
+			if(lan.getDongy()) soLuot++;
+		}
+		return soLuot;
+	}
+	public String getProvinceName() {
+		return this.getDiachi().getWard().getDistrict().getProvince().getName();
+	}
+	public String getDistrictName() {
+		return this.getDiachi().getWard().getDistrict().getName();
+	}
+	public String getWardName() {
+		return this.getDiachi().getWard().getName();
+	}
+	public int getProvinceId() {
+		return this.getDiachi().getWard().getDistrict().getProvince().getId();
+	}
+	public int getDistrictId() {
+		return this.getDiachi().getWard().getDistrict().getId();
+	}
+	public int getWardId() {
+		return this.getDiachi().getWard().getId();
+	}
 }

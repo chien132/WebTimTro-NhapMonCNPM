@@ -15,9 +15,6 @@ public class DiaChi {
 	private String diaChi;
 	
 	@OneToOne(mappedBy = "diachi")
-	private Truong truong;
-	
-	@OneToOne(mappedBy = "diachi")
 	private NhaTro nhaTro;
 	
 	@ManyToOne @JoinColumn(name = "idward")
@@ -37,14 +34,6 @@ public class DiaChi {
 
 	public void setDiaChi(String diaChi) {
 		this.diaChi = diaChi;
-	}
-
-	public Truong getTruong() {
-		return truong;
-	}
-
-	public void setTruong(Truong truong) {
-		this.truong = truong;
 	}
 
 	public NhaTro getNhaTro() {

@@ -4,7 +4,6 @@ import java.util.Collection;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -18,7 +17,7 @@ import org.hibernate.annotations.LazyCollectionOption;
 
 @Entity
 @Table(name = "khachthue")
-public class KhachThue {
+public class KhachThue implements Comparable<KhachThue>{
 	@Id @GeneratedValue
 	private int id;
 	@ManyToOne @JoinColumn(name = "idtruong")
@@ -89,6 +88,14 @@ public class KhachThue {
 	public void setLichHen(Collection<LichHen> lichHen) {
 		this.lichHen = lichHen;
 	}
-	
-	
+
+	@Override
+	public int compareTo(KhachThue o) {
+		// TODO Auto-generated method stub
+		int diem = 0;
+		if(o.getNamSinh()-2 < this.getNamSinh() && this.getNamSinh() < o.getNamSinh()+2) diem++;
+		if(o.getTruong()==this.getTruong()) diem++;
+		if(o.getQueQuan()==this.getQueQuan()) diem++;
+		return diem;
+	}
 }

@@ -44,4 +44,15 @@ public class Role {
 		this.accounts = accounts;
 	}
 
+	public Role(int id, String name, Collection<Account> accounts) {
+		super();
+		this.id = id;
+		this.name = name;
+		this.accounts = accounts;
+	}
+
+	public Role() {
+		super();
+	}
+	
 }

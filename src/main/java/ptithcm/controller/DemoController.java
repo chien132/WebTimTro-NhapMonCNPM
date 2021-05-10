@@ -52,5 +52,4 @@ public class DemoController {
 		Gson gson = new Gson();
 		return gson.toJson(WardService.findByDistrict(id, factory));
 	}
-
 }
