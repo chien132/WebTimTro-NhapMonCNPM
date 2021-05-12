@@ -1,6 +1,5 @@
 package ptithcm.controller;
 
-
 import java.nio.file.Files;
 
 import java.nio.file.Path;
@@ -50,13 +49,13 @@ public class AccountController {
 		List<Object> list = query.list();
 		return list;
 	}
-	
+
 	public static boolean isContainSpecialWord(String str) {
-		Pattern VALID_INPUT_REGEX = Pattern.compile("[$&+,:;=\\\\\\\\?@#|/'<>.^*()%!-]",
-				Pattern.CASE_INSENSITIVE);
+		Pattern VALID_INPUT_REGEX = Pattern.compile("[$&+,:;=\\\\\\\\?@#|/'<>.^*()%!-]", Pattern.CASE_INSENSITIVE);
 		Matcher matcher = VALID_INPUT_REGEX.matcher(str);
 		return matcher.find();
 	}
+
 	@RequestMapping(value = "login", method = RequestMethod.GET)
 	public String login(ModelMap model) {
 		model.addAttribute("account", new Account());
@@ -90,13 +89,21 @@ public class AccountController {
 			List<Account> list = query.list();
 			if (!list.isEmpty()) {
 				System.out.println(list.get(0).getRole().getName());
-				
-				if (list.get(0).getChuTro()!=null) {
+
+				if (list.get(0).getChuTro() != null) {
 					httpSession.setAttribute("username", list.get(0).getUsername());
+					httpSession.setAttribute("account", list.get(0));
 					return "redirect:/chutro/index.htm";
+				} else if (list.get(0).getKhachThue() != null) {
+
+					httpSession.setAttribute("username", list.get(0).getUsername());
+					httpSession.setAttribute("account", list.get(0));
+					return "redirect:/khachthue/index.htm";
 				}
+
 				httpSession.setAttribute("username", list.get(0).getUsername());
-				return "redirect:/khachthue/index.htm";
+				httpSession.setAttribute("account", list.get(0));
+				return "redirect:/admin/index.htm";
 
 			} else {
 				errors.rejectValue("username", "account", "Username of password is incorrect !");
@@ -109,6 +116,7 @@ public class AccountController {
 	@RequestMapping("logout")
 	public String logout(ModelMap model, HttpSession session) {
 		session.removeAttribute("username");
+		session.removeAttribute("account");
 		return "redirect:/index.htm";
 	}
 
@@ -119,21 +127,22 @@ public class AccountController {
 	}
 
 	@RequestMapping(value = "register", method = RequestMethod.POST)
-	public String register(ModelMap model, @ModelAttribute("account") Account user, BindingResult errors, HttpSession httpSession, HttpServletRequest request) {
+	public String register(ModelMap model, @ModelAttribute("account") Account user, BindingResult errors,
+			HttpSession httpSession, HttpServletRequest request) {
 		user.setUsername(user.getUsername().trim());
 		user.setPassword(user.getPassword().trim().split(",")[0]);
-		
+
 		user.setCmnd(user.getCmnd().trim());
 		user.setEmail(user.getEmail());
 		user.setDienThoai(user.getDienThoai().trim());
 		user.setNgayDangKy(new Date());
-		if(request.getParameter("roles").isEmpty()) {
+		if (request.getParameter("roles").isEmpty()) {
 			errors.rejectValue("email", "Please enter your role !");
-		}else {
+		} else {
 			Session sessions = factory.getCurrentSession();
 			Role role = (Role) sessions.get(Role.class, Integer.parseInt(request.getParameter("roles")));
 			user.setRole(role);
-		}	
+		}
 		if (user.getUsername().isEmpty()) {
 			errors.rejectValue("username", "account", "Please enter your username !");
 		} else if (user.getUsername().contains(" ")) {
@@ -165,8 +174,7 @@ public class AccountController {
 			errors.rejectValue("dienThoai", "account", "Please enter your phone number !");
 		}
 		if (!user.getDienThoai().isEmpty()) {
-			Pattern VALID_ID_NUMBER_REGEX = Pattern.compile("([0-9]{9,12})\\b",
-					Pattern.CASE_INSENSITIVE);
+			Pattern VALID_ID_NUMBER_REGEX = Pattern.compile("([0-9]{9,12})\\b", Pattern.CASE_INSENSITIVE);
 			Matcher matcher = VALID_ID_NUMBER_REGEX.matcher(user.getDienThoai());
 			if (!matcher.find()) {
 				errors.rejectValue("cmnd", "account", "Please enter a valid phone number !");
@@ -174,20 +182,20 @@ public class AccountController {
 		} else {
 			errors.rejectValue("cmnd", "account", "Please enter your phone number !");
 		}
-		
+
 		if (!errors.hasErrors()) {
 			Session session = factory.getCurrentSession();
 			String hql = String.format("from Account where username='%s'", user.getUsername());
 			Query query = session.createQuery(hql);
 			List<Account> list = query.list();
-			if (list.isEmpty()) {				
+			if (list.isEmpty()) {
 				Session session2 = factory.openSession();
 				Transaction t = session2.beginTransaction();
 				try {
 					Path from = Paths.get("resouce/images/avatar/user-default.png");
 					Path to = Paths.get("resouce/images/avatar/" + user.getUsername() + ".png");
 					Files.copy(from, to);
-					switch(Integer.parseInt(request.getParameter("roles"))){
+					switch (Integer.parseInt(request.getParameter("roles"))) {
 					case 1: {
 						KhachThue khachThue = new KhachThue();
 						khachThue.setAccount(user);
@@ -207,7 +215,8 @@ public class AccountController {
 					}
 					}
 					t.commit();
-					model.addAttribute("message", "<script>alert('Tài khoản của bạn đã được tạo thành công');</script>");
+					model.addAttribute("message",
+							"<script>alert('Tài khoản của bạn đã được tạo thành công');</script>");
 					httpSession.setAttribute("account", user);
 					return "redirect:/login.htm";
 				} catch (Exception e) {
@@ -231,6 +240,7 @@ public class AccountController {
 		model.addAttribute("account", new Account());
 		return "password";
 	}
+
 	@RequestMapping(value = "password", method = RequestMethod.POST)
 	public String forgotpassword(ModelMap model, @ModelAttribute("account") Account user, BindingResult errors) {
 		user.setUsername(user.getUsername().trim());
@@ -250,48 +260,50 @@ public class AccountController {
 		} else {
 			errors.rejectValue("email", "account", "Please enter your email !");
 		}
-		
-		if(!errors.hasErrors()) {
-		String hql = String.format("from Account where username = '%s' and email='%s'", user.getUsername(), user.getEmail());
-		List<Object> list = getList(hql);
-		if (list.isEmpty()) {
-			errors.rejectValue("email", "account", "No account have this email!");
-			return "password";
-		} else {
-			try {
-				String body = "This is your account infomation: \n";
-				for (int i = 0; i < list.size(); i++) {
-					Account u = (Account) list.get(0);
 
-					body += "Username: " + u.getUsername() + "\nEmail: " + u.getEmail() + "\nPassword: "
-							+ u.getPassword() + "\n\n";
-				}
+		if (!errors.hasErrors()) {
+			String hql = String.format("from Account where username = '%s' and email='%s'", user.getUsername(),
+					user.getEmail());
+			List<Object> list = getList(hql);
+			if (list.isEmpty()) {
+				errors.rejectValue("email", "account", "No account have this email!");
+				return "password";
+			} else {
+				try {
+					String body = "This is your account infomation: \n";
+					for (int i = 0; i < list.size(); i++) {
+						Account u = (Account) list.get(0);
+
+						body += "Username: " + u.getUsername() + "\nEmail: " + u.getEmail() + "\nPassword: "
+								+ u.getPassword() + "\n\n";
+					}
 //				System.out.println(body);
-				// String from = "XGear - PC & Laptop Gaming";
-				MimeMessage mail = mailer.createMimeMessage();
+					// String from = "XGear - PC & Laptop Gaming";
+					MimeMessage mail = mailer.createMimeMessage();
 
-				MimeMessageHelper helper = new MimeMessageHelper(mail);
-				// helper.setFrom(from, from);
-				helper.setTo(user.getEmail());
-				// helper.setReplyTo(from,from);
-				helper.setSubject("Forgot Password");
-				helper.setText(body, true);
+					MimeMessageHelper helper = new MimeMessageHelper(mail);
+					// helper.setFrom(from, from);
+					helper.setTo(user.getEmail());
+					// helper.setReplyTo(from,from);
+					helper.setSubject("Forgot Password");
+					helper.setText(body, true);
 
-				mailer.send(mail);
-			} catch (Exception e) {
-				model.addAttribute("message", e);
+					mailer.send(mail);
+				} catch (Exception e) {
+					model.addAttribute("message", e);
+				}
+				model.addAttribute("message", "We have sent the password to your email. ");
 			}
-			model.addAttribute("message", "We have sent the password to your email. ");
 		}
-	}
 		return "password";
 	}
-	@RequestMapping(value="account/{username}", method=RequestMethod.GET)
+
+	@RequestMapping(value = "account/{username}", method = RequestMethod.GET)
 	public String update(ModelMap model, @PathVariable("username") String username) {
 		Session session = factory.getCurrentSession();
 		Account user = (Account) session.get(Account.class, username);
 		model.addAttribute("account", user);
 		return "account";
 	}
-	
+
 }

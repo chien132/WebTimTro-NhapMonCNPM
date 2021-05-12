@@ -1,0 +1,102 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html>
+<head>
+<base href="${pageContext.servletContext.contextPath}/">
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta content="initial-scale=1, minimum-scale=1, width=device-width"
+	name="viewport">
+<meta name="robots" content="all,follow">
+<title>Admin</title>
+<link rel="icon" href="resources/images/avatar/admin-avt.png" sizes="32x32">
+<!-- inject:css -->
+<link rel="stylesheet"
+	href="resources/vendors/fomantic-ui/semantic.min.css">
+<link rel="stylesheet" href="resources/css/main.css">
+<!-- endinject -->
+<!-- datatables:css -->
+<link rel="stylesheet"
+	href="resources/vendors/datatables.net/datatables.net-se/css/dataTables.semanticui.min.css">
+<link rel="stylesheet"
+	href="resources/vendors/datatables.net/datatables.net-responsive-se/css/responsive.semanticui.min.css">
+<link rel="stylesheet"
+	href="resources/vendors/datatables.net/datatables.net-buttons-se/css/buttons.semanticui.min.css">
+<!-- endinject -->
+</head>
+<body>
+<div class="row">
+			<div class="ui grid">
+				<!-- BEGIN NAVBAR -->
+				<div class="computer only row">
+					<div class="column">
+						<div class="ui top fixed menu navcolor">
+							<!-- <div class="item">
+								<img src="resources/images/avatar/admin-avt.png" alt="SimpleIU">
+							</div> -->
+							<div class="left menu">
+								<div class="nav item">
+									<strong class="navtext">Admin Table</strong>
+								</div>
+							</div>
+							<div
+								class="ui top pointing dropdown admindropdown link item right">
+								<img class="imgrad" src="resources/images/avatar/admin-avt.png"
+									alt=""> <span class="clear navtext"><strong>${username}</strong></span>
+								<i class="dropdown icon navtext"></i>
+								<div class="menu">
+									<!-- <div class="item">
+										<p>
+											<i class="settings icon"></i>Account Setting
+										</p>
+									</div> -->
+									<div class="item">
+										<p>
+											<i class="sign out alternate icon"></i>Logout
+										</p>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<!-- BEGIN SIDEBAR -->
+				<div class="computer only row">
+					<div class="left floated three wide computer column"
+						id="computersidebar" style="width: 15% !important;">
+						<div class="ui vertical fluid menu scrollable" id="simplefluid">
+							<div class="clearsidebar"></div>
+							<div class="item">
+								<img src="resources/images/avatar/admin-avt.png"
+									id="sidebar-image">
+							</div>
+							<a class="item" href="index.html"><i class="home icon"></i>Dashboard</a>
+							<a class="item" href="table.html"><i class="table icon"></i>
+								Tài khoản</a> <a class="item" href="table.html"><i
+								class="table icon"></i> Chủ trọ</a> <a class="item"
+								href="table.html"><i class="table icon"></i> Khách thuê</a> <a
+								class="item" href="table.html"><i class="table icon"></i>
+								Bài đăng</a>
+
+							<!-- <div class="ui item">
+								<div class="ui fluid selection dropdown moredropdown">
+									<div class="text">Menu</div>
+									<i class="dropdown icon"></i>
+									<div class="menu">
+										<p class="item">Choice 1</p>
+										<p class="item">Choice 2</p>
+									</div>
+								</div> 
+							</div> -->
+
+						</div>
+					</div>
+				</div>
+				<!-- END SIDEBAR -->
+
+			</div>
+		</div>
+</body>
+</html>
