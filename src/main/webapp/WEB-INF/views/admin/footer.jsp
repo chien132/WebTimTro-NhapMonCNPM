@@ -37,7 +37,7 @@
 		$('.message .close').on('click', function() {
 			$(this).closest('.message').transition('fade');
 		});
-		/* // - DATATABLES
+		 // - DATATABLES
 		$(document).ready(function() {
 			$('#mytable').DataTable();
 		});
@@ -47,7 +47,7 @@
 		});
 		table.buttons().container().appendTo(
 				$('div.eight.column:eq(0)', table.table()
-						.container())); */
+						.container())); 
 	});
 </script>
 </body>

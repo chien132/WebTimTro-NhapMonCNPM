@@ -4,6 +4,7 @@ import java.util.Collection;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -32,6 +33,20 @@ public class KhachThue implements Comparable<KhachThue>{
 	@LazyCollection(LazyCollectionOption.FALSE)
 	@OneToMany(mappedBy = "khachThue")
 	private Collection<LichHen> lichHen;
+	
+	@LazyCollection(LazyCollectionOption.FALSE)
+	@OneToMany(mappedBy = "khachThue")
+	private Collection<Comment> comments;
+	
+	
+
+	public Collection<Comment> getComments() {
+		return comments;
+	}
+
+	public void setComments(Collection<Comment> comments) {
+		this.comments = comments;
+	}
 
 	public int getId() {
 		return id;

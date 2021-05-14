@@ -28,6 +28,10 @@ public class ChuTro {
 	@OneToMany(mappedBy = "chuTro")
 	private Collection<NhaTro> nhaTro;
 
+	public int getSLNhaTro() {
+		return nhaTro.size();
+	}
+	
 	public int getId() {
 		return id;
 	}

@@ -70,6 +70,19 @@ public class KhachThueController {
 		Matcher matcher = VALID_INPUT_REGEX.matcher(str);
 		return matcher.find();
 	}
+	public void sort(List<Object> nhatros){
+		for(int i=0; i<nhatros.size()-1;i++) {
+			for(int j=0; j<nhatros.size()-1-i;j++) {
+				NhaTro nhatroj = (NhaTro) nhatros.get(j);
+				NhaTro nhatrojj = (NhaTro) nhatros.get(j+1);
+				if(nhatroj.getDiem()<nhatrojj.getDiem()) {
+					NhaTro temp = nhatroj;
+					nhatros.set(j, nhatrojj);
+					nhatros.set(j+1, temp);		
+				}
+			}
+		}
+	}
 	@ModelAttribute("provinces")
 	public List<Province> getProvinces(){
 		return ProvinceService.findAll(factory);
@@ -135,9 +148,9 @@ public class KhachThueController {
 	@RequestMapping(value="index")
 	public String index(ModelMap model) {
 		String hql="FROM NhaTro "
-				+ "WHERE tinhtrang=1 "
-				+ "ORDER BY diem DESC";
+				+ "WHERE tinhtrang=1 ";
 		List<Object> listNhaTro = getList(hql);
+		sort(listNhaTro);
 		if(listNhaTro.size()+10<page*10) {
 			model.addAttribute("message", "Không tìm thấy trang !");
 		}else {
@@ -165,9 +178,9 @@ public class KhachThueController {
 			@RequestParam("district") String d, 
 			@RequestParam("ward") String w) {
 		String hql = "FROM NhaTro "
-				+ "WHERE tinhtrang = 1 "
-				+ "ORDER BY diem DESC";
+				+ "WHERE tinhtrang = 1 ";
 		List<Object> listNhaTro = getList(hql);
+		sort(listNhaTro);
 		try {
 			int province = Integer.parseInt(p);
 			int district = Integer.parseInt(d);
@@ -215,9 +228,9 @@ public class KhachThueController {
 			@RequestParam("province") String p, 
 			@RequestParam("district") String d) {
 		String hql = "FROM NhaTro "
-				+ "WHERE tinhtrang = 1 "
-				+ "ORDER BY diem DESC";
+				+ "WHERE tinhtrang = 1 ";
 		List<Object> listNhaTro = getList(hql);
+		sort(listNhaTro);
 		try {
 			int province = Integer.parseInt(p);
 			int district = Integer.parseInt(d);
@@ -263,9 +276,9 @@ public class KhachThueController {
 	public String timkiem(ModelMap model,
 			@RequestParam("province") String p) {
 		String hql = "FROM NhaTro "
-				+ "WHERE tinhtrang = 1 "
-				+ "ORDER BY diem DESC";
+				+ "WHERE tinhtrang = 1 ";
 		List<Object> listNhaTro = getList(hql);
+		sort(listNhaTro);
 		try {
 			int province = Integer.parseInt(p);
 			if(province!=0) {

@@ -19,8 +19,8 @@
 					<div
 						class="fifteen wide computer sixteen wide phone centered column">
 						<h2>
-							<a href="admin/account.htm"> <i class="table icon"></i> User
-								Table
+							<a href="admin/account.htm"> <i class="table icon"></i> Quản
+								lý tài khoản
 							</a>
 						</h2>
 						<div class="ui divider"></div>
@@ -128,17 +128,17 @@
 										<c:if test="${action=='add'}">
 											<div class="ui form">
 												<div class="grouped fields">
-													<label style="float: left;">Mục đích của bạn là gì?</label>
+													<label style="float: left;">Loại tài khoản</label>
 													<div class="field" style="float: left;">
 														<div class="ui radio checkbox">
 															<input type="radio" checked="checked" name="roles"
-																value="1"> <label>Tìm trọ</label>
+																value="2"> <label>Khách thuê</label>
 														</div>
 													</div>
 													<div class="field" style="float: left;">
 														<div class="ui radio checkbox">
-															<input type="radio" name="roles" value="2"> <label>Cho
-																thuê trọ</label>
+															<input type="radio" name="roles" value="1"> <label>Chủ
+																trọ</label>
 														</div>
 													</div>
 												</div>

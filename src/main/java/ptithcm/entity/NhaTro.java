@@ -6,6 +6,7 @@ import java.util.Date;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -41,7 +42,6 @@ public class NhaTro {
 	private BigDecimal tienCoc;
 	private BigDecimal tienThue;
 	private String moTa;
-	private float diem;
 	private int tinhtrang;
 	@Temporal(TemporalType.DATE)
 //	@DateTimeFormat(pattern = "dd/MM/yyyy")
@@ -52,6 +52,17 @@ public class NhaTro {
 	@OneToMany(mappedBy = "nhaTro")
 	private Collection<LichHen> lichHen;
 	
+	@LazyCollection(LazyCollectionOption.FALSE)
+	@OneToMany(mappedBy = "nhaTro")
+	private Collection<Comment> comments;
+	
+	
+	public Collection<Comment> getComment() {
+		return comments;
+	}
+	public void setComments(Collection<Comment> comments) {
+		this.comments = comments;
+	}
 	public Collection<LichHen> getLichHen() {
 		return lichHen;
 	}
@@ -126,11 +137,14 @@ public class NhaTro {
 		this.moTa = moTa;
 	}
 	public float getDiem() {
+		float diem=0;
+		for (Comment comment:this.getComment()) {
+			diem+=comment.getDiem();
+		}
+		diem=diem/this.getComment().size();
 		return diem;
 	}
-	public void setDiem(float diem) {
-		this.diem = diem;
-	}
+
 	public Date getNgayThem() {
 		return ngayThem;
 	}

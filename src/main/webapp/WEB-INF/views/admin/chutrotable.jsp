@@ -18,12 +18,12 @@
 					<div
 						class="fifteen wide computer sixteen wide phone centered column">
 						<h2>
-							<i class="table icon"></i> Quản lý tài khoản
+							<i class="table icon"></i> Quản lý chủ trọ
 						</h2>
 						<div class="ui divider"></div>
 						<div class="ui grid">
 							<div
-								class="sixteen wide computer sixteen wide phone centered column">
+								class="sixteen wide computer sixteen wide phone left floated column">
 								<c:if test="${message!=null}">
 									<div class="ui positive message">
 										<i class="close icon"></i>
@@ -44,38 +44,29 @@
 									<br> <br>
 									<table id="mytable"
 										class="ui celled table responsive nowrap unstackable"
-										style="width: 100%">
+										style="width: 100%;text-align: center;">
 										<thead style="text-align: center;">
 											<tr>
+												<th>ID</th>
 												<th>Avatar</th>
 												<th>Username</th>
-												<th>Họ tên</th>
-												<th>CMND</th>
-												<th>Điện thoại</th>
-												<th>Email</th>
-												<th>Role</th>
-												<th>Ngày đăng ký</th>
+												<th>Phòng trọ</th>
 												<th>Action</th>
 											</tr>
 										</thead>
 										<tbody>
-											<c:forEach var="i" items="${accounts}">
+											<c:forEach var="i" items="${chutros}">
 												<tr>
-													<td><img style="max-width: 33px;" alt=""
-														src="resources/images/avatar/${i.username}.png"></td>
-													<td>${i.username}</td>
-													<td>${i.hoTen}</td>
-													<td>${i.cmnd}</td>
-													<td>${i.dienThoai}</td>
-													<td>${i.email}</td>
-													<td>${i.role.name}<c:if test="${i.role.id==1}"> #${i.chuTro.id}</c:if>
-														<c:if test="${i.role.id==2}"> #${i.khachThue.id}</c:if></td>
-													<td>${i.ngayDangKy}.</td>
+													<td>${i.id}</td>
+													<td><img style="max-width: 45px;" alt=""
+														src="resources/images/avatar/${i.account.username}.png"></td>
+													<td>${i.account.username}</td>
+													<td>${i.SLNhaTro}</td>
 													<td style="text-align: center;"><a
-														href="admin/editaccount/${i.username}.htm"><button
+														href="admin/editaccount/${i.account.username}.htm"><button
 																class="positive ui button"
 																style="color: white; font-size: 13px">Sửa</button></a>
-														<a href="admin/deleteaccount/${i.username}.htm"><button
+														<a href="admin/deleteaccount/${i.account.username}.htm"><button
 																class="negative ui button"
 																style="color: white; font-size: 13px">Xóa</button></a></td>
 												</tr>

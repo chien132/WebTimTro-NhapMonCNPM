@@ -64,13 +64,26 @@ public class HomeController {
 		List<Object> list = query.list();
 		return list;
 	}
+	public void sort(List<Object> nhatros){
+		for(int i=0; i<nhatros.size()-1;i++) {
+			for(int j=0; j<nhatros.size()-1-i;j++) {
+				NhaTro nhatroj = (NhaTro) nhatros.get(j);
+				NhaTro nhatrojj = (NhaTro) nhatros.get(j+1);
+				if(nhatroj.getDiem()<nhatrojj.getDiem()) {
+					NhaTro temp = nhatroj;
+					nhatros.set(j, nhatrojj);
+					nhatros.set(j+1, temp);		
+				}
+			}
+		}
+	}
 
 	@RequestMapping("index")
 	public String index(ModelMap model, HttpSession httpSession) {
 		String hql="FROM NhaTro "
-				+ "WHERE tinhtrang=1 "
-				+ "ORDER BY diem DESC";
+				+ "WHERE tinhtrang=1 ";
 		List<Object> listNhaTro = getList(hql);
+		sort(listNhaTro);
 		if(listNhaTro.size()+10<page*10) {
 			model.addAttribute("message", "Không tìm thấy trang !");
 		}else {
@@ -92,9 +105,9 @@ public class HomeController {
 			@RequestParam("district") String d, 
 			@RequestParam("ward") String w) {
 		String hql = "FROM NhaTro "
-				+ "WHERE tinhtrang = 1 "
-				+ "ORDER BY diem DESC";
+				+ "WHERE tinhtrang = 1 ";
 		List<Object> listNhaTro = getList(hql);
+		sort(listNhaTro);
 		try {
 			int province = Integer.parseInt(p);
 			int district = Integer.parseInt(d);
@@ -142,9 +155,9 @@ public class HomeController {
 			@RequestParam("province") String p, 
 			@RequestParam("district") String d) {
 		String hql = "FROM NhaTro "
-				+ "WHERE tinhtrang = 1 "
-				+ "ORDER BY diem DESC";
+				+ "WHERE tinhtrang = 1 ";
 		List<Object> listNhaTro = getList(hql);
+		sort(listNhaTro);
 		try {
 			int province = Integer.parseInt(p);
 			int district = Integer.parseInt(d);
@@ -190,9 +203,9 @@ public class HomeController {
 	public String timkiem(ModelMap model,
 			@RequestParam("province") String p) {
 		String hql = "FROM NhaTro "
-				+ "WHERE tinhtrang = 1 "
-				+ "ORDER BY diem DESC";
+				+ "WHERE tinhtrang = 1 ";
 		List<Object> listNhaTro = getList(hql);
+		sort(listNhaTro);
 		try {
 			int province = Integer.parseInt(p);
 			if(province!=0) {
