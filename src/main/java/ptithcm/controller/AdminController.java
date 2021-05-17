@@ -358,6 +358,13 @@ public class AdminController {
 				}
 				session.delete(account);
 				t.commit();
+				File avatar = new File(
+						context.getRealPath("resources/images/avatar/" + account.getUsername() + ".png"));
+				if (avatar.delete()) {
+					System.out.println("Deleted the file: " + avatar.getName());
+				} else {
+					System.out.println("Failed to delete the file.");
+				}
 				re.addFlashAttribute("message", "Đã xóa " + username);
 			} catch (Exception e) {
 				t.rollback();
@@ -664,11 +671,11 @@ public class AdminController {
 		model.addAttribute("chu", chu);
 		return "admin/nhatrotable";
 	}
-	
+
 	@RequestMapping("test")
-	public String test(ModelMap model,HttpSession httpSession) {
+	public String test(ModelMap model, HttpSession httpSession) {
 		model.addAttribute("account", new Account());
-		model.addAttribute("provinces",httpSession.getAttribute("provinces"));
+		model.addAttribute("provinces", httpSession.getAttribute("provinces"));
 		return "admin/nhatroform";
 	}
 
