@@ -1,6 +1,8 @@
+<%@page import="ptithcm.entity.NhaTro"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@page import="java.util.List"%>
+<%@page import="ptithcm.entity.DiaChi"%>
 <%@page import="ptithcm.entity.Ward"%>
 <%@page import="ptithcm.entity.District"%>
 <%@page import="java.util.ArrayList"%>
@@ -13,11 +15,9 @@
 <head>
 <base href="${pageContext.servletContext.contextPath}/">
 <script src="resources/js/jquery-3.6.0.js" type="text/javascript"></script>
-<link rel="stylesheet" type="text/css"
-	href="resources/semantic/semantic.min.css">
+
 <script src="resources/semantic/semantic.min.js" type="text/javascript"></script>
-<link rel="stylesheet" type="text/css"
-	href="resources/semantic/semantic.css">
+
 <script src="resources/semantic/semantic.js" type="text/javascript"></script>
 </head>
 <body>
@@ -32,13 +32,13 @@
 					<div
 						class="fifteen wide computer sixteen wide phone centered column">
 						<h2>
-							<a href="admin/account.htm"> <i class="table icon"></i> Quản
-								lý bài đăng
+							<a href="admin/nhatro.htm?chu=${chu}"> <i class="table icon"></i>
+								Quản lý bài đăng
 							</a>
 						</h2>
 						<div class="ui divider"></div>
 						<div class="ui grid">
-							<div class="sixteen wide computer sixteen wide phone centered column">
+							<div class="ten wide computer sixteen wide phone centered column">
 								<c:if test="${message!=null}">
 									<div class="ui positive message">
 										<i class="close icon"></i>
@@ -57,132 +57,192 @@
 											<c:if test="${action=='add'}">Thêm bài đăng</c:if>
 											<c:if test="${action=='edit'}">Cập nhật bài đăng</c:if>
 										</h2>
-
-										<%-- <div class="field">
-											<label style="float: left;">Ảnh (2 ảnh)</label>
-											<div class="ui left input">
-												<!-- 	<i class="lock icon"></i> -->
-												<input name="photo" type="file" class="form-control" />
-											</div>
-										</div>
 										<div class="field">
-											<label style="float: left;">Tài khoản<b
-												style="color: red;">*</b></label>
+											<label style="float: left;">Tiêu đề <i
+												style="color: red;"> *</i>
+											</label>
 											<div class="ui left input">
-
-												<c:if test="${action=='edit'}">
-													<form:input path="username" value="${user.username}"
-														type="text" placeholder="Tài khoản" readonly="true" />
-												</c:if>
-												<c:if test="${action=='add'}">
-													<form:input path="username" value="${user.username}"
-														type="text" placeholder="Tài khoản" />
-												</c:if>
-												<i><form:errors style="color: red;font-size: 15px;"
-														path="username" /></i>
-											</div>
-										</div>
-
-										<div class="field">
-											<label style="float: left;">Mật khẩu<b
-												style="color: red;">*</b></label>
-											<div class="ui left input">
-												<!-- 	<i class="lock icon"></i> -->
-												<form:input path="password" value="${user.password}"
-													type="password" placeholder="Mật khẩu" />
+												<form:input path="tieuDe" value="" type="text" />
 												<form:errors style="color: red;font-size: 15px;"
-													path="password" />
+													path="tieuDe" />
 											</div>
 										</div>
+										<div class="ui three column grid">
+											<div class="column">
+												<div class="field">
+													<label for="chutro">Chủ trọ</label>
+													<div class="ui left input">
 
-										<div class="field">
-											<label style="float: left;">Họ tên <i
-												style="color: red;"> *</i>
-											</label>
-											<div class="ui left input">
-												<form:input path="hoTen" type="text" placeholder="Họ tên" />
-												<form:errors style="color: red;font-size: 15px;"
-													path="hoTen" />
-											</div>
-										</div>
-
-										<div class="field">
-											<label style="float: left;">CMND <i
-												style="color: red;"> *</i>
-											</label>
-											<div class="ui left input">
-												<form:input path="cmnd" type="text" placeholder="CMND" />
-												<form:errors style="color: red;font-size: 15px;" path="cmnd" />
-											</div>
-										</div>
-
-										<div class="field">
-											<label style="float: left;">SĐT <i
-												style="color: red;"> *</i>
-											</label>
-											<div class="ui left input">
-												<form:input path="dienThoai" type="text" placeholder="SĐT" />
-												<form:errors style="color: red;font-size: 15px;"
-													path="dienThoai" />
-											</div>
-										</div>
-
-										<div class="field">
-											<label style="float: left;">Email <i
-												style="color: red;"> *</i>
-											</label>
-											<div class="ui left input">
-												<form:input path="email" value="${user.email}" type="email"
-													placeholder="Email address" />
-												<form:errors style="color: red;font-size: 15px;"
-													path="email" />
-											</div>
-										</div> --%>
-
-										<div class="field">
-											<label style="float: left;">Email <i
-												style="color: red;"> *</i>
-											</label>
-											<div class="ui left input">
-
-												<div class="ui equal width grid">
-													<div class="column">
-														<b>Tỉnh/Thành phố</b>
-													</div>
-													<div class="column">
-														<b>Quận/Huyện</b>
-													</div>
-													<div class="column">
-														<b>Xã/Phường</b>
-													</div>
-													<div class="equal width row">
-														<div class="column">
-															<select class="ui search dropdown" id="comboboxProvince"
-																name="province">
-																<option disabled="disabled">--Chọn tỉnh--</option>
-																<c:forEach var="p" items="${provinces}">
-																	<option value="${p.id}">${p.name}</option>
-																</c:forEach>
-															</select>
-														</div>
-														<div class="column">
-															<select class="ui search dropdown" id="comboboxDistrict"
-																name="district"><option disabled="disabled">--Chọn
-																	huyện--</option></select>
-														</div>
-														<div class="column">
-															<select class="ui search dropdown" id="comboboxWard"
-																name="ward"><option disabled="disabled">--Chọn
-																	xã--</option></select>
-														</div>
+														<c:if test="${action=='edit'}">
+															<form:input id="chutro" path="chuTro.account.username"
+																readonly="true" />
+														</c:if>
+														<c:if test="${action=='add'}">
+															<form:select id="chutro" path="chuTro" items="${chutros}"
+																itemLabel="account.username" itemValue="id" />
+														</c:if>
+														<i><form:errors style="color: red;font-size: 15px;"
+																path="chuTro" /></i>
 													</div>
 												</div>
+											</div>
+											<div class="column">
+												<label>Ảnh 1</label> <input name="photo1" type="file"
+													class="form-control" />
+											</div>
 
-
-
+											<div class="column">
+												<label>Ảnh 2</label> <input name="photo1" type="file"
+													class="form-control" />
 											</div>
 										</div>
-										<button class="ui fluid large teal submit button">
+
+
+
+										<div class="ui three column grid">
+											<div class="column">
+												<div class="field">
+													<label><b>Số phòng cho thuê</b> <i
+														style="color: red;"> *</i> </label>
+													<div class="ui left input">
+														<form:input path="soPhongChoThue" value="" type="number" />
+														<form:errors style="color: red;font-size: 15px;"
+															path="soPhongChoThue" />
+													</div>
+												</div>
+											</div>
+
+											<div class="column">
+												<div class="field">
+													<label><b>Số phòng có sẵn</b><i style="color: red;">
+															*</i> </label>
+													<div class="ui left input">
+														<form:input path="soPhongCoSan" value="" type="number" />
+														<form:errors style="color: red;font-size: 15px;"
+															path="soPhongCoSan" />
+													</div>
+												</div>
+											</div>
+											<div class="column">
+												<div class="field">
+													<label><b>Số người mỗi phòng</b><i
+														style="color: red;"> *</i> </label>
+													<div class="ui left input">
+														<form:input path="soNguoiTrenPhong" value="" type="number" />
+														<form:errors style="color: red;font-size: 15px;"
+															path="soNguoiTrenPhong" />
+													</div>
+												</div>
+											</div>
+										</div>
+										<div class="ui three column grid">
+											<div class="column">
+												<div class="field">
+													<label><b>Diện tích</b> <i style="color: red;">
+															*</i> </label>
+													<div class="ui left input">
+														<form:input path="dienTich" value="" type="number" />
+														<form:errors style="color: red;font-size: 15px;"
+															path="dienTich" />
+													</div>
+												</div>
+											</div>
+
+											<div class="column">
+												<div class="field">
+													<label><b>Tiền thuê</b><i style="color: red;">
+															*</i> </label>
+													<div class="ui left input">
+														<form:input path="tienThue" value="" type="number" />
+														<form:errors style="color: red;font-size: 15px;"
+															path="tienThue" />
+													</div>
+												</div>
+											</div>
+											<div class="column">
+												<div class="field">
+													<label><b>Tiền cọc</b><i style="color: red;"> *</i>
+													</label>
+													<div class="ui left input">
+														<form:input path="tienCoc" value="" type="number" />
+														<form:errors style="color: red;font-size: 15px;"
+															path="tienCoc" />
+													</div>
+												</div>
+											</div>
+										</div>
+										<div class="field">
+											<label style="float: left;">Mô tả<b
+												style="color: red;">*</b></label>
+											<div class="ui left input">
+												<!-- <i class="user icon"></i> -->
+												<form:textarea path="moTa" value="" type="text" />
+												<i><form:errors style="color: red;font-size: 15px;"
+														path="moTa" /></i>
+											</div>
+										</div>
+
+
+										<div class="field">
+											<label style="float: left;">Địa chỉ <i
+												style="color: red;"> *</i>
+											</label>
+											<div class="ui left input">
+												<form:input path="diachi.diaChi" value="" type="text" />
+												<form:errors style="color: red;font-size: 15px;"
+													path="diachi" />
+											</div>
+										</div>
+
+										<div class="ui three column grid">
+											<div class="column">
+												<div class="field">
+													<label><b>Tỉnh/Thành phố</b> <i style="color: red;">
+															*</i> </label>
+													<div class="ui left input">
+														<select class="ui search dropdown" id="comboboxProvince"
+															required="required" name="province">
+															<option disabled="disabled">--Chọn tỉnh--</option>
+															<c:forEach var="p" items="${provinces}">
+																<c:if test="${p.id==nhatro.diachi.ward.district.province.id}">
+																	<option value="${p.id}" selected="selected">${p.name}</option>
+																</c:if>
+																<c:if test="${p.id!=nhatro.diachi.ward.district.province.id}"><option value="${p.id}">${p.name}</option></c:if>
+															</c:forEach>
+														</select>
+														<form:errors style="color: red;font-size: 15px;" path="" />
+													</div>
+												</div>
+											</div>
+
+											<div class="column">
+												<div class="field">
+													<label><b>Quận/Huyện</b><i style="color: red;">
+															*</i> </label>
+													<div class="ui left input">
+														<select class="ui search dropdown" id="comboboxDistrict"
+															required="required" name="district"><option
+																disabled="disabled">--Chọn huyện--</option></select>
+														<form:errors style="color: red;font-size: 15px;" path="" />
+													</div>
+												</div>
+											</div>
+											<div class="column">
+												<div class="field">
+													<label><b>Xã/Phường</b><i style="color: red;">
+															*</i> </label>
+													<div class="ui left input">
+														<select class="ui search dropdown" id="comboboxWard"
+															required="required" name="ward"><option
+																disabled="disabled">--Chọn xã--</option></select>
+														<form:errors style="color: red;font-size: 15px;" path="" />
+													</div>
+												</div>
+											</div>
+										</div>
+
+										<button class="ui fluid large teal submit button"
+											id="filterButton" style="margin-top: 5vh;">
 											<c:if test="${action=='add'}">Thêm</c:if>
 											<c:if test="${action=='edit'}">Cập nhật</c:if>
 										</button>
@@ -209,7 +269,13 @@ let selected_ward = '';
 let list_provinces = [];
 
 init();
-document.getElementById("comboboxProvince").selectedIndex = "0";
+
+let preward ={};
+let predist ={};
+let preprov ={};
+var prepos=0;
+loadpre();
+console.log(preprov.name)
 
 $('#comboboxProvince').change(function () {
     var optionSelected = $(this).find("option:selected");
@@ -261,8 +327,9 @@ $('#comboboxWard').change(function () {
 
 $('#filterButton').click(function () {
 	console.log(selected_ward)
-	$('#result').html("<a href='" + selected_province.name + ".htm'>"  + selected_province.name +  " / " + "<a href='" + selected_district.name + ".htm'>"  + selected_district.name +  " / " + "<a href='" + selected_ward.name + ".htm'>"  + selected_ward.name)
 })
+
+
 
 function init() {
 	let province ={};
@@ -299,6 +366,35 @@ function init() {
    	<%}%>
    	
    
+}
+
+function loadpre() {
+	<%NhaTro nhaTro = (NhaTro) request.getAttribute("nhatro");%>
+	preward = {
+			id:<%=nhaTro.getDiachi().getWard().getId()%>,
+			name:"<%=nhaTro.getDiachi().getWard().getName()%>"
+	}
+	predist = {
+			id:<%=nhaTro.getDiachi().getWard().getDistrict().getId()%>,
+			name:"<%=nhaTro.getDiachi().getWard().getDistrict().getName()%>"
+	}
+	preprov = {
+			id:<%=nhaTro.getDiachi().getWard().getDistrict().getProvince().getId()%>,
+			name:"<%=nhaTro.getDiachi().getWard().getDistrict().getProvince().getName()%>"
+	}
+	
+	/* selected_province = list_provinces.find((p)=>{
+    	return p.id == preprov.id;
+    })  */
+    /* console.log(selected_province.id) */
+	for(let i = 0; i < list_provinces.length; i++) {
+		if (list_provinces[i].id==preprov.id) {
+    		console.log(preprov.id);
+    		prepos=i;
+    	}
+	}
+	document.getElementById("comboboxProvince").selectedIndex = prepos;
+	console.log('da set thanh '+prepos);
 }
 
 </script>

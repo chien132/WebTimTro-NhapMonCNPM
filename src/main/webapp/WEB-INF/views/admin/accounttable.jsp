@@ -31,17 +31,19 @@
 										<p>${message}</p>
 									</div>
 								</c:if>
-								<h4></h4>
+
 								<!-- BEGIN DATATABLE -->
+								<a href="admin/addaccount.htm"
+									style="font-size: 16px; color: white;">
+									<button class="ui green icon label button"
+										style="margin-right: 0; font-size: 16px;">
+										<i class="plus square outline icon"
+											style="padding-right: 0.5vw;"></i> Thêm
+									</button>
+								</a>
 								<div class="ui stacked segment rig">
-									<div
-										class="ui green icon label right floated compact segment stepper"
-										style="margin-right: 0; font-size: 12px;">
-										<label><a href="admin/addaccount.htm"
-											style="font-size: 16px; color: white;"><i
-												class="plus square outline icon"></i> Thêm</a></label>
-									</div>
-									<br> <br>
+
+
 									<table id="mytable"
 										class="ui celled table responsive nowrap unstackable"
 										style="width: 100%">
@@ -74,8 +76,8 @@
 													<td style="text-align: center;"><a
 														href="admin/editaccount/${i.username}.htm"><button
 																class="positive ui button"
-																style="color: white; font-size: 13px">Sửa</button></a>
-														<a href="admin/deleteaccount/${i.username}.htm"><button
+																style="color: white; font-size: 13px">Sửa</button></a> <a
+														href="admin/deleteaccount/${i.username}.htm"><button
 																class="negative ui button"
 																style="color: white; font-size: 13px">Xóa</button></a></td>
 												</tr>

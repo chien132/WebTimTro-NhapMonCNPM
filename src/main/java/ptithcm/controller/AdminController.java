@@ -672,15 +672,63 @@ public class AdminController {
 		return "admin/nhatrotable";
 	}
 
-	@RequestMapping("test")
-	public String test(ModelMap model, HttpSession httpSession) {
-		model.addAttribute("account", new Account());
-		model.addAttribute("provinces", httpSession.getAttribute("provinces"));
-		return "admin/nhatroform";
+//	@RequestMapping(value = "addnhatro", params = "chu")
+//	public String addnhatro(ModelMap model, HttpSession httpSession, @PathParam("chu") int chu) {
+//		model.addAttribute("nhatro", new NhaTro());
+//		model.addAttribute("action", "add");
+//		model.addAttribute("chu", chu);
+//		model.addAttribute("provinces", httpSession.getAttribute("provinces"));
+//		return "admin/nhatroform";
+//	}
+	@RequestMapping(value = "approve/{id}", params = "chu")
+	public String approve(ModelMap model, @PathParam("chu") int chu, @PathVariable("id") int id,
+			RedirectAttributes re) {
+		Session session = factory.openSession();
+		NhaTro nhaTro = (NhaTro) session.get(NhaTro.class, id);
+		nhaTro.setTinhtrang(1);
+
+		Transaction t = session.beginTransaction();
+		try {
+
+			session.update(nhaTro);
+			t.commit();
+			re.addFlashAttribute("message", "Đã duyệt!");
+		} catch (Exception e) {
+			t.rollback();
+			re.addFlashAttribute("message", "Lỗi rồi: " + e);
+		} finally {
+			session.close();
+		}
+		model.addAttribute("action", "add");
+		model.addAttribute("chu", chu);
+		return "redirect:/admin/nhatro.htm?chu=" + chu;
+	}
+
+	@RequestMapping(value = "refuse/{id}", params = "chu")
+	public String refuse(ModelMap model, @PathParam("chu") int chu, @PathVariable("id") int id, RedirectAttributes re) {
+		Session session = factory.openSession();
+		NhaTro nhaTro = (NhaTro) session.get(NhaTro.class, id);
+		nhaTro.setTinhtrang(-1);
+		Transaction t = session.beginTransaction();
+		try {
+
+			session.update(nhaTro);
+			t.commit();
+			re.addFlashAttribute("message", "Đã từ chối!");
+		} catch (Exception e) {
+			t.rollback();
+			re.addFlashAttribute("message", "Lỗi rồi: " + e);
+		} finally {
+			session.close();
+		}
+		model.addAttribute("action", "add");
+		model.addAttribute("chu", chu);
+		return "redirect:/admin/nhatro.htm?chu=" + chu;
 	}
 
 	@RequestMapping(value = "editnhatro/{id}", params = "chu", method = RequestMethod.GET)
-	public String editnhatro(ModelMap modelMap, @PathVariable("id") int id, @PathParam("chu") int chu) {
+	public String editnhatro(ModelMap modelMap, @PathVariable("id") int id, @PathParam("chu") int chu,
+			HttpSession httpSession) {
 		Session session = factory.getCurrentSession();
 		NhaTro nhaTro = (NhaTro) session.get(NhaTro.class, id);
 		modelMap.addAttribute("nhatro", nhaTro);
@@ -691,8 +739,16 @@ public class AdminController {
 		} else {
 			returnString = "admin/nhatro,htm?chu=" + chu;
 		}
+		modelMap.addAttribute("provinces", httpSession.getAttribute("provinces"));
 		modelMap.addAttribute("chu", chu);
 		return "admin/nhatroform";
+	}
+
+	@RequestMapping(value = "testt")
+	public String testt(ModelMap model) {
+
+		model.addAttribute("account", new Account());
+		return "admin/test";
 	}
 
 //	@RequestMapping(value = "editaccount", method = RequestMethod.POST)
