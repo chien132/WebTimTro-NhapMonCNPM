@@ -26,7 +26,6 @@ public class Account {
 	private String cmnd;
 	private String dienThoai;
 	private String email;
-	private String avatar;
 	@Temporal(TemporalType.DATE)
 //	@DateTimeFormat(pattern = "dd/MM/yyyy")
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
@@ -41,7 +40,8 @@ public class Account {
 	@OneToOne(mappedBy = "account")
 	private KhachThue khachThue;
 	
-	@ManyToOne @JoinColumn(name = "idrole")
+	@ManyToOne 
+	@JoinColumn(name = "idrole")
 	private Role role;
 
 	public String getUsername() {
@@ -92,15 +92,6 @@ public class Account {
 		this.email = email;
 	}
 
-	public String getAvatar() {
-		return avatar;
-	}
-
-	public void setAvatar(String avatar) {
-		this.avatar = avatar;
-	}
-
-
 	public Date getNgayDangKy() {
 		return ngayDangKy;
 	}
@@ -140,6 +131,5 @@ public class Account {
 	public void setRole(Role role) {
 		this.role = role;
 	}
-	
 	
 }

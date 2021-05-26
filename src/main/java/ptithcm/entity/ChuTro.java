@@ -4,7 +4,6 @@ import java.util.Collection;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -29,6 +28,10 @@ public class ChuTro {
 	@OneToMany(mappedBy = "chuTro")
 	private Collection<NhaTro> nhaTro;
 
+	public int getSLNhaTro() {
+		return nhaTro.size();
+	}
+	
 	public int getId() {
 		return id;
 	}

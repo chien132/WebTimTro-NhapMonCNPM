@@ -18,7 +18,7 @@ import org.hibernate.annotations.LazyCollectionOption;
 
 @Entity
 @Table(name = "khachthue")
-public class KhachThue {
+public class KhachThue implements Comparable<KhachThue>{
 	@Id @GeneratedValue
 	private int id;
 	@ManyToOne @JoinColumn(name = "idtruong")
@@ -33,6 +33,20 @@ public class KhachThue {
 	@LazyCollection(LazyCollectionOption.FALSE)
 	@OneToMany(mappedBy = "khachThue")
 	private Collection<LichHen> lichHen;
+	
+	@LazyCollection(LazyCollectionOption.FALSE)
+	@OneToMany(mappedBy = "khachThue")
+	private Collection<Comment> comments;
+	
+	
+
+	public Collection<Comment> getComments() {
+		return comments;
+	}
+
+	public void setComments(Collection<Comment> comments) {
+		this.comments = comments;
+	}
 
 	public int getId() {
 		return id;
@@ -89,6 +103,14 @@ public class KhachThue {
 	public void setLichHen(Collection<LichHen> lichHen) {
 		this.lichHen = lichHen;
 	}
-	
-	
+
+	@Override
+	public int compareTo(KhachThue o) {
+		// TODO Auto-generated method stub
+		int diem = 0;
+		if(o.getNamSinh()-2 < this.getNamSinh() && this.getNamSinh() < o.getNamSinh()+2) diem++;
+		if(o.getTruong()==this.getTruong()) diem++;
+		if(o.getQueQuan()==this.getQueQuan()) diem++;
+		return diem;
+	}
 }
