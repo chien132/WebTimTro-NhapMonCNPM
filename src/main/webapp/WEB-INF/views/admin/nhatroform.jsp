@@ -9,6 +9,7 @@
 <%@page import="ptithcm.entity.Province"%>
 <%@taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
+<%@ taglib uri="http://java.sun.com/jstl/fmt_rt" prefix="f"%>
 
 <!DOCTYPE html>
 <html>
@@ -48,7 +49,7 @@
 								</c:if>
 
 								<form:form class="ui large form"
-									action="admin/${action}nhatro.htm?chu=${chu}"
+									action="admin/${action}nhatro/${nhatro.id}.htm?chu=${chu}"
 									modelAttribute="nhatro" enctype="multipart/form-data"
 									method="post">
 									<div class="ui stacked segment">
@@ -57,16 +58,36 @@
 											<c:if test="${action=='add'}">Thêm bài đăng</c:if>
 											<c:if test="${action=='edit'}">Cập nhật bài đăng</c:if>
 										</h2>
-										<div class="field">
-											<label style="float: left;">Tiêu đề <i
-												style="color: red;"> *</i>
-											</label>
-											<div class="ui left input">
-												<form:input path="tieuDe" value="" type="text" />
-												<form:errors style="color: red;font-size: 15px;"
-													path="tieuDe" />
+										<div class="ui grid">
+											<div class="twelve wide column">
+												<div class="field">
+													<label style="float: left;">Tiêu đề <i
+														style="color: red;"> *</i>
+													</label>
+													<div class="ui left input">
+														<form:input path="tieuDe" value="" type="text" />
+														<form:errors style="color: red;font-size: 15px;"
+															path="tieuDe" />
+													</div>
+												</div>
 											</div>
+											<div class="four wide column"><div class="field">
+													<label style="float: left;">Trạng thái <i
+														style="color: red;"> *</i>
+													</label>
+													<div class="ui left input">
+														<form:select path="tinhtrang"  >
+														<form:option value="0">Chờ duyệt</form:option>
+														<form:option value="1">Đã duyệt</form:option>
+														<form:option value="-1">Không duyệt</form:option>
+														</form:select>
+														<form:errors style="color: red;font-size: 15px;"
+															path="tieuDe" />
+													</div>
+												</div></div>
+
 										</div>
+
 										<div class="ui three column grid">
 											<div class="column">
 												<div class="field">
@@ -92,7 +113,7 @@
 											</div>
 
 											<div class="column">
-												<label>Ảnh 2</label> <input name="photo1" type="file"
+												<label>Ảnh 2</label> <input name="photo2" type="file"
 													class="form-control" />
 											</div>
 										</div>
@@ -105,7 +126,8 @@
 													<label><b>Số phòng cho thuê</b> <i
 														style="color: red;"> *</i> </label>
 													<div class="ui left input">
-														<form:input path="soPhongChoThue" value="" type="number" />
+														<form:input path="soPhongChoThue" value="" type="number"
+															min="1" />
 														<form:errors style="color: red;font-size: 15px;"
 															path="soPhongChoThue" />
 													</div>
@@ -117,7 +139,8 @@
 													<label><b>Số phòng có sẵn</b><i style="color: red;">
 															*</i> </label>
 													<div class="ui left input">
-														<form:input path="soPhongCoSan" value="" type="number" />
+														<form:input path="soPhongCoSan" value="" type="number"
+															min="0" max="${nhatro.soPhongChoThue}" />
 														<form:errors style="color: red;font-size: 15px;"
 															path="soPhongCoSan" />
 													</div>
@@ -128,7 +151,8 @@
 													<label><b>Số người mỗi phòng</b><i
 														style="color: red;"> *</i> </label>
 													<div class="ui left input">
-														<form:input path="soNguoiTrenPhong" value="" type="number" />
+														<form:input path="soNguoiTrenPhong" value="" type="number"
+															min="1" />
 														<form:errors style="color: red;font-size: 15px;"
 															path="soNguoiTrenPhong" />
 													</div>
@@ -141,7 +165,7 @@
 													<label><b>Diện tích</b> <i style="color: red;">
 															*</i> </label>
 													<div class="ui left input">
-														<form:input path="dienTich" value="" type="number" />
+														<form:input path="dienTich" value="" type="number" min="1" />
 														<form:errors style="color: red;font-size: 15px;"
 															path="dienTich" />
 													</div>
@@ -153,7 +177,8 @@
 													<label><b>Tiền thuê</b><i style="color: red;">
 															*</i> </label>
 													<div class="ui left input">
-														<form:input path="tienThue" value="" type="number" />
+														<form:input path="tienThue" value="" type="number" min="0"
+															step="10000" />
 														<form:errors style="color: red;font-size: 15px;"
 															path="tienThue" />
 													</div>
@@ -164,7 +189,8 @@
 													<label><b>Tiền cọc</b><i style="color: red;"> *</i>
 													</label>
 													<div class="ui left input">
-														<form:input path="tienCoc" value="" type="number" />
+														<form:input path="tienCoc" value="" type="number" min="0"
+															step="10000" />
 														<form:errors style="color: red;font-size: 15px;"
 															path="tienCoc" />
 													</div>
@@ -172,8 +198,8 @@
 											</div>
 										</div>
 										<div class="field">
-											<label style="float: left;">Mô tả<b
-												style="color: red;">*</b></label>
+											<label style="float: left;">Mô tả <b
+												style="color: red;"> *</b></label>
 											<div class="ui left input">
 												<!-- <i class="user icon"></i> -->
 												<form:textarea path="moTa" value="" type="text" />
@@ -202,12 +228,17 @@
 													<div class="ui left input">
 														<select class="ui search dropdown" id="comboboxProvince"
 															required="required" name="province">
-															<option disabled="disabled">--Chọn tỉnh--</option>
+
 															<c:forEach var="p" items="${provinces}">
-																<c:if test="${p.id==nhatro.diachi.ward.district.province.id}">
-																	<option value="${p.id}" selected="selected">${p.name}</option>
-																</c:if>
-																<c:if test="${p.id!=nhatro.diachi.ward.district.province.id}"><option value="${p.id}">${p.name}</option></c:if>
+																<c:choose>
+																	<c:when
+																		test="${p.id==nhatro.diachi.ward.district.province.id}">
+																		<option value="${p.id}" selected="selected">${p.name}</option>
+																	</c:when>
+																	<c:otherwise>
+																		<option value="${p.id}">${p.name}</option>
+																	</c:otherwise>
+																</c:choose>
 															</c:forEach>
 														</select>
 														<form:errors style="color: red;font-size: 15px;" path="" />
@@ -232,9 +263,13 @@
 													<label><b>Xã/Phường</b><i style="color: red;">
 															*</i> </label>
 													<div class="ui left input">
-														<select class="ui search dropdown" id="comboboxWard"
-															required="required" name="ward"><option
-																disabled="disabled">--Chọn xã--</option></select>
+														<form:select path="diachi.ward.id"
+															class="ui search dropdown" id="comboboxWard"
+															required="required" name="ward">
+															<form:options
+																items="${nhatro.diachi.ward.district.wards}"
+																itemLabel="name" itemValue="id" />
+														</form:select>
 														<form:errors style="color: red;font-size: 15px;" path="" />
 													</div>
 												</div>
@@ -270,12 +305,11 @@ let list_provinces = [];
 
 init();
 
-let preward ={};
-let predist ={};
-let preprov ={};
+var preward ={};
+var predist ={};
+var preprov ={};
 var prepos=0;
-loadpre();
-console.log(preprov.name)
+  loadpre();  
 
 $('#comboboxProvince').change(function () {
     var optionSelected = $(this).find("option:selected");
@@ -305,7 +339,7 @@ $('#comboboxDistrict').change(function () {
     	return d.id == valueSelected;
     })
     console.log(selected_district);
-    let htmlWards = '<option disabled="disabled">--Chọn xã--</option>';
+    let htmlWards = ''; /* <option disabled="disabled">--Chọn xã--</option> */
     let wards = selected_district.wards;
     for(let i = 0; i < wards.length; i++) {
     	htmlWards += '<option value="' + wards[i].id + '">' + wards[i].name + '</option>';
@@ -382,19 +416,41 @@ function loadpre() {
 			id:<%=nhaTro.getDiachi().getWard().getDistrict().getProvince().getId()%>,
 			name:"<%=nhaTro.getDiachi().getWard().getDistrict().getProvince().getName()%>"
 	}
+		
 	
-	/* selected_province = list_provinces.find((p)=>{
+	selected_province = list_provinces.find((p)=>{
     	return p.id == preprov.id;
-    })  */
-    /* console.log(selected_province.id) */
-	for(let i = 0; i < list_provinces.length; i++) {
-		if (list_provinces[i].id==preprov.id) {
-    		console.log(preprov.id);
+    })
+    console.log(selected_province);
+    let htmlDistricts = ''; 
+    let districts = selected_province.districts;
+    for(let i = 0; i < districts.length; i++) {
+    	htmlDistricts += '<option value="' + districts[i].id + '">' + districts[i].name + '</option>';
+	}
+	$('#comboboxDistrict').html(htmlDistricts);
+	for(let i = 0; i < selected_province.districts.length; i++) {
+		if (selected_province.districts[i].id==predist.id) {
+			selected_district =selected_province.districts[i];
     		prepos=i;
     	}
 	}
-	document.getElementById("comboboxProvince").selectedIndex = prepos;
-	console.log('da set thanh '+prepos);
+	document.getElementById("comboboxDistrict").selectedIndex = prepos;
+
+	 
+    console.log(selected_district);
+    let htmlWards = '';
+    let wards = selected_district.wards;
+    for(let i = 0; i < wards.length; i++) {
+    	htmlWards += '<option value="' + wards[i].id + '">' + wards[i].name + '</option>';
+	}
+	$('#comboboxWard').html(htmlWards);
+	for(let i = 0; i < selected_district.wards.length; i++) {
+		if (selected_district.wards[i].id==preward.id) {
+			selected_ward =selected_district.wards[i];
+    		prepos=i;
+    	}
+	}
+	document.getElementById("comboboxWard").selectedIndex = prepos;
 }
 
 </script>

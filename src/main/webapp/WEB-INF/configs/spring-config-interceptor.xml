@@ -17,16 +17,16 @@
 	<!-- Cấu hình interceptor -->
 	<mvc:interceptors>
 		<!-- Lọc tất cả các URL -->
-	<!-- 	<mvc:interceptor>
+		<mvc:interceptor>
 			<mvc:mapping path="/admin/**" />
 			<bean class="ptithcm.interceptor.AdminAuthorizeInterceptor" />
 		</mvc:interceptor>
-		 -->
+
 		<mvc:interceptor>
-			<mvc:mapping path="/chutro/**" /> 
+			<mvc:mapping path="/chutro/**" />
 			<bean class="ptithcm.interceptor.ChuTroAuthorizeInterceptor" />
 		</mvc:interceptor>
-		
+
 		<mvc:interceptor>
 			<mvc:mapping path="/khachthue/**" />
 			<bean class="ptithcm.interceptor.KhachThueAuthorizeInterceptor" />

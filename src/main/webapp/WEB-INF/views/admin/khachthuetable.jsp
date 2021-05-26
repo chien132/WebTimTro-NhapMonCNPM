@@ -18,7 +18,7 @@
 					<div
 						class="fifteen wide computer sixteen wide phone centered column">
 						<h2>
-							<i class="table icon"></i> Quản lý chủ trọ
+							<i class="table icon"></i> Quản lý khách thuê
 						</h2>
 						<div class="ui divider"></div>
 						<div class="ui grid">
@@ -49,28 +49,32 @@
 										style="width: 100%; text-align: center;">
 										<thead style="text-align: center;">
 											<tr>
-												<th>ID</th>
-												<th>Avatar</th>
 												<th>Username</th>
-												<th>Phòng trọ</th>
+												<th>Avatar</th>
+												<th>Trường</th>
+												<th>Năm sinh</th>
+												<th>Giới tính</th>
+												<th>Quê quán</th>
 												<th>Action</th>
 											</tr>
 										</thead>
 										<tbody>
-											<c:forEach var="i" items="${chutros}">
+											<c:forEach var="i" items="${khachthues}">
 												<tr>
-													<td>${i.id}</td>
+													<td>${i.account.username}</td>
 													<td><img style="max-width: 45px;" alt=""
 														src="resources/images/avatar/${i.account.username}.png"></td>
-													<td>${i.account.username}</td>
-													<td>${i.SLNhaTro}</td>
+													<td>${i.truong.ten}</td>
+													<td>${i.namSinh}</td>
+													<td>${i.gioiTinh?"Nam":"Nữ"}</td>
+													<td>${i.queQuan}</td>
 													<td style="text-align: center;"><a
-														href="admin/nhatro.htm?chu=${i.id}"><button
+														href="admin/editkhachthue/${i.id}.htm"><button
 																class="positive ui button"
-																style="color: white; font-size: 13px">Xem nhà trọ</button></a><a
-														href="admin/editaccount/${i.account.username}.htm"><button
+																style="color: white; font-size: 13px">Sửa thông tin</button></a><a href="admin/editaccount/${i.account.username}.htm"><button
 																class="positive ui button"
-																style="color: white; font-size: 13px">Sửa tài khoản</button></a> <a
+																style="color: white; font-size: 13px">Sửa tài
+																khoản</button></a> <a
 														href="admin/deleteaccount/${i.account.username}.htm"><button
 																class="negative ui button"
 																style="color: white; font-size: 13px">Xóa</button></a></td>
