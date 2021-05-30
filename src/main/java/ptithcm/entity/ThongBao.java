@@ -26,7 +26,7 @@ public class ThongBao implements Comparable<ThongBao>{
 	@ManyToOne@JoinColumn(name = "account")
 	private Account account;
 	@Temporal(TemporalType.DATE)
-	@DateTimeFormat(pattern = "dd/MM/yyyy")
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private Date thoigian;
 	private String link;
 	public String getLink() {

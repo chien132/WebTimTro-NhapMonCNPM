@@ -37,6 +37,7 @@ import ptithcm.entity.KhachThue;
 import ptithcm.entity.NhaTro;
 import ptithcm.entity.Province;
 import ptithcm.entity.Role;
+import ptithcm.entity.ThongBao;
 import ptithcm.entity.Truong;
 import ptithcm.entity.Ward;
 
@@ -61,6 +62,14 @@ public class AdminController {
 	@ModelAttribute("accounts")
 	public List<Object> getAccounts() {
 		String hql = "from Account";
+		List<Object> list = getList(hql);
+		return list;
+	}
+
+	@ModelAttribute("thongbaoadmin")
+	public List<Object> getThongBaos(HttpSession httpSession) {
+		Account currentUser = (Account) httpSession.getAttribute("account");
+		String hql = String.format("from ThongBao where account='%s'", currentUser.getUsername());
 		List<Object> list = getList(hql);
 		return list;
 	}
@@ -455,12 +464,6 @@ public class AdminController {
 		NhaTro nhaTro = (NhaTro) session.get(NhaTro.class, id);
 		modelMap.addAttribute("nhatro", nhaTro);
 		modelMap.addAttribute("action", "edit");
-		String returnString = "";
-		if (chu == -1) {
-			returnString = "admin/nhatro.htm?chu=-1";
-		} else {
-			returnString = "admin/nhatro,htm?chu=" + chu;
-		}
 		modelMap.addAttribute("provinces", httpSession.getAttribute("provinces"));
 		modelMap.addAttribute("chu", chu);
 		return "admin/nhatroform";
@@ -615,6 +618,130 @@ public class AdminController {
 		model.addAttribute("khachthue", khachThue);
 		model.addAttribute("action", "edit");
 		return "admin/khachthueform";
+	}
+
+	// Thong bao
+
+	@RequestMapping(value = "thongbao", params = "user")
+	public String viewnhatro(@PathParam("user") String user, ModelMap model) {
+		String hql = "";
+		if (user.equals("-1") || user.equals("")) {
+			hql = "from ThongBao";
+		} else {
+			hql = "from ThongBao where account.username='" + user + "'";
+		}
+		List<Object> list = getList(hql);
+		model.addAttribute("thongbaos", list);
+		model.addAttribute("user", user);
+		return "admin/thongbaotable";
+	}
+
+	@RequestMapping(value = "editthongbao/{id}", params = "user", method = RequestMethod.GET)
+	public String editthongbao(ModelMap modelMap, @PathVariable("id") int id, @PathParam("user") String user) {
+		Session session = factory.getCurrentSession();
+		ThongBao thongBao = (ThongBao) session.get(ThongBao.class, id);
+		modelMap.addAttribute("thongbao", thongBao);
+		modelMap.addAttribute("action", "edit");
+		modelMap.addAttribute("user", user);
+		return "admin/thongbaoform";
+	}
+
+	@RequestMapping(value = "editthongbao/{id}", params = { "user" }, method = RequestMethod.POST)
+	public String editthongbao(@ModelAttribute("thongbao") ThongBao thongBao, RedirectAttributes re,
+			BindingResult errors, ModelMap model, @PathParam("user") String user) {
+		thongBao.setThongbao(thongBao.getThongbao().trim());
+
+		if (thongBao.getThongbao().isEmpty()) {
+			errors.rejectValue("thongbao", "thongbao", "Hãy nhập nội dung !");
+		}
+
+		if (!errors.hasErrors()) {
+
+			Session session = factory.openSession();
+			ThongBao oldThongBao = (ThongBao) session.get(ThongBao.class, thongBao.getId());
+			oldThongBao.setAccount(thongBao.getAccount());
+			oldThongBao.setThoigian(thongBao.getThoigian());
+			oldThongBao.setThongbao(thongBao.getThongbao());
+			oldThongBao.setLink(thongBao.getLink());
+
+			Transaction t = session.beginTransaction();
+			try {
+				session.update(oldThongBao);
+				t.commit();
+				re.addFlashAttribute("message", "Thành công");
+				return "redirect:/admin/thongbao.htm?user=" + user;
+
+			} catch (Exception e) {
+				t.rollback();
+				re.addFlashAttribute("message", "Thất bại: " + e);
+				return "redirect:/admin/editthongbao/" + oldThongBao.getId() + ".htm?user=" + user;
+			} finally {
+				session.close();
+			}
+		}
+		model.addAttribute("thongbao", thongBao);
+		model.addAttribute("action", "edit");
+		return "admin/thongbaoform";
+	}
+
+	@RequestMapping(value = "addthongbao", params = "user", method = RequestMethod.GET)
+	public String editthongbao(ModelMap modelMap, @PathParam("user") String user) {
+		Session session = factory.getCurrentSession();
+		modelMap.addAttribute("thongbao", new ThongBao());
+		modelMap.addAttribute("action", "add");
+		modelMap.addAttribute("user", user);
+		return "admin/thongbaoform";
+	}
+
+	@RequestMapping(value = "addthongbao/{id}", params = { "user" }, method = RequestMethod.POST)
+	public String addthongbao(@ModelAttribute("thongbao") ThongBao thongBao, RedirectAttributes re,
+			BindingResult errors, ModelMap model, @PathParam("user") String user) {
+		thongBao.setThongbao(thongBao.getThongbao().trim());
+
+		if (thongBao.getThongbao().isEmpty()) {
+			errors.rejectValue("thongbao", "thongbao", "Hãy nhập nội dung !");
+		}
+
+		if (!errors.hasErrors()) {
+
+			Session session = factory.openSession();
+			Transaction t = session.beginTransaction();
+			try {
+				session.save(thongBao);
+				t.commit();
+				re.addFlashAttribute("message", "Thành công");
+				return "redirect:/admin/thongbao.htm?user=" + user;
+			} catch (Exception e) {
+				t.rollback();
+				re.addFlashAttribute("message", "Thất bại: " + e);
+				return "redirect:/admin/thongbao.htm?user=" + user;
+			} finally {
+				session.close();
+			}
+		}
+		model.addAttribute("thongbao", thongBao);
+		model.addAttribute("action", "add");
+		return "admin/thongbaoform";
+	}
+
+	@RequestMapping(value = "deletethongbao/{id}", params = { "user" })
+	public String deletethongbao(RedirectAttributes re, @PathVariable("id") int id, @PathParam("user") String user) {
+
+		Session session = factory.openSession();
+		Transaction t = session.beginTransaction();
+		ThongBao thongBao = (ThongBao) session.get(ThongBao.class, id);
+		try {
+			session.delete(thongBao);
+			t.commit();
+			re.addFlashAttribute("message", "Đã xóa thông báo " + id);
+		} catch (Exception e) {
+			t.rollback();
+			re.addFlashAttribute("message", "Không thể xóa !\n" + e);
+		} finally {
+			session.close();
+		}
+
+		return "redirect:/admin/thongbao.htm?user=" + user;
 	}
 
 }

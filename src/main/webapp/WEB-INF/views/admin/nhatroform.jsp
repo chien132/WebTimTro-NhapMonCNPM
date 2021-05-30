@@ -71,20 +71,22 @@
 													</div>
 												</div>
 											</div>
-											<div class="four wide column"><div class="field">
+											<div class="four wide column">
+												<div class="field">
 													<label style="float: left;">Trạng thái <i
 														style="color: red;"> *</i>
 													</label>
 													<div class="ui left input">
-														<form:select path="tinhtrang"  >
-														<form:option value="0">Chờ duyệt</form:option>
-														<form:option value="1">Đã duyệt</form:option>
-														<form:option value="-1">Không duyệt</form:option>
+														<form:select path="tinhtrang">
+															<form:option value="0">Chờ duyệt</form:option>
+															<form:option value="1">Đã duyệt</form:option>
+															<form:option value="-1">Không duyệt</form:option>
 														</form:select>
 														<form:errors style="color: red;font-size: 15px;"
 															path="tieuDe" />
 													</div>
-												</div></div>
+												</div>
+											</div>
 
 										</div>
 
@@ -201,13 +203,22 @@
 											<label style="float: left;">Mô tả <b
 												style="color: red;"> *</b></label>
 											<div class="ui left input">
-												<!-- <i class="user icon"></i> -->
-												<form:textarea path="moTa" value="" type="text" />
+												<form:textarea id="mota" path="moTa" value="" type="text" />
 												<i><form:errors style="color: red;font-size: 15px;"
 														path="moTa" /></i>
 											</div>
 										</div>
-
+										<%-- <div class="field ck ck-reset ck-editor ck-rounded-corners">
+											<label style="float: left;">Mô tả <b
+												style="color: red;"> *</b></label>
+											<div class="ui left input">
+												<!-- <i class="user icon"></i> -->
+												<textarea id="mota">${nhatro.moTa}</textarea>
+												<form:textarea path="moTa" type="hidden" id="moTa" />
+												<i><form:errors style="color: red;font-size: 15px;"
+														path="moTa" /></i>
+											</div>
+										</div> --%>
 
 										<div class="field">
 											<label style="float: left;">Địa chỉ <i
@@ -293,6 +304,21 @@
 		</div>
 		<!-- END CONTENT -->
 	</div>
+	<script
+		src="${pageContext.servletContext.contextPath}/resources/ckfinder/ckfinder.js"></script>
+	<script
+		src="${pageContext.servletContext.contextPath}/resources/ckeditor/ckeditor.js"></script>
+
+	<script type="text/javascript">
+		 var ckeditor = CKEDITOR.replace( 'mota' );
+		 CKFinder.setupCKEditor(ckeditor,'${pageContext.servletContext.contextPath}/resources/ckfinder');
+		</script>
+	<script type="text/javascript">
+$("#mota").bind('input propertychange', function() {
+	document.getElementById("moTa").value = document.getElementById("mota").value;
+});
+</script>
+
 	<script type="text/javascript">
 	$('.ui.dropdown')
 	  .dropdown()

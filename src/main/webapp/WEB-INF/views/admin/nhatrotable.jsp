@@ -49,7 +49,7 @@
 
 									<table id="mytable"
 										class="ui celled table responsive nowrap unstackable"
-										style="width: 100%; text-align: center;">
+										style="width: 100%; text-align: left;">
 										<thead style="text-align: center;">
 											<tr>
 												<!-- <th>ID</th> -->

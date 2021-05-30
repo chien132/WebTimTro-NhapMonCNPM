@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -52,11 +53,28 @@
 											<i class="settings icon"></i>Account Setting
 										</p>
 									</div> -->
-								<div class="item">
+								<div class="item" onclick="location.href='logout.htm'" >
 									<p>
 										<a href="logout.htm"><i class="sign out alternate icon"></i>Logout</a>
 									</p>
 								</div>
+							</div>
+						</div>
+						<div class="ui top pointing dropdown admindropdown link item"
+							style="width: 8%">
+							<span class="clear navtext"><strong><i
+									class="envelope outline icon"></i></strong></span> <i
+								class="dropdown icon navtext"></i>
+							<div class="menu">
+								<c:forEach var="thongbao" items="${thongbaoadmin}">
+									<!-- begin="0"	end="10"  -->
+									<%-- <c:if test="${thongbao!=null}"> --%>
+										<div class="item">
+											<a
+												href="${pageContext.servletContext.contextPath}/${thongbao.link}"><i class="info icon"></i>${thongbao.thongbao}</a>
+										</div>
+									<%-- </c:if> --%>
+								</c:forEach>
 							</div>
 						</div>
 					</div>
@@ -80,6 +98,8 @@
 							trọ</a> <a class="item" href="admin/khachthue.htm"><i
 							class="user outline icon"></i>Khách thuê</a> <a class="item"
 							href="admin/nhatro.htm?chu=-1"><i class="home icon"></i>Bài đăng</a>
+							<a class="item"
+							href="admin/thongbao.htm?user="><i class="envelope icon"></i>Thông báo</a>
 
 						<!-- <div class="ui item">
 								<div class="ui fluid selection dropdown moredropdown">
