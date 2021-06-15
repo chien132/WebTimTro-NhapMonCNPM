@@ -26,8 +26,10 @@
 <link rel="stylesheet"
 	href="resources/vendors/datatables.net/datatables.net-buttons-se/css/buttons.semanticui.min.css">
 <!-- endinject -->
+<style>
+</style>
 </head>
-<body>
+<body style='background: url(resources/images/background/background.png) repeat; color: orange; background-size: cover;'>
 	<div class="row">
 		<div class="ui grid">
 			<!-- BEGIN NAVBAR -->
@@ -39,11 +41,26 @@
 							</div> -->
 						<div class="left menu">
 							<div class="nav item">
-								<strong class="navtext">Admin Table</strong>
+								<a class="red navtext" href="admin/index.htm">G trọ</a>
 							</div>
 						</div>
-						<div
-							class="ui top pointing dropdown admindropdown link item right">
+						<div class="ui top pointing dropdown admindropdown link right item">
+							<span class="clear navtext"><strong><i
+									class="envelope outline icon"></i></strong></span> <i
+								class="dropdown icon navtext"></i>
+							<div class="menu">
+								<c:forEach var="thongbao" items="${thongbaoadmin}">
+									<!-- begin="0"	end="10"  -->
+									<%-- <c:if test="${thongbao!=null}"> --%>
+										<div class="item">
+											<a
+												href="${pageContext.servletContext.contextPath}/${thongbao.link}"><i class="info icon"></i>${thongbao.thongbao}</a>
+										</div>
+									<%-- </c:if> --%>
+								</c:forEach>
+							</div>
+						</div>
+						<div class="ui top pointing dropdown admindropdown link item ">
 							<img class="imgrad" src="resources/images/avatar/admin-avt.png"
 								alt=""> <span class="clear navtext"><strong>${username}</strong></span>
 							<i class="dropdown icon navtext"></i>
@@ -60,23 +77,6 @@
 								</div>
 							</div>
 						</div>
-						<div class="ui top pointing dropdown admindropdown link item"
-							style="width: 8%">
-							<span class="clear navtext"><strong><i
-									class="envelope outline icon"></i></strong></span> <i
-								class="dropdown icon navtext"></i>
-							<div class="menu">
-								<c:forEach var="thongbao" items="${thongbaoadmin}">
-									<!-- begin="0"	end="10"  -->
-									<%-- <c:if test="${thongbao!=null}"> --%>
-										<div class="item">
-											<a
-												href="${pageContext.servletContext.contextPath}/${thongbao.link}"><i class="info icon"></i>${thongbao.thongbao}</a>
-										</div>
-									<%-- </c:if> --%>
-								</c:forEach>
-							</div>
-						</div>
 					</div>
 				</div>
 			</div>
@@ -91,16 +91,13 @@
 							<img src="resources/images/avatar/admin-avt.png"
 								id="sidebar-image">
 						</div>
-						<a class="item" href="admin/thongke.htm"><i
-							class="chart line icon"></i>Thống kê</a> <a class="item"
-							href="admin/account.htm"><i class="users icon"></i>Tài khoản</a>
-						<a class="item" href="admin/chutro.htm"><i class="user icon"></i>Chủ
-							trọ</a> <a class="item" href="admin/khachthue.htm"><i
-							class="user outline icon"></i>Khách thuê</a> <a class="item"
-							href="admin/nhatro.htm?chu=-1"><i class="home icon"></i>Bài đăng</a>
-							<a class="item"
-							href="admin/thongbao.htm?user="><i class="envelope icon"></i>Thông báo</a>
-
+						<a class="item"	href="admin/account.htm"><i class="users icon"></i>Tài khoản</a>
+						<a class="item" href="admin/chutro.htm"><i class="user icon"></i>Chủtrọ</a> 
+						<a class="item" href="admin/khachthue.htm"><i class="user outline icon"></i>Khách thuê</a> 
+						<a class="item" href="admin/nhatro.htm?chu=-1"><i class="home icon"></i>Bài đăng</a>
+						<a class="item" href="admin/thongbao.htm?user="><i class="envelope icon"></i>Thông báo</a>
+						<a class="item" href="admin/thongke.htm" onmouseenter="" onmouseleave=""> <i class="chart line icon"></i> Thống kê 1 </a>
+						<a class="item" href="admin/thongkechutro.htm" onmouseleave="" style=""> <i class="chart line icon"></i> Thống kê 2 </a>
 						<!-- <div class="ui item">
 								<div class="ui fluid selection dropdown moredropdown">
 									<div class="text">Menu</div>
@@ -119,5 +116,8 @@
 
 		</div>
 	</div>
+<script type="text/javascript">
+	
+</script>
 </body>
 </html>

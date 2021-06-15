@@ -15,7 +15,7 @@
 <script src="resources/semantic/semantic.min.js"></script>
 <style type="text/css">
 #homelogin {
-	background: url(resources/images/homeloan.jpg) center top no-repeat;
+	background: url(resources/images/razerlogin.jpg) center top no-repeat;
 	background-size: cover;
 	-webkit-background-size: cover;
 	background-attachment: fixed;
@@ -78,7 +78,6 @@ body>.grid {
 </head>
 
 <body id="homelogin">
-
 	<div class="ui middle aligned center aligned grid">
 		<div class="column">
 			<form:form class="ui large form" action="password.htm" modelAttribute="account" method="post">
@@ -111,8 +110,8 @@ body>.grid {
 			<div class="card-footer text-center" style="margin-top: 5px">
 
 				<div class="ui message">
-<!-- 					<a href="password.htm">Forgot Password?</a>
-					<hr>  -->
+					Đã có tài khoản? <a href="login.htm"> Đăng nhập</a>
+					<hr>
 					Chưa có tài khoản? <a href="register.htm"> Đăng ký!</a>
 				</div>
 

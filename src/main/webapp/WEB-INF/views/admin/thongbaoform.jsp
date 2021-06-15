@@ -78,9 +78,13 @@
 											<label style="float: left;">Link </label>
 											<div class="ui left input">
 												<form:select path="link">
-													<form:option value="123">123</form:option>
-													<form:option value="/admin/phongtro.htm">Quản lý phòng trọ</form:option>
-													<form:option value="/khachthue/thongtinthem.htm">Thông tin thêm</form:option>
+													<form:option value="/account/">/account.htm</form:option>
+													<form:option value="/khachthue/index.htm">/khachthue/index.htm</form:option>
+													<form:option value="/khachthue/thongtinthem.htm">/khachthue/thongtinthem.htm</form:option>
+													<form:option value="/khachthue/lichhen.htm">/khachthue/lichhen.htm</form:option>
+													<form:option value="/chutro/index.htm">/chutro/index.htm</form:option>
+													<form:option value="/chutro/lichhen.htm">/chutro/lichhen.htm</form:option>
+													<form:option value="/chutro/thongke.htm">/chutro/thongke.htm</form:option>
 												</form:select>
 
 												<form:errors style="color: red;font-size: 15px;" path="link" />

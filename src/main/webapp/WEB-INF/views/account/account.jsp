@@ -1,7 +1,7 @@
 <%@ page pageEncoding="utf-8"%>
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
 <%@taglib uri="http://java.sun.com/jstl/fmt_rt" prefix="f"%>
-<%@taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
+<%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@page import="ptithcm.entity.Province"%>
 <%@page import="ptithcm.entity.Truong"%>
 <%@page import="ptithcm.entity.KhachThue"%>
@@ -10,155 +10,342 @@
 <!DOCTYPE html>
 <html>
 <jsp:include page="header.jsp"></jsp:include>
+<!-- Page Contents -->
+<div class="ui card"
+	style="margin-left: 2%; position: fixed; border-radius: 10%">
+	<div class="ui large image">
+		<img src="resources/images/avatar/${user.username}.png"
+			style="border-radius: 10%" alt="">
+	</div>
+	<div class="content">
+		<a class="header" href="account/${user.username}.htm">${user.username}</a>
+		<div class="meta">
+			<i class="user icon"></i> ${user.hoTen}
+		</div>
+		<div class="meta">
+			<i class="calendar icon"></i> Tham gia: ${user.ngayDangKy}
+		</div>
+		<c:if test="${sessionScope['role']==3}">
+			<div class="fluid ui red left icon button">
+				<a href="account/delete.htm"> Xóa tài khoản <i
+					class="user times icon"></i>
+				</a>
+			</div>
+		</c:if>
+	</div>
+</div>
+<div class="ui grid"
+	style="margin-left: 20%; margin-top: 17px; border-radius: 5px">
+	<div class="fourteen wide column" style="background-color: white; border-radius: 5px">
+		<h2 style="text-align: center; color: red; -webkit-text-stroke-width: 1px; -webkit-text-stroke-color: black;"> Thông tin tài khoản </h2>
+		<table class="ui table">
+			<tbody>
+				<tr>
+					<td><h4>Họ tên:</h4></td>
+					<td>${user.hoTen}</td>
+					<td>
+						<button class="circular ui basic icon button"
+							onclick="$('.large.hoten.modal').modal('show');">
+							<i class="icon teal edit"></i>
+						</button>
+					</td>
+				</tr>
+				<tr>
+					<td><h4>Password:</h4></td>
+					<td>**********</td>
+					<td>
+						<button class="circular ui basic icon button"
+							onclick="$('.large.password.modal').modal('show');">
+							<i class="icon teal edit"></i>
+						</button>
+					</td>
+				</tr>
+				<tr>
+					<td><h4>Số chứng minh thư/căn cước</h4></td>
+					<td>${user.cmnd}</td>
+					<td>
+						<button class="circular ui basic icon button"
+							onclick="$('.large.cmnd.modal').modal('show');">
+							<i class="icon teal edit"></i>
+						</button>
+					</td>
+				</tr>
+				<tr>
+					<td><h4>Điện thoại</h4></td>
+					<td>${user.dienThoai}</td>
+					<td>
+						<button class="circular ui basic icon button"
+							onclick="$('.large.dienthoai.modal').modal('show');">
+							<i class="icon teal edit"></i>
+						</button>
+					</td>
+				</tr>
+				<tr>
+					<td><h4>Email</h4></td>
+					<td>${user.email}</td>
+					<td>
+						<button class="circular ui basic icon button"
+							onclick="$('.large.email.modal').modal('show');">
+							<i class="icon teal edit"></i>
+						</button>
+					</td>
+				</tr>
+				<tr>
+					<td><h4>Ảnh đại diện:</h4></td>
+					<td>${user.username}.png</td>
+					<td><button class="circular ui basic icon button"
+							onclick="$('.large.avata.modal').modal('show');">
+							<i class="icon teal edit"></i>
+						</button></td>
+				</tr>
+				<tr>
+					<td><h4>Tài khoản:</h4></td>
+					<td>${user.role.name}</td>
+					<td><c:if test="${sessionScope['role']==3}">
+							<button class="circular ui basic icon button"
+								onclick="$('.basic.role.modal').modal('show');">
+								<i class="icon teal edit"></i>
+							</button>
+						</c:if></td>
+				</tr>
+			</tbody>
+		</table>
+		<c:if test="${error}">
+			<div class="ui error">
+				<div class="header">${error}</div>
+			</div>
+		</c:if>
+		<c:if test="${success}">
+			<div class="ui error">
+				<div class="header" style="color: green">${success}</div>
+			</div>
+		</c:if>
+		<div class="ui large hoten modal">
+			<div class="header">Chỉnh sửa họ tên</div>
+			<div class="content">
+				<form action="account/doihoten/${user.username}.htm" method="post">
+					<div class="ui form">
+						<div class="field">
+							<label>Họ tên: </label> <input class="ui input" type="text"
+								name="hoten" value="${user.hoTen}">
+						</div>
+						<div class="field">
+							<label>Password: </label> <input class="ui input" type="password"
+								name="password">
+						</div>
+						<div class="field">
+							<button type="submit"
+								class="ui positive right labeled icon button">
+								Lưu thay đổi <i class="checkmark icon"></i>
+							</button>
+						</div>
 
-<body
-	style='background: url("resources/images/background/background.png"); background-size: cover;'>
-	<!-- Page Contents -->
+					</div>
+				</form>
+			</div>
+		</div>
+		<div class="ui large password modal">
+			<div class="header">Thay đổi password</div>
+			<div class="content">
+				<form action="account/doipassword/${user.username}.htm" method="post">
+					<div class="ui form">
+						<div class="field">
+							<label>Password cũ: </label> <input class="ui input"
+								type="password" name="oldpassword">
+						</div>
+						<div class="field">
+							<label>Password mới: </label> <input class="ui input"
+								type="password" name="password">
+						</div>
+						<div class="field">
+							<label>Nhập lại password: </label> <input class="ui input"
+								type="password" name="repassword">
+						</div>
+						<div class="field">
+							<button type="submit"
+								class="ui positive right labeled icon button">
+								Lưu thay đổi <i class="checkmark icon"></i>
+							</button>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+		<div class="ui large cmnd modal">
+			<div class="header">Chỉnh sửa số chứng minh thư/căn cước</div>
+			<div class="content">
+				<form action="account/doicmnd/${user.username}.htm" method="post">
+					<div class="ui form">
+						<div class="field">
+							<label>Chứng minh thư/căn cước </label> <input class="ui input"
+								type="text" name="cmnd" value="${user.cmnd}">
+						</div>
+						<div class="field">
+							<label>Password: </label> <input class="ui input" type="password"
+								name="password">
+						</div>
+						<div class="field">
+							<button type="submit"
+								class="ui positive right labeled icon button">
+								Lưu thay đổi <i class="checkmark icon"></i>
+							</button>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+		<div class="ui large dienthoai modal">
+			<div class="header">Chỉnh sửa số điện thoại</div>
+			<div class="content">
+				<form action="account/doisdt/${user.username}.htm" method="post">
+					<div class="ui form">
+						<div class="field">
+							<label>Số điện thoại: </label> <input class="ui input"
+								type="text" name="sdt" value="${user.dienThoai}">
+						</div>
+						<div class="field">
+							<label>Password: </label> <input class="ui input" type="password"
+								name="password">
+						</div>
+						<div class="field">
+							<button type="submit"
+								class="ui positive right labeled icon button">
+								Lưu thay đổi <i class="checkmark icon"></i>
+							</button>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
 
-		<div class="ui card" style="margin-left: 2%; position: fixed; border-radius: 10%">
-			<div class="ui large image">
-				<img src="resources/images/avatar/${sessionScope['username']}.png" style="border-radius: 10%" alt="">
+		<div class="ui large email modal">
+			<div class="header">Chỉnh sửa email</div>
+			<div class="content">
+				<form action="account/doiemail/${user.username}.htm" method="post">
+					<div class="ui form">
+						<div class="field">
+							<label>Email: </label> <input class="ui input" type="text"
+								name="email" value="${user.email}">
+						</div>
+						<div class="field">
+							<label>Password: </label> <input class="ui input" type="password"
+								name="password">
+						</div>
+						<div class="field">
+							<button class="ui positive right labeled icon button">
+								Lưu thay đổi <i class="checkmark icon"></i>
+							</button>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+		<div class="ui basic role modal">
+			<div class="ui icon header">
+				<i class="yellow exclamation triangle icon"></i> Thay đổi role?
 			</div>
 			<div class="content">
-				<a class="header" href="account">${user.username}</a>
-				<div class="meta">
-				<i class="user icon"></i>
-				${user.hoTen}</div>
-				<div class="meta">
-				<i class="calendar icon"></i>
-				Tham gia: ${user.ngayDangKy}</div>
+				<p>Bạn muốn thay đổi role của tài khoản này?</p>
 			</div>
-		</div>
-		<div class="ui grid" style="margin-left: 20%; margin-top: 17px; border-radius: 5px">
-		<div class="twelve wide column" style="background-color: white; border-radius: 5px">
-			<h2 style="text-align: center; color: red; -webkit-text-stroke-width: 1px; -webkit-text-stroke-color: black;">Thông tin thêm của bạn</h2>
-			<table class="ui table" >
-				<tbody>
-					<tr>
-						<td><h4>Họ tên: </h4></td>
-						<td>${user.hoTen}</td>
-						<td>
-							<i class="circular teal edit icon" onclick="$('.large.modal').modal('show');"></i>
-						</td>
-					</tr>
-					<tr>
-						<td><h4>Số chứng minh thư/căn cước</h4></td>
-						<td>${user.cmnd}</td>
-					</tr>
-					<tr>
-						<td><h4>Điện thoại</h4></td>
-						<td>${user.dienThoai}</td>
-					</tr>
-					<tr>
-						<td><h4>Email</h4></td>
-						<td>${user.email}</td>
-					</tr>
-				</tbody>
-			</table>
-			<c:if test="${error}">
-				<div class="ui error">
-					<div class="header">${error}</div>
+			<form action="account/doirole/${user.username}.htm" method="post">
+				<div class="actions">
+					<div class="ui red basic cancel inverted button">
+						<i class="remove icon"></i> Không
+					</div>
+					<button type="submit" class="ui positive right labeled icon button">
+						<i class="checkmark icon"></i> Có
+					</button>
 				</div>
-			</c:if>
-			
-			<div class="ui large modal">
-			<form action="khachthue/thongtinthem" method="post" enctype="multipart/form-data">
-				
 			</form>
 		</div>
-		
+		<div class="ui large avata modal">
+			<div class="header">Đổi avata</div>
+			<div class="image content">
+				<img class="ui medium image"
+					src="resources/images/avatar/${user.username}.png" alt="">
+				<div class="description">
+					<form action="account/doiavata/${user.username}.htm" method="post"
+						enctype="multipart/form-data">
+						<div class="ui form">
+							<div class="field">
+								<label>Tải avata mới: </label> <input class="ui input"
+									type="file" name="avata">
+							</div>
+							<div class="field">
+								<label>Password: </label> <input class="ui input"
+									type="password" name="password">
+							</div>
+							<div class="field">
+								<button class="ui positive right labeled icon button">
+									Lưu thay đổi <i class="checkmark icon"></i>
+								</button>
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
 		</div>
-		</div>
-	<script type="text/javascript">
-		$('.special.cards .image').dimmer({
-			on : 'hover'
-		});
-		let selected_province = "$('#comboboxProvince').find('option:selected')";
-		let selected_truong = '';
-		let list_provinces = [];
-		let selected_que = "$('#comboboxQue').find('option:selected')";
-		let list_ques = [];
-
-		init();
-		document.getElementById("comboboxProvince").selectedIndex = "0";
-		document.getElementById("comboboxQue").selectedIndex = "0";
-
-		$('#comboboxProvince').change(function () {
-		    var optionSelected = $(this).find("option:selected");
-		    var valueSelected  = optionSelected.val();
-		    var textSelected   = optionSelected.text();
-
-		    selected_province = list_provinces.find((p)=>{
-		    	return p.id == valueSelected;
-		    })
-		    console.log(selected_province);
-		    let htmlTruongs = '<option disabled="disabled">--Chọn trường--</option>';
-		    let truongs = selected_province.truongs;
-		    
-		    for(let i = 0; i < truongs.length; i++) {
-		    	htmlTruongs += '<option value="' + truongs[i].id + '">' + truongs[i].name + '</option>';
-			}
-			$('#comboboxTruong').html(htmlTruongs);
-			document.getElementById("comboboxTruong").selectedIndex = "0";
-		    
-		});
-
-		$('#comboboxTruong').change(function () {
-			var optionSelected = $(this).find("option:selected");
-			var valueSelected  = optionSelected.val();
-		    var textSelected   = optionSelected.text();
-		    selected_truong = selected_province.truong.find((t)=>{
-		    	return t.id == valueSelected;
-		    })
-		    console.log(selected_truong);
-		})
-		
-		$('#comboboxQue').change(function () {
-		    var optionSelected = $(this).find("option:selected");
-		    var valueSelected  = optionSelected.val();
-		    var textSelected   = optionSelected.text();
-
-		    selected_que = list_ques.find((q)=>{
-		    	return q.id == valueSelected;
-		    })
-		    console.log(selected_que);
-		});
-
-		function init() {
-			let province ={};
-			let truong ={};
-			let que ={};
-			
-			<%ArrayList<Province> provinces = (ArrayList) request.getAttribute("provinces");%>
-			<%for (Province p : provinces) {%>
-					province = {
-							name : "<%=p.getName()%>",
-							id : <%=p.getId()%>,
-							truongs:[],
-					}
-							<%List<Truong> truongs = (List) p.getTruongs();%>
-							<%for (Truong t : truongs) {%>
-								truong = {
-										name : "<%=t.getTen()%>",
-										id : <%=t.getId()%>
-								}
-								province.truongs.push(truong);
-					<%}%>
-					list_provinces.push(province);
-		   	<%}%>
-		   	<%ArrayList<Province> ques = (ArrayList) request.getAttribute("ques");%>
-			<%for (Province p : ques) {%>
-					que = {
-							name : "<%=p.getName()%>",
-							id : <%=p.getId()%>,
-					}
-					list_ques.push(que);
-		   	<%}%>
+	</div>
+</div>
+<script type="text/javascript">
+	$('.special.cards .image').dimmer({
+		on : 'hover'
+	});
+	$('.ui.form').form({
+		on : 'change',
+		revalidate : 'true',
+		transition : 'scale',
+		delay : 'true',
+		inline : 'true',
+		fields : {
+			hoten : {
+				identifier : 'hoten',
+				rules : [ {
+					type : 'empty',
+					prompt : ' Không được để trống ! '
+				} ]
+			},
+			password : {
+				identifier : 'password',
+				rules : [ {
+					type : 'empty',
+					prompt : ' Không được để trống '
+				} ]
+			},
+			cmnd : {
+				identifier : 'cmnd',
+				rules : [ {
+					type : 'regExp[//d]',
+					prompt : ' Chưa đúng định dạng '
+				} ]
+			},
+			sdt : {
+				identifier : 'sdt',
+				rules : [ {
+					type : 'regExp[//d]',
+					prompt : ' Chưa đúng định dạng '
+				} ]
+			},
+			avata : {
+				identifier : 'avata',
+				rules : [ {
+					type : 'empty',
+					prompt : ' Không được để trống '
+				} ]
+			},
+			email : {
+				identifier : 'email',
+				rules : [ {
+					type : 'email',
+					prompt : ' Chưa đúng định dạng '
+				} ]
+			},
 		}
-		CKEDITOR.replace('description');
-		var ckeditor=CKEDITOR.replace('description');
-		CKFinder.setupCKEditor(ckeditor,'${pageContext.request.contextPath}/resources/ckfinder/');
-	</script>
-</body>
+	});
+	function kt() {
+		return $('.ui.form').form('is valid')
+	};
+</script>
+<body></body>
 
 </html>

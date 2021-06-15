@@ -68,16 +68,13 @@
 													<td>${i.namSinh}</td>
 													<td>${i.gioiTinh?"Nam":"Nữ"}</td>
 													<td>${i.queQuan}</td>
-													<td style="text-align: center;"><a
-														href="admin/editkhachthue/${i.id}.htm"><button
-																class="positive ui button"
-																style="color: white; font-size: 13px">Sửa thông tin</button></a><a href="admin/editaccount/${i.account.username}.htm"><button
-																class="positive ui button"
-																style="color: white; font-size: 13px">Sửa tài
-																khoản</button></a> <a
-														href="admin/deleteaccount/${i.account.username}.htm"><button
-																class="negative ui button"
-																style="color: white; font-size: 13px">Xóa</button></a></td>
+													<td style="text-align: center;"><a href="admin/editkhachthue/${i.id}.htm">
+														<button class="positive ui button" style="color: white; font-size: 13px">Sửa thông tin thêm</button></a>
+														<a href="admin/editaccount/${i.account.username}.htm">
+														<button class="positive ui button" style="color: white; font-size: 13px">Sửa tài khoản</button></a> 
+														<a href="admin/deleteaccount/${i.account.username}.htm">
+														<button class="negative ui button" style="color: white; font-size: 13px">Xóa</button></a>
+													</td>
 												</tr>
 											</c:forEach>
 

@@ -64,16 +64,15 @@
 														src="resources/images/avatar/${i.account.username}.png"></td>
 													<td>${i.account.username}</td>
 													<td>${i.SLNhaTro}</td>
-													<td style="text-align: center;"><a
-														href="admin/nhatro.htm?chu=${i.id}"><button
-																class="positive ui button"
-																style="color: white; font-size: 13px">Xem nhà trọ</button></a><a
-														href="admin/editaccount/${i.account.username}.htm"><button
-																class="positive ui button"
-																style="color: white; font-size: 13px">Sửa tài khoản</button></a> <a
-														href="admin/deleteaccount/${i.account.username}.htm"><button
-																class="negative ui button"
-																style="color: white; font-size: 13px">Xóa</button></a></td>
+													<td style="text-align: center;">
+													<a href="admin/nhatro.htm?chu=${i.id}">
+													<button class="positive ui button" style="color: white; font-size: 13px">Xem nhà trọ</button></a>
+													<a href="admin/editaccount/${i.account.username}.htm">
+													<button class="positive ui button" style="color: white; font-size: 13px">Sửa tài khoản</button></a>
+													<a href="admin/thongkechutro.htm?chutro=${i.account.chuTro.id}">
+													<button class="positive ui button" style="color: white; font-size: 13px">Thống kê</button></a> 
+													<a href="admin/deleteaccount/${i.account.username}.htm">
+													<button class="negative ui button" style="color: white; font-size: 13px">Xóa</button></a></td>
 												</tr>
 											</c:forEach>
 

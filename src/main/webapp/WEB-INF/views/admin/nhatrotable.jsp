@@ -13,13 +13,10 @@
 	<div class="ui grid">
 		<jsp:include page="header.jsp"></jsp:include>
 		<!-- BEGIN CONTEN -->
-		<div
-			class="right floated thirteen wide computer sixteen wide phone column"
-			id="content">
+		<div class="right floated thirteen wide computer sixteen wide phone column" id="content">
 			<div class="ui container grid" style="width: 100%;">
 				<div class="row">
-					<div
-						class="fifteen wide computer sixteen wide phone centered column">
+					<div class="fifteen wide computer sixteen wide phone centered column">
 						<h2>
 							<i class="table icon"></i> Quản lý bài đăng
 						</h2>
@@ -44,18 +41,14 @@
 											style="padding-right: 0.5vw;"></i> Thêm
 									</button>
 								</a> --%>
-								<div class="ui stacked segment rig">
-
-
-									<table id="mytable"
-										class="ui celled table responsive nowrap unstackable"
-										style="width: 100%; text-align: left;">
+								<div class="ui stacked segment rig" style="overflow: auto;">
+									<table id="mytable" class="ui celled table responsive nowrap unstackable"
+										style="width: 100%;">
 										<thead style="text-align: center;">
 											<tr>
 												<!-- <th>ID</th> -->
 												<th>Chủ trọ</th>
 												<th>Tiêu đề</th>
-												<th>Mô tả</th>
 												<th>Địa chỉ</th>
 												<th>Số phòng</th>
 												<th>Số người</th>
@@ -67,6 +60,7 @@
 												<th>Ngày thêm</th>
 												<th>Tình trạng</th>
 												<th>Action</th>
+												<th>Mô tả</th>
 											</tr>
 										</thead>
 										<tbody>
@@ -85,9 +79,8 @@
 														src="resources/images/avatar/${i.account.username}.png"></td> --%>
 												<td>${i.chuTro.account.username}</td>
 												<td>${i.tieuDe}</td>
-												<td>${i.moTa}</td>
 												<td>${i.diachi.diaChi},
-													${i.diachi.ward.name},${i.diachi.ward.district.name},${i.diachi.ward.district.province.name}
+													${i.diachi.ward.name}, ${i.diachi.ward.district.name}, ${i.diachi.ward.district.province.name}
 												</td>
 												<td>${i.soPhongChoThue}</td>
 												<td>${i.soNguoiTrenPhong}</td>
@@ -117,12 +110,13 @@
 																style="color: white; font-size: 13px">Duyệt</button></a>
 														<a href="admin/refuse/${i.id}.htm?chu=${chu}"><button
 																class="negative ui button"
-																style="color: white; font-size: 13px">Từ chối</button></a>
+																style="color: white; font-size: 13px">Vi phạm</button></a>
 													</c:if><a href="admin/editnhatro/${i.id}.htm?chu=${chu}"><button
-															class="positive ui button"
+															class="primary ui button"
 															style="color: white; font-size: 13px">Sửa</button></a> <%-- <a href="admin/deletenhatro/${i.id}.htm"><button
 																class="negative ui button"
 																style="color: white; font-size: 13px">Xóa</button></a> --%></td>
+												<td>${i.moTa}</td>
 												</tr>
 											</c:forEach>
 

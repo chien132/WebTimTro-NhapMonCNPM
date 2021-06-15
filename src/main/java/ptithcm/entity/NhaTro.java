@@ -1,8 +1,10 @@
 package ptithcm.entity;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -17,8 +19,8 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
-import org.hibernate.annotations.LazyCollection;
-import org.hibernate.annotations.LazyCollectionOption;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.springframework.format.annotation.DateTimeFormat;
 
 @Entity
@@ -48,21 +50,15 @@ public class NhaTro {
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private Date ngayThem;
 	
-	@LazyCollection(LazyCollectionOption.FALSE)
-	@OneToMany(mappedBy = "nhaTro")
+	@OneToMany(mappedBy = "nhaTro", fetch = FetchType.EAGER)
+	@Fetch(value = FetchMode.SUBSELECT)
 	private Collection<LichHen> lichHen;
 	
-	@LazyCollection(LazyCollectionOption.FALSE)
-	@OneToMany(mappedBy = "nhaTro")
-	private Collection<Comment> comments;
+	@OneToMany(mappedBy = "nhatro", fetch = FetchType.EAGER)
+	@Fetch(value = FetchMode.SUBSELECT)
+	private Collection<Comment> comment;
 	
 	
-	public Collection<Comment> getComment() {
-		return comments;
-	}
-	public void setComments(Collection<Comment> comments) {
-		this.comments = comments;
-	}
 	public Collection<LichHen> getLichHen() {
 		return lichHen;
 	}
@@ -136,15 +132,19 @@ public class NhaTro {
 	public void setMoTa(String moTa) {
 		this.moTa = moTa;
 	}
+	//Mỗi nhà trọ có sẵn 5 điểm (điểm tối đa)
+	//Điểm = trung bình (tổng điểm trong comment + 5)
 	public float getDiem() {
 		float diem=0;
-		for (Comment comment:this.getComment()) {
-			diem+=comment.getDiem();
+		if(!this.getComment().isEmpty()) {
+			for (Comment comment:this.getComment()) {
+				diem+=comment.getDiem();
+			}
+			
 		}
-		diem=diem/this.getComment().size();
+		diem=(diem+5)/(this.getComment().size()+1);
 		return diem;
 	}
-
 	public Date getNgayThem() {
 		return ngayThem;
 	}
@@ -160,7 +160,7 @@ public class NhaTro {
 	public int getSoLuot() {
 		int soLuot = 0;
 		for (LichHen lan:this.getLichHen()) {
-			if(lan.getDongy()) soLuot++;
+			if(lan.getThanhcong()) soLuot++;
 		}
 		return soLuot;
 	}
@@ -181,5 +181,36 @@ public class NhaTro {
 	}
 	public int getWardId() {
 		return this.getDiachi().getWard().getId();
+	}
+	public Collection<Comment> getComment() {
+		return comment;
+	}
+	public void setComment(Collection<Comment> comment) {
+		this.comment = comment;
+	}
+	//Tính điểm dựa vào độ phù hợp thông tin
+	public float getDiem2(KhachThue khachthue) {
+		float diem=this.getDiem();
+		for (LichHen lichhen:this.getLichHen()) {
+			if(lichhen.getThanhcong()) diem+= khachthue.getDiem(lichhen.getKhachThue());
+		}
+		diem+=this.getDiem();
+		return diem;
+	}
+	public List<Object> getGioitinh(){
+		int nam=0, nu=0;
+		for (LichHen lh:this.lichHen) {
+			if(lh.getThanhcong()) {
+				if(lh.getKhachThue().isGioiTinh()) nu++;
+				else nam++;
+			}
+		}
+		List<Object> temp = new ArrayList<Object>();
+		if (nam>nu) {
+			temp.add(false); temp.add(nam);
+		} else {
+			temp.add(true); temp.add(nu);
+		}
+		return temp;
 	}
 }

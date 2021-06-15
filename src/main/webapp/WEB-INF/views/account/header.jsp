@@ -7,14 +7,18 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Tìm nhà trọ</title>
+<title>G trọ Việt Nam</title>
 <base href="${pageContext.servletContext.contextPath}/">
 <script src="resources/js/jquery-3.6.0.js" type="text/javascript"></script>
-<link rel="stylesheet" type="text/css"
-	href="resources/semantic/semantic.min.css">
-<script src="resources/semantic/semantic.min.js" type="text/javascript"></script>
 <script src="resources/ckfinder/ckfinder.js" type="text/javascript"></script>
 <script type="text/javascript" src= "resources/ckeditor/ckeditor.js"></script>
+<link rel="icon" href="resources/images/icon/google.png" sizes="32x32">
+<!-- datatables:css -->
+<link rel="stylesheet" href="resources/vendors/datatables.net/datatables.net-se/css/dataTables.semanticui.min.css">
+<link rel="stylesheet" href="resources/vendors/datatables.net/datatables.net-responsive-se/css/responsive.semanticui.min.css">
+<link rel="stylesheet" href="resources/vendors/datatables.net/datatables.net-buttons-se/css/buttons.semanticui.min.css">
+<link rel="stylesheet" type="text/css" href="resources/semantic/semantic.min.css">
+<script src="resources/semantic/semantic.min.js"></script>
 <style type="text/css">
 .dropbtn {
 	background-color: #ffffff00;
@@ -76,50 +80,140 @@
   border: 3px solid #f1f1f1;
   z-index: 9;
 }
+body{
+	background: url("resources/images/background/background(1).png"); 
+	background-size: cover;
+}
+.sidenav {
+  height: 100%; /* 100% Full-height */
+  width: 0; /* 0 width - change this with JavaScript */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Stay on top */
+  top: 0; /* Stay at the top */
+  right: 0;
+  background-color: white; /* Black*/
+  background: url("resources/images/background/background.png") no-repeat; 
+  overflow-x: hidden; /* Disable horizontal scroll */
+  padding-top: 60px; /* Place content 60px from the top */
+  transition: 0.5s; /* 0.5 second transition effect to slide in the sidenav */
+}
+.sidenav a {
+  padding: 20px 8px 20px 32px;
+  text-decoration: none;
+  font-size: 18px;
+  color: #00ffff;
+  display: block;
+  transition: 0.3s;
+  border-bottom: 1px #00ffff solid;
+}
 </style>
 </head>
-
 <body>
 	<!-- Following Menu -->
-	<div class="ui large top fixed hidden menu">
-			<a href="khachthue/index.htm" class="item">
-				<i class="home icon"></i>
-			</a>
+	<div class="ui top fixed inverted menu">
+			<c:choose>
+				<c:when test="${user.role.id==2}">
+				<a href="khachthue/index.htm" class="item">
+				<i class="red google icon"></i>trọ Việt Nam</a>
+				</c:when>
+				<c:otherwise>
+				<a href="chutro/index.htm" class="item">
+				<i class="red google icon"></i>trọ Việt Nam</a>
+				</c:otherwise>
+			</c:choose>
+			
 			<div class="right menu">
-				<div class="ui scrolling dropdown  icon item">
+				<div class="item" onclick="openInfo()">
 						<i class="mail icon"></i>
-					<div class="menu">
-					<c:forEach var="thongbao" items="${thongbaos}" begin="0" end="10">
-						<c:if test="${thongbao!=null}">
-							<div class="item"><a href="${pageContext.servletContext.contextPath}/${thongbao.link}">${thongbao.thongbao}</a></div>
-						</c:if>
-					</c:forEach>
-					</div>
 				</div>
-				<div class="ui dropdown icon item">
-					<img src="resources/images/avatar/${sessionScope['username']}.png" style="border-radius: 20%">
-					<div class="menu">
-						<div class="item">
-						<a href="${pageContext.servletContext.contextPath}/account/${sessionScope['username']}.htm">
-							<i class="user icon">Thông tin tài khoản</i></a></div>
-						<div class="item">
-						<a href="${pageContext.servletContext.contextPath}/khachthue/thongtinthem.htm">
-							<i class="user icon">Thông tin thêm</i></a></div>
-						<div class="item">
-						<a href="${pageContext.servletContext.contextPath}/khachthue/lichhen.htm">
-							<i class="calendar icon">Lịch hẹn</i></a></div>
-						<div class="item">
-						<a href="${pageContext.servletContext.contextPath}/khachthue/logout.htm">
-							<i class="logout icon">Đăng xuất</i></a></div>
-					</div>
-				</div>
+				<img src="resources/images/avatar/${sessionScope['username']}.png" style="border-radius: 50%; height: 55px" onclick="openNav()">
 			</div>
 		</div>
+	<div class="sidenav" id="sidebar" onmouseleave="closeNav()">
+		<div class="menu">
+			<div class="item">
+			<a href="${pageContext.servletContext.contextPath}/account/${sessionScope['username']}.htm" class="item">
+			<i class="user icon"></i>Thông tin tài khoản</a></div>
+			<div class="item">
+			<a class="item" onclick="$('.large.report.modal').modal('show');"><i class="exclamation triangle icon"></i> Báo lỗi </a></div>
+			<div class="item">
+			<a href="${pageContext.servletContext.contextPath}/logout.htm" class="item">
+			<i class="logout icon"></i>Đăng xuất</a></div>
+		</div>
+	</div>
+	<div class="sidenav" id="sideinfo" onmouseleave="closeInfo()">
+		<div class="menu">
+		<a onclick="closeInfo()" style="color: white"> <i class="mail icon"></i> Thông báo </a>
+		<c:forEach var="thongbao" items="${thongbaos}" begin="0" end="10">
+			<c:if test="${thongbao!=null}">
+				<a href="${thongbao.link}" class="item">${thongbao.thongbao}</a>
+			</c:if>
+		</c:forEach>
+		</div>
+	</div>
+	<div class="ui large report modal">
+		<div class="header"> <i class="exclamation triangle icon"></i> Báo lỗi </div>
+		<div class="content">
+		<form action="report.htm" method="post">
+			<div class="ui form">
+				<div class="field">
+					<textarea name="thongbao"></textarea>
+				</div>
+				<div class="field">
+				<input type="hidden" name="username" value="${sessionScope['username']}">
+					<button type="submit" class="ui positive right labeled icon button">
+						Gửi
+						<i class="checkmark icon"></i>
+					</button>
+				</div>
+			</div>
+		</form>
+		</div>
+	</div>
 	<h1 class="ui inverted header">Padding</h1>
-	<h1 style="text-align: center; color: white; -webkit-text-stroke-width: 1px;
-  -webkit-text-stroke-color: black;">KÊNH THÔNG TIN PHÒNG TRỌ SỐ MỘT VIỆT NAM</h1>
-
+	<h1 style="text-align: center; color: #00ffff">KÊNH THÔNG TIN PHÒNG TRỌ SỐ MỘT VIỆT NAM</h1>
+  	<div class="ui grid">
+		<div class="fourteen wide column">
+	  	<c:if test="${message!=null}"> 
+	  		<div class="ui teal message"> 
+	  			<i class="close icon"></i> 
+	  			<div class="header"> Thông báo </div>
+	  			<p> ${message} </p> 
+	  		</div> 
+	  	</c:if>
+	  	<c:if test="${error!=null}"> 
+	  		<div class="ui red message"> 
+	  			<i class="close icon"></i> 
+	  			<div class="header"> Lỗi! </div>
+	  			<p> ${error} </p> 
+	  		</div> 
+	  	</c:if>
+		<c:if test="${success!=null}"> 
+			<div class="ui green message"> 
+				<i class="close icon"></i> 
+	  			<div class="header"> Thành Công! </div>
+	  			<p> ${success} </p> 
+			</div> 
+		</c:if>
+		</div>
+	</div>
+  
 <script>
+$('.ui.dropdown').dropdown();
+/* Set the width of the side navigation to 250px */
+function openNav() {
+  document.getElementById("sidebar").style.width = "250px";
+}
+
+/* Set the width of the side navigation to 0 */
+function closeNav() {
+  document.getElementById("sidebar").style.width = "0";
+}
+function openInfo() {
+  document.getElementById("sideinfo").style.width = "250px";
+}
+/* Set the width of the side navigation to 0 */
+function closeInfo() {
+  document.getElementById("sideinfo").style.width = "0";
+}
 </script>
-</body>
-</html>

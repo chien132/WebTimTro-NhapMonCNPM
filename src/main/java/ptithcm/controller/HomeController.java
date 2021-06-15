@@ -6,7 +6,6 @@ import java.util.List;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpSession;
 import javax.transaction.Transactional;
-import javax.websocket.server.PathParam;
 
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -22,7 +21,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import ptithcm.entity.Account;
 import ptithcm.entity.District;
 import ptithcm.entity.LichHen;
 import ptithcm.entity.NhaTro;
@@ -44,17 +42,30 @@ public class HomeController {
 	Ward ward;
 	int page;
 	
+	public void sort(){
+		for(int i=0; i<this.nhatros.size()-1;i++) {
+			NhaTro ntmax = (NhaTro) this.nhatros.get(i);//nhà trọ vị trí max
+			int max=i;//vị trí
+			for(int j=this.nhatros.size()-1; j>i; j--) {
+				NhaTro nhatroj = (NhaTro) this.nhatros.get(j);
+				if(ntmax.getDiem()<nhatroj.getDiem()) {
+					max = j;
+					ntmax=nhatroj;
+				}
+			}
+			NhaTro temp = (NhaTro) this.nhatros.get(i);
+			this.nhatros.set(i, ntmax);
+			this.nhatros.set(max, temp);
+		}
+	}
+	
 	@RequestMapping("")
-	public String welcome() {
+	public String welcome(HttpSession session) {
 		return "redirect:index.htm";
 	}
 	
 	@ModelAttribute("provinces")
 	public List<Province> getProvinces(){
-		return ProvinceService.findAll(factory);
-	}
-	@ModelAttribute("ques")
-	public List<Province> getQues(){
 		return ProvinceService.findAll(factory);
 	}
 		
@@ -64,34 +75,20 @@ public class HomeController {
 		List<Object> list = query.list();
 		return list;
 	}
-	public void sort(List<Object> nhatros){
-		for(int i=0; i<nhatros.size()-1;i++) {
-			for(int j=0; j<nhatros.size()-1-i;j++) {
-				NhaTro nhatroj = (NhaTro) nhatros.get(j);
-				NhaTro nhatrojj = (NhaTro) nhatros.get(j+1);
-				if(nhatroj.getDiem()<nhatrojj.getDiem()) {
-					NhaTro temp = nhatroj;
-					nhatros.set(j, nhatrojj);
-					nhatros.set(j+1, temp);		
-				}
-			}
-		}
-	}
 
 	@RequestMapping("index")
 	public String index(ModelMap model, HttpSession httpSession) {
 		String hql="FROM NhaTro "
-				+ "WHERE tinhtrang=1 ";
-		List<Object> listNhaTro = getList(hql);
-		sort(listNhaTro);
-		if(listNhaTro.size()+10<page*10) {
-			model.addAttribute("message", "Không tìm thấy trang !");
+				+ "WHERE tinhtrang = 1 ";
+		this.nhatros = getList(hql);
+		if(this.nhatros.isEmpty()) {
+			model.addAttribute("error", "Không tìm thấy trang !");
 		}else {
-			this.nhatros = listNhaTro;
+			sort();
 			this.page = 1;
-			model.addAttribute("nhatros", listNhaTro);
+			model.addAttribute("nhatros", this.nhatros);
 			model.addAttribute("page", 1);
-			model.addAttribute("end", listNhaTro.size()%10!=0?listNhaTro.size()/10+1:listNhaTro.size()/10);
+			model.addAttribute("end", this.nhatros.size()%10!=0?this.nhatros.size()/10+1:this.nhatros.size()/10);
 			this.province = null;
 			this.district = null;
 			this.ward = null;
@@ -106,38 +103,31 @@ public class HomeController {
 			@RequestParam("ward") String w) {
 		String hql = "FROM NhaTro "
 				+ "WHERE tinhtrang = 1 ";
-		List<Object> listNhaTro = getList(hql);
-		sort(listNhaTro);
+		this.nhatros = getList(hql);
 		try {
 			int province = Integer.parseInt(p);
 			int district = Integer.parseInt(d);
 			int ward = Integer.parseInt(w);
 			if(ward!=0) {
-				int dem=0;
-				while (true) {
-					for (Object nt:listNhaTro) {
-						NhaTro nhatro = (NhaTro) nt;
-						if(nhatro.getWardId()!=ward) {
-							listNhaTro.remove(nt);
-							break;
-						}else dem++;
-						
-					} if(dem==listNhaTro.size()) break;
-					else dem=0;
+				for (int i=0; i<this.nhatros.size();) {
+					NhaTro nt = (NhaTro) this.nhatros.get(i);
+					if(nt.getWardId()!=ward) {
+						this.nhatros.remove(i);
+					} else i++;
 				}
 			}
-		if(listNhaTro.size()+10<page*10) {
-			model.addAttribute("message", "Không tìm thấy trang !");
-		} else {
-			this.nhatros = listNhaTro;
+			if(this.nhatros.isEmpty()) {
+				model.addAttribute("error", "Không tìm thấy trang !");
+			} else {
+			sort();
 			this.page = 1;
 			Session session = factory.getCurrentSession();
 			this.province = (Province) session.get(Province.class, province);
 			this.district = (District) session.get(District.class, district);
 			this.ward = (Ward) session.get(Ward.class, ward);
-			model.addAttribute("nhatros", listNhaTro);
+			model.addAttribute("nhatros", this.nhatros);
 			model.addAttribute("page", 1);
-			model.addAttribute("end", listNhaTro.size()%10!=0?listNhaTro.size()/10+1:listNhaTro.size()/10);
+			model.addAttribute("end", this.nhatros.size()%10!=0?this.nhatros.size()/10+1:this.nhatros.size()/10);
 			model.addAttribute("province", this.province);
 			model.addAttribute("district", this.district);
 			model.addAttribute("ward", this.ward);
@@ -149,44 +139,42 @@ public class HomeController {
 		return "index";
 	}
 		
-	
 	@RequestMapping(value="timkiem", params = {"province","district"})
 	public String timkiem(ModelMap model,
 			@RequestParam("province") String p, 
 			@RequestParam("district") String d) {
 		String hql = "FROM NhaTro "
 				+ "WHERE tinhtrang = 1 ";
-		List<Object> listNhaTro = getList(hql);
-		sort(listNhaTro);
+		this.nhatros = getList(hql);
 		try {
 			int province = Integer.parseInt(p);
 			int district = Integer.parseInt(d);
 			if(district!=0) {
 				int dem=0;
 				while (true) {
-					for (Object nt:listNhaTro) {
+					for (Object nt:this.nhatros) {
 						NhaTro nhatro = (NhaTro) nt;
 						if(nhatro.getDistrictId()!=district) {
-							listNhaTro.remove(nt);
+							this.nhatros.remove(nt);
 							break;
 						}else dem++;
 						
-					} if(dem==listNhaTro.size()) break;
+					} if(dem==this.nhatros.size()) break;
 					else dem=0;
 				}
 			}
-			if(listNhaTro.size()+10<page*10) {
-				model.addAttribute("message", "Không tìm thấy trang !");
+			if(this.nhatros.isEmpty()) {
+				model.addAttribute("error", "Không tìm thấy trang !");
 			}else {
-				this.nhatros = listNhaTro;
+				sort();
 				this.page = 1;
 				Session session = factory.getCurrentSession();
 				this.province = (Province) session.get(Province.class, province);
 				this.district = (District) session.get(District.class, district);
 				this.ward = null;
-				model.addAttribute("nhatros", listNhaTro);
+				model.addAttribute("nhatros", this.nhatros);
 				model.addAttribute("page", 1);
-				model.addAttribute("end", listNhaTro.size()%10!=0?listNhaTro.size()/10+1:listNhaTro.size()/10);
+				model.addAttribute("end", this.nhatros.size()%10!=0?this.nhatros.size()/10+1:this.nhatros.size()/10);
 				model.addAttribute("province", this.province);
 				model.addAttribute("district", this.district);
 				model.addAttribute("ward", this.ward);
@@ -204,36 +192,35 @@ public class HomeController {
 			@RequestParam("province") String p) {
 		String hql = "FROM NhaTro "
 				+ "WHERE tinhtrang = 1 ";
-		List<Object> listNhaTro = getList(hql);
-		sort(listNhaTro);
+		this.nhatros = getList(hql);
 		try {
 			int province = Integer.parseInt(p);
 			if(province!=0) {
 				int dem=0;
 				while (true) {
-					for (Object nt:listNhaTro) {
+					for (Object nt:this.nhatros) {
 						NhaTro nhatro = (NhaTro) nt;
 						if(nhatro.getProvinceId()!=province) {
-							listNhaTro.remove(nt);
+							this.nhatros.remove(nt);
 							break;
 						}else dem++;
 						
-					} if(dem==listNhaTro.size()) break;
+					} if(dem==this.nhatros.size()) break;
 					else dem=0;
 				}
 			}
-			if(listNhaTro.size()+10<page*10) {
-				model.addAttribute("message", "Không tìm thấy trang !");
+			if(this.nhatros.isEmpty()) {
+				model.addAttribute("error", "Không tìm thấy trang !");
 			}else {
-				this.nhatros = listNhaTro;
+				sort();
 				this.page = 1;
 				Session session = factory.getCurrentSession();
 				this.province = (Province) session.get(Province.class, province);
 				this.district = null;
 				this.ward = null;
-				model.addAttribute("nhatros", listNhaTro);
+				model.addAttribute("nhatros", this.nhatros);
 				model.addAttribute("page", 1);
-				model.addAttribute("end", listNhaTro.size()%10!=0?listNhaTro.size()/10+1:listNhaTro.size()/10);
+				model.addAttribute("end", this.nhatros.size()%10!=0?this.nhatros.size()/10+1:this.nhatros.size()/10);
 				model.addAttribute("province", this.province);
 				model.addAttribute("district", this.district);
 				model.addAttribute("ward", this.ward);
@@ -266,10 +253,8 @@ public class HomeController {
 	}
 	@RequestMapping(value="loc", method=RequestMethod.POST)
 	public String loc(ModelMap model, 
-			@RequestParam("diem") String d,
-			@RequestParam("soluot") String sl,
-			@RequestParam("songuoi") String sn,
-			@RequestParam("giathue") String gt,
+			@RequestParam("diem") String d, @RequestParam("soluot") String sl,
+			@RequestParam("songuoi") String sn, @RequestParam("giathue") String gt,
 			RedirectAttributes re) {
 		try {
 			if(!d.isEmpty()) {
@@ -312,7 +297,7 @@ public class HomeController {
 					else dem=0;
 				}
 			}
-			if(!gt.isEmpty()) {
+			if(!gt.isEmpty()&&!gt.equals("0")) {
 				BigDecimal giathue = new BigDecimal(gt);
 				int dem=0;
 				while(true) {

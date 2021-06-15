@@ -24,32 +24,15 @@
 
 		<mvc:interceptor>
 			<mvc:mapping path="/chutro/**" />
+			<mvc:exclude-mapping path="/account/**"/>
 			<bean class="ptithcm.interceptor.ChuTroAuthorizeInterceptor" />
 		</mvc:interceptor>
 
 		<mvc:interceptor>
 			<mvc:mapping path="/khachthue/**" />
+			<mvc:exclude-mapping path="/account/**"/>
 			<bean class="ptithcm.interceptor.KhachThueAuthorizeInterceptor" />
 		</mvc:interceptor>
-
-		<!-- <mvc:interceptor> -->
-		<!-- <mvc:mapping path="/user/logoff**" /> -->
-		<!-- <mvc:mapping path="/user/change**" /> -->
-		<!-- <mvc:mapping path="/user/edit**" /> -->
-		<!-- <mvc:mapping path="/order/**" /> -->
-		<!-- <bean class="ptithcm.interceptor.AuthorizeInterceptor" /> -->
-		<!-- </mvc:interceptor> -->
-
-		<!-- <bean class="ptithcm.interceptor.GlobalInterceptor" /> -->
-		<!-- <mvc:interceptor> -->
-		<!-- <mvc:mapping path="/user/**"/> -->
-		<!-- <mvc:mapping path="/order/**"/> -->
-		<!-- <mvc:exclude-mapping path="/user/login.htm"/> -->
-		<!-- <mvc:exclude-mapping path="/user/register.htm"/> -->
-		<!-- <mvc:exclude-mapping path="/user/forgot-password.htm"/> -->
-		<!-- <mvc:exclude-mapping path="/user/activate.htm"/> -->
-		<!-- <bean class="ptithcm.interceptor.SecurityInterceptor" /> -->
-		<!-- </mvc:interceptor> -->
 	</mvc:interceptors>
 
 </beans>

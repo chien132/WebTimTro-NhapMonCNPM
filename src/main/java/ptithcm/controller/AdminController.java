@@ -4,7 +4,12 @@ import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -33,7 +38,9 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import ptithcm.entity.Account;
 import ptithcm.entity.ChuTro;
+import ptithcm.entity.Comment;
 import ptithcm.entity.KhachThue;
+import ptithcm.entity.LichHen;
 import ptithcm.entity.NhaTro;
 import ptithcm.entity.Province;
 import ptithcm.entity.Role;
@@ -46,26 +53,25 @@ import ptithcm.entity.Ward;
 @RequestMapping("/admin/")
 
 public class AdminController {
-
+	
 	@Autowired
 	SessionFactory factory;
 	@Autowired
 	ServletContext context;
-
+	
+	@SuppressWarnings("unchecked")
 	List<Object> getList(String hql) {
 		Session session = factory.getCurrentSession();
 		Query query = session.createQuery(hql);
 		List<Object> list = query.list();
 		return list;
 	}
-
 	@ModelAttribute("accounts")
 	public List<Object> getAccounts() {
 		String hql = "from Account";
 		List<Object> list = getList(hql);
 		return list;
 	}
-
 	@ModelAttribute("thongbaoadmin")
 	public List<Object> getThongBaos(HttpSession httpSession) {
 		Account currentUser = (Account) httpSession.getAttribute("account");
@@ -73,38 +79,31 @@ public class AdminController {
 		List<Object> list = getList(hql);
 		return list;
 	}
-
 	@ModelAttribute("chutros")
 	public List<Object> getChuTros() {
 		String hql = "from ChuTro";
 		List<Object> list = getList(hql);
 		return list;
 	}
-
 	@ModelAttribute("khachthues")
 	public List<Object> getKhachThues() {
 		String hql = "from KhachThue";
 		List<Object> list = getList(hql);
 		return list;
 	}
-
 	@RequestMapping("")
 	public String welcome() {
 		return "redirect:/admin/index.htm";
 	}
-
 	@RequestMapping("index")
 	public String index() {
 		return "redirect:/admin/account.htm";
 	}
-
 	// Account manager
-
 	@RequestMapping("account")
 	public String viewaccount() {
 		return "admin/accounttable";
 	}
-
 	@RequestMapping(value = "editaccount/{username}", method = RequestMethod.GET)
 	public String editaccount(ModelMap modelMap, @PathVariable("username") String username) {
 		Session session = factory.getCurrentSession();
@@ -113,33 +112,27 @@ public class AdminController {
 		modelMap.addAttribute("action", "edit");
 		return "admin/accountform";
 	}
-
 	@RequestMapping(value = "editaccount", method = RequestMethod.POST)
 	public String editaccountpost(@ModelAttribute("account") Account account, RedirectAttributes re,
 			BindingResult errors, ModelMap model, @RequestParam("photo") MultipartFile photo) {
-
 		account.setPassword(account.getPassword().trim().split(",")[0]);
 		account.setCmnd(account.getCmnd().trim());
 		account.setHoTen(account.getHoTen().trim());
 		account.setEmail(account.getEmail());
 		account.setDienThoai(account.getDienThoai().trim());
-
 		if (account.getPassword().isEmpty()) {
 			errors.rejectValue("password", "account", "Hãy nhập mật khẩu !");
 		} else if (account.getPassword().contains(" ")) {
 			errors.rejectValue("password", "account", "Mật khẩu không được chứa khoảng trắng !");
 		}
-
 		if (account.getCmnd().isEmpty()) {
 			errors.rejectValue("cmnd", "account", "Hãy nhập CMND !");
 		} else if (account.getPassword().contains(" ")) {
 			errors.rejectValue("cmnd", "account", "CMND không được chứa khoảng trắng !");
 		}
-
 		if (account.getHoTen().isEmpty()) {
 			errors.rejectValue("hoTen", "account", "Hãy nhập họ tên !");
 		}
-
 		if (!account.getEmail().isEmpty()) {
 			Pattern VALID_EMAIL_ADDRESS_REGEX = Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$",
 					Pattern.CASE_INSENSITIVE);
@@ -150,7 +143,6 @@ public class AdminController {
 		} else {
 			errors.rejectValue("email", "account", "Hãy nhập email !");
 		}
-
 		if (!account.getDienThoai().isEmpty()) {
 			Pattern VALID_PHONE_NUMBER_REGEX = Pattern.compile("(03|05|07|08|09|01[2|6|8|9])+([0-9]{8})\\b",
 					Pattern.CASE_INSENSITIVE);
@@ -163,9 +155,7 @@ public class AdminController {
 		} else {
 			errors.rejectValue("dienThoai", "account", "Hãy nhập số điện thoại !");
 		}
-
 		if (!errors.hasErrors()) {
-
 			Session session2 = factory.openSession();
 			Account oldAccount = (Account) session2.get(Account.class, account.getUsername());
 			System.out.println(oldAccount.getUsername());
@@ -174,11 +164,9 @@ public class AdminController {
 			oldAccount.setCmnd(account.getCmnd());
 			oldAccount.setDienThoai(account.getDienThoai());
 			oldAccount.setEmail(account.getEmail());
-
 			Transaction t = session2.beginTransaction();
 			try {
 				if (photo.getOriginalFilename().isEmpty()) {
-
 				} else if (!(photo.getContentType().contains("jpeg") || photo.getContentType().contains("png"))) {
 					model.addAttribute("message", "File ảnh không đúng định dạng !");
 					model.addAttribute("account", account);
@@ -186,15 +174,13 @@ public class AdminController {
 					return "admin/accountform";
 				} else {
 					try {
-						String photoPath = context
-								.getRealPath("resources/images/avatar/" + account.getUsername() + ".png");
+						String photoPath = context.getRealPath("resources/images/avatar/" + account.getUsername() + ".png");
 						photo.transferTo(new File(photoPath));
 					} catch (Exception e) {
 						re.addFlashAttribute("message", "Save file error: " + e);
 						return "redirect:/admin/addaccount.htm";
 					}
 				}
-
 				session2.update(oldAccount);
 				t.commit();
 				re.addFlashAttribute("message", "Thành công");
@@ -211,20 +197,19 @@ public class AdminController {
 		model.addAttribute("action", "edit");
 		return "admin/accountform";
 	}
-
 	@RequestMapping(value = "addaccount", method = RequestMethod.GET)
 	public String addaccount(ModelMap modelMap) {
 		modelMap.addAttribute("account", new Account());
 		modelMap.addAttribute("action", "add");
 		return "admin/accountform";
 	}
-
+	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "addaccount", method = RequestMethod.POST)
 	public String addaccountpost(@ModelAttribute("account") Account account, RedirectAttributes re,
 			BindingResult errors, ModelMap model, HttpServletRequest request,
 			@RequestParam("photo") MultipartFile photo) {
 		account.setUsername(account.getUsername().trim());
-		account.setPassword(account.getPassword().trim().split(",")[0]);
+		account.setPassword(account.getPassword().trim());
 		account.setCmnd(account.getCmnd().trim());
 		account.setHoTen(account.getHoTen().trim());
 		account.setEmail(account.getEmail());
@@ -237,29 +222,24 @@ public class AdminController {
 			Role role = (Role) sessions.get(Role.class, Integer.parseInt(request.getParameter("roles")));
 			account.setRole(role);
 		}
-
 		if (account.getUsername().isEmpty()) {
 			errors.rejectValue("username", "account", "Hãy nhập username !");
 		} else if (account.getUsername().contains(" ")) {
 			errors.rejectValue("username", "account", "Username không được chứa khoảng trắng !");
 		}
-
 		if (account.getPassword().isEmpty()) {
 			errors.rejectValue("password", "account", "Hãy nhập mật khẩu !");
 		} else if (account.getPassword().contains(" ")) {
 			errors.rejectValue("password", "account", "Mật khẩu không được chứa khoảng trắng !");
 		}
-
 		if (account.getCmnd().isEmpty()) {
 			errors.rejectValue("cmnd", "account", "Hãy nhập CMND !");
 		} else if (account.getPassword().contains(" ")) {
 			errors.rejectValue("cmnd", "account", "CMND không được chứa khoảng trắng !");
 		}
-
 		if (account.getHoTen().isEmpty()) {
 			errors.rejectValue("hoTen", "account", "Hãy nhập họ tên !");
 		}
-
 		if (!account.getEmail().isEmpty()) {
 			Pattern VALID_EMAIL_ADDRESS_REGEX = Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$",
 					Pattern.CASE_INSENSITIVE);
@@ -315,14 +295,9 @@ public class AdminController {
 					case 2: {
 						KhachThue khachThue = new KhachThue();
 						khachThue.setAccount(account);
+						khachThue.setNamSinh(2000);
 						account.setKhachThue(khachThue);
 						session2.save(account);
-						khachThue.setNamSinh(2000);
-						Truong truong = new Truong();
-						truong.setProvince((Province) session2.get(Province.class, 79));
-						truong.setTen("PTIT HCM");
-						session2.save(truong);
-						khachThue.setTruong(truong);
 						session2.save(khachThue);
 						break;
 					}
@@ -395,7 +370,6 @@ public class AdminController {
 	public String viewchutro() {
 		return "admin/chutrotable";
 	}
-
 	// NhaTro
 	@RequestMapping(value = "nhatro", params = "chu")
 	public String viewnhatro(@PathParam("chu") int chu, ModelMap model) {
@@ -410,17 +384,14 @@ public class AdminController {
 		model.addAttribute("chu", chu);
 		return "admin/nhatrotable";
 	}
-
 	@RequestMapping(value = "approve/{id}", params = "chu")
 	public String approve(ModelMap model, @PathParam("chu") int chu, @PathVariable("id") int id,
 			RedirectAttributes re) {
 		Session session = factory.openSession();
 		NhaTro nhaTro = (NhaTro) session.get(NhaTro.class, id);
 		nhaTro.setTinhtrang(1);
-
 		Transaction t = session.beginTransaction();
 		try {
-
 			session.update(nhaTro);
 			t.commit();
 			re.addFlashAttribute("message", "Đã duyệt!");
@@ -442,10 +413,9 @@ public class AdminController {
 		nhaTro.setTinhtrang(-1);
 		Transaction t = session.beginTransaction();
 		try {
-
 			session.update(nhaTro);
 			t.commit();
-			re.addFlashAttribute("message", "Đã từ chối!");
+			re.addFlashAttribute("message", "Đã thay đổi!");
 		} catch (Exception e) {
 			t.rollback();
 			re.addFlashAttribute("message", "Lỗi rồi: " + e);
@@ -468,30 +438,23 @@ public class AdminController {
 		modelMap.addAttribute("chu", chu);
 		return "admin/nhatroform";
 	}
-
 	@RequestMapping(value = "editnhatro/{id}", params = { "chu" }, method = RequestMethod.POST)
 	public String editnhatro(@ModelAttribute("nhatro") NhaTro nhaTro, RedirectAttributes re, BindingResult errors,
 			ModelMap model, @RequestParam("photo1") MultipartFile photo1, @RequestParam("photo2") MultipartFile photo2,
 			@PathParam("chu") int chu) {
-
 		nhaTro.setTieuDe(nhaTro.getTieuDe().trim());
 		nhaTro.setMoTa(nhaTro.getMoTa().trim());
 		nhaTro.getDiachi().setDiaChi(nhaTro.getDiachi().getDiaChi().trim());
-
 		if (nhaTro.getTieuDe().isEmpty()) {
 			errors.rejectValue("tieuDe", "nhatro", "Hãy nhập tiêu đề !");
 		}
-
 		if (nhaTro.getMoTa().isEmpty()) {
 			errors.rejectValue("moTa", "nhatro", "Hãy nhập mô tả !");
 		}
-
 		if (nhaTro.getDiachi().getDiaChi().isEmpty()) {
 			errors.rejectValue("diaChi", "nhatro", "Hãy nhập địa chỉ !");
 		}
-
 		if (!errors.hasErrors()) {
-
 			Session session = factory.openSession();
 			NhaTro oldNhaTro = (NhaTro) session.get(NhaTro.class, nhaTro.getId());
 			oldNhaTro.setTieuDe(nhaTro.getTieuDe());
@@ -505,11 +468,9 @@ public class AdminController {
 			oldNhaTro.setMoTa(nhaTro.getMoTa());
 			oldNhaTro.getDiachi().setDiaChi(nhaTro.getDiachi().getDiaChi());
 			oldNhaTro.getDiachi().setWard((Ward) session.get(Ward.class, nhaTro.getDiachi().getWard().getId()));
-
 			Transaction t = session.beginTransaction();
 			try {
 				if (photo1.getOriginalFilename().isEmpty()) {
-
 				} else if (!(photo1.getContentType().contains("jpeg") || photo1.getContentType().contains("png"))) {
 					model.addAttribute("message", "File ảnh không đúng định dạng !");
 					model.addAttribute("nhatro", nhaTro);
@@ -550,7 +511,6 @@ public class AdminController {
 						return "admin/nhatroform";
 					}
 				}
-
 				session.update(oldNhaTro);
 				t.commit();
 				re.addFlashAttribute("message", "Thành công");
@@ -582,7 +542,7 @@ public class AdminController {
 		modelMap.addAttribute("action", "edit");
 		return "admin/khachthueform";
 	}
-
+	
 	@RequestMapping(value = "editkhachthue/{id}", method = RequestMethod.POST)
 	public String editkhach(@ModelAttribute("khachthue") KhachThue khachThue, RedirectAttributes re,
 			BindingResult errors, ModelMap model, @PathVariable("id") int id) {
@@ -599,10 +559,8 @@ public class AdminController {
 			oldKhachThue.setNamSinh(khachThue.getNamSinh());
 			oldKhachThue.setGioiTinh(khachThue.isGioiTinh());
 			oldKhachThue.setQueQuan(khachThue.getQueQuan());
-
 			Transaction t = session.beginTransaction();
 			try {
-
 				session.update(oldKhachThue);
 				t.commit();
 				re.addFlashAttribute("message", "Thành công");
@@ -686,7 +644,6 @@ public class AdminController {
 
 	@RequestMapping(value = "addthongbao", params = "user", method = RequestMethod.GET)
 	public String editthongbao(ModelMap modelMap, @PathParam("user") String user) {
-		Session session = factory.getCurrentSession();
 		modelMap.addAttribute("thongbao", new ThongBao());
 		modelMap.addAttribute("action", "add");
 		modelMap.addAttribute("user", user);
@@ -723,7 +680,6 @@ public class AdminController {
 		model.addAttribute("action", "add");
 		return "admin/thongbaoform";
 	}
-
 	@RequestMapping(value = "deletethongbao/{id}", params = { "user" })
 	public String deletethongbao(RedirectAttributes re, @PathVariable("id") int id, @PathParam("user") String user) {
 
@@ -743,5 +699,194 @@ public class AdminController {
 
 		return "redirect:/admin/thongbao.htm?user=" + user;
 	}
-
+	public List<Object> thongketaikhoan (Calendar dau, Calendar cuoi) throws Exception{
+		List<Object> data = new ArrayList<>();
+		//Đếm số tháng
+		int nam = cuoi.get(Calendar.YEAR) - dau.get(Calendar.YEAR);
+		int thang = cuoi.get(Calendar.MONTH) - dau.get(Calendar.MONTH);
+		int cot = nam*12 + thang + 1;
+		List<String> head = new ArrayList<>();
+		head.add("Thời gian"); head.add("Tổng"); head.add("Khách thuê"); head.add("Chủ trọ");
+		data.add(head);
+		String hql = String.format("FROM Account ORDER BY ngayDangKy ASC");
+		Calendar datetemp = dau;
+		List<Object> listaccount = getList(hql);
+		for (int i=0; i<cot; i++){	
+			List<Object> row = new ArrayList<Object>();
+			row.add(String.valueOf(datetemp.get(Calendar.MONTH)) + "/" + String.valueOf(datetemp.get(Calendar.YEAR)));
+			int count=0, khachthue=0, chutro=0;
+			for (Object o:listaccount) {
+				Account account = (Account) o;
+				if(account.getNgayDangKy().before(datetemp.getTime())||account.getNgayDangKy().equals(datetemp.getTime())) {
+					count++;
+					if(account.getRole().getId()==1) chutro++;
+					else khachthue++;
+				}else break;
+			}
+			row.add(count); row.add(khachthue); row.add(chutro);
+			data.add(row);
+			datetemp.add(Calendar.MONTH, 1);
+		}
+		return data;
+	}
+	public List<Object> thongkenhatro (Calendar dau, Calendar cuoi) throws Exception{
+		List<Object> data = new ArrayList<>();
+		//Đếm số tháng
+		int nam = cuoi.get(Calendar.YEAR) - dau.get(Calendar.YEAR);
+		int thang = cuoi.get(Calendar.MONTH) - dau.get(Calendar.MONTH);
+		int cot = nam*12 + thang + 1;
+		List<String> head = new ArrayList<>();
+		head.add("Thời gian"); head.add("Nhà Trọ");
+		data.add(head);
+		String hql = String.format("FROM NhaTro ORDER BY ngayThem ASC");
+		Calendar datetemp = dau;
+		List<Object> listnhatro = getList(hql);
+		for (int i=0; i<cot; i++){	
+			List<Object> row = new ArrayList<Object>();
+			if (datetemp.get(Calendar.MONTH)==0) row.add("12/" + String.valueOf(datetemp.get(Calendar.YEAR)));
+			else row.add(String.valueOf(datetemp.get(Calendar.MONTH)) + "/" + String.valueOf(datetemp.get(Calendar.YEAR)));
+			int count=0;
+			for (Object o:listnhatro) {
+				NhaTro nhatro = (NhaTro) o;
+				if(nhatro.getNgayThem().before(datetemp.getTime())||nhatro.getNgayThem().equals(datetemp.getTime())) {
+					count++;
+				}else break;
+			}
+			row.add(count);
+			data.add(row);
+			datetemp.add(Calendar.MONTH, 1);
+		}
+		return data;
+	}
+	public static List<Object> thongkediem(Account account, Calendar dau, Calendar cuoi) throws Exception{
+		//Đếm số tháng
+		int nam = cuoi.get(Calendar.YEAR) - dau.get(Calendar.YEAR);
+		int thang = cuoi.get(Calendar.MONTH) - dau.get(Calendar.MONTH);
+		int cot = nam*12 + thang + 1;
+		//data[] có dạng ["Thời gian", "Nhà trọ [1]", "Nhà trọ [2]",...],
+		//				["1/2021", 4.6, 3.0,...],
+		//				["2/2021", 4.3, 2.5,...],...
+		List<Object> data= new ArrayList<Object>();
+		List<Object> head = new ArrayList<Object>();
+		head.add("Thời gian");
+		for (NhaTro nt:account.getChuTro().getNhaTro()) {
+			head.add("Nhà trọ: [" + String.valueOf(nt.getId()) + "]");
+		}
+		data.add(head);
+		Calendar datetemp = dau;
+		int dem=0;
+		for (int i=0; i<cot; i++) {//i là dòng	
+			List<Object> row = new ArrayList<Object>();
+			if (datetemp.get(Calendar.MONTH)==0) row.add("12/" + String.valueOf(datetemp.get(Calendar.YEAR)));
+			else row.add(String.valueOf(datetemp.get(Calendar.MONTH)) + "/" + String.valueOf(datetemp.get(Calendar.YEAR)));
+			for (NhaTro nt:account.getChuTro().getNhaTro()) {
+				//tính điểm cho biểu đồ đường
+				dem=1;//mẫu số
+				float diem=5;
+				for (Comment comment:nt.getComment()) {
+					if(comment.getThoigian().before(datetemp)||comment.getThoigian().equals(datetemp)) {
+						diem+=comment.getDiem();											
+						dem++;
+					}//cho tới thời điểm được chọn diem = tổng điểm/mẫu số
+				}
+				row.add(diem/dem);
+			}
+			data.add(row);
+			datetemp.add(Calendar.MONTH, 1);
+		}
+		return data;
+	}
+	public static List<Object> thongketinhtrang(Account account, Calendar dau, Calendar cuoi) throws Exception{
+		List<Object> data = new ArrayList<Object>();
+		int dem=0;
+		for (NhaTro nt:account.getChuTro().getNhaTro()) {
+			List<Object> dong = new ArrayList<>();
+			dong.add("Nhà trọ [" + String.valueOf(nt.getId())+"]");
+			//					nhà trọ, dy, cdy, tc, tb
+			//data[] có dạng ["Nhà trọ [1]", 1, 1, 1, 1],
+			//				["Nhà trọ [2]", 1, 1, 1, 1],...
+			int dy=0, cdy=0, tc=0, tb=0;
+			boolean co=false;
+			for (LichHen lh:nt.getLichHen()) {
+				if(lh.getThoigian().before(cuoi.getTime())&&lh.getThoigian().after(dau.getTime())) {
+					if(lh.getDongy()) dy++;
+					else if(lh.getThoigian().before(new Date())) tb++;
+					else cdy++;
+					if(lh.getThanhcong()) tc++;
+					dong.add(dy); dong.add(tc); dong.add(tb); dong.add(cdy);dong.add(dem); dem++;
+					co=true;
+				}
+			}
+			if (co) data.add(dong);
+		}
+		return data;
+	}
+	@RequestMapping(value="thongke", method=RequestMethod.GET)
+	public String thongke() {
+		String date = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
+		return "redirect:thongke.htm?begin=2021-01-01&end="+date;
+	}
+	@SuppressWarnings("finally")
+	@RequestMapping(value="thongke", params={"begin","end"}, method = RequestMethod.GET)
+	public String thongke(ModelMap model, 
+		@RequestParam("begin") String begin, @RequestParam("end") String end){
+		try{
+			Calendar dau = new GregorianCalendar(Integer.parseInt(begin.split("-")[0]), Integer.parseInt(begin.split("-")[1]), Integer.parseInt(begin.split("-")[2]));
+			Calendar cuoi = new GregorianCalendar(Integer.parseInt(end.split("-")[0]), Integer.parseInt(end.split("-")[1]), Integer.parseInt(end.split("-")[2]));
+			Calendar dau1 = new GregorianCalendar(Integer.parseInt(begin.split("-")[0]), Integer.parseInt(begin.split("-")[1]), Integer.parseInt(begin.split("-")[2]));
+			Calendar cuoi1 = new GregorianCalendar(Integer.parseInt(end.split("-")[0]), Integer.parseInt(end.split("-")[1]), Integer.parseInt(end.split("-")[2]));
+			//kt ngày trc có > ngày sau ko
+		if (dau.equals(cuoi)||dau.after(cuoi)) throw new ParseException(end, 0);
+		model.addAttribute("taikhoans", thongketaikhoan(dau, cuoi));
+		model.addAttribute("nhatros", thongkenhatro(dau1, cuoi1));
+		} catch (ParseException e) {
+			model.addAttribute("error", "Ngày không hợp lệ!");
+		} catch (Exception e){
+			model.addAttribute("error", "Lỗi! " + e);
+		} finally {
+			model.addAttribute("begin", begin);
+			model.addAttribute("end", end);
+			return "admin/thongke";
+		}
+	}
+	@SuppressWarnings("finally")
+	@RequestMapping(value="thongkechutro", params= {"chutro", "begin", "end"}, method = RequestMethod.GET)
+	public String thongkechutro(ModelMap model, @RequestParam("chutro") int id,
+		@RequestParam("begin") String begin, @RequestParam("end") String end) {
+		Session session = factory.getCurrentSession();
+		try{
+			ChuTro chutro = (ChuTro) session.get(ChuTro.class, id);
+			Calendar dau = new GregorianCalendar(Integer.parseInt(begin.split("-")[0]), Integer.parseInt(begin.split("-")[1]), Integer.parseInt(begin.split("-")[2]));
+			Calendar cuoi = new GregorianCalendar(Integer.parseInt(end.split("-")[0]), Integer.parseInt(end.split("-")[1]), Integer.parseInt(end.split("-")[2]));
+			Calendar dau1 = new GregorianCalendar(Integer.parseInt(begin.split("-")[0]), Integer.parseInt(begin.split("-")[1]), Integer.parseInt(begin.split("-")[2]));
+			Calendar cuoi1 = new GregorianCalendar(Integer.parseInt(end.split("-")[0]), Integer.parseInt(end.split("-")[1]), Integer.parseInt(end.split("-")[2]));
+			//kt ngày trc có > ngày sau ko
+		if (dau.equals(cuoi)||dau.after(cuoi)) throw new ParseException(end, 0);
+		model.addAttribute("data", thongkediem(chutro.getAccount(), dau, cuoi));		
+		model.addAttribute("pie", thongketinhtrang(chutro.getAccount(), dau1, cuoi1));
+		} catch (ParseException e) {
+			model.addAttribute("error", "Ngày không hợp lệ!");
+		} catch (Exception e){
+			model.addAttribute("error", "Lỗi! " + e);
+		} finally {
+			session.clear();
+			model.addAttribute("begin", begin);
+			model.addAttribute("end", end);
+			model.addAttribute("chutro", id);
+			return "admin/thongkechutro";
+		}
+	}
+	@RequestMapping(value="thongkechutro", params={"chutro"}, method=RequestMethod.GET)
+	public String thongkechutro(@RequestParam("chutro") String id) {
+		String date = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
+		return "redirect:thongkechutro.htm?chutro="+id+"&begin=2021-01-01&end="+date;
+	}
+	@RequestMapping(value="thongkechutro", method=RequestMethod.GET)
+	public String thongkechutro() {
+		String date = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
+		String hql = "FROM ChuTro";
+		List<Object> list = getList(hql);
+		ChuTro chutro = (ChuTro) list.get(0);
+		return "redirect:thongkechutro.htm?chutro="+chutro.getId()+"&begin=2021-01-01&end="+date;
+	}
 }

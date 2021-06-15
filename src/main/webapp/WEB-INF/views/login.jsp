@@ -2,7 +2,6 @@
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <!DOCTYPE html>
 <html>
-
 <head>
 <meta charset="utf-8" />
 <title>Login</title>
@@ -15,7 +14,7 @@
 <script src="resources/semantic/semantic.min.js"></script>
 <style type="text/css">
 #homelogin {
-	background: url(resources/images/homeloan.jpg) center top no-repeat;
+	background: url(resources/images/razerlogin.jpg) center top no-repeat;
 	background-size: cover;
 	-webkit-background-size: cover;
 	background-attachment: fixed;
@@ -38,7 +37,6 @@ body>.grid {
 }
 </style>
 </head>
-
 <body id="homelogin">
 	<div class="ui middle aligned center aligned grid">
 		<div class="column">
@@ -74,7 +72,7 @@ body>.grid {
 			<div class="card-footer text-center" style="margin-top: 5px">
 
 				<div class="ui message">
-					<a href="password.htm">Forgot Password?</a>
+					<a href="password.htm">Quên mật khẩu</a>
 					<hr> 
 					Chưa có tài khoản? <a href="register.htm"> Đăng ký!</a>
 				</div>

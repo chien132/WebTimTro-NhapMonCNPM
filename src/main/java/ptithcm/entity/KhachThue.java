@@ -13,12 +13,12 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
-import org.hibernate.annotations.LazyCollection;
-import org.hibernate.annotations.LazyCollectionOption;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 @Entity
 @Table(name = "khachthue")
-public class KhachThue implements Comparable<KhachThue>{
+public class KhachThue{
 	@Id @GeneratedValue
 	private int id;
 	@ManyToOne @JoinColumn(name = "idtruong")
@@ -30,23 +30,13 @@ public class KhachThue implements Comparable<KhachThue>{
     @JoinColumn(name = "fkusername", referencedColumnName = "username")
     private Account account;
 	
-	@LazyCollection(LazyCollectionOption.FALSE)
-	@OneToMany(mappedBy = "khachThue")
+	@OneToMany(mappedBy = "khachThue", fetch = FetchType.EAGER)
+	@Fetch(value = FetchMode.SUBSELECT)
 	private Collection<LichHen> lichHen;
 	
-	@LazyCollection(LazyCollectionOption.FALSE)
-	@OneToMany(mappedBy = "khachThue")
-	private Collection<Comment> comments;
-	
-	
-
-	public Collection<Comment> getComments() {
-		return comments;
-	}
-
-	public void setComments(Collection<Comment> comments) {
-		this.comments = comments;
-	}
+	@OneToMany(mappedBy = "khachthue", fetch = FetchType.EAGER)
+	@Fetch(value = FetchMode.SUBSELECT)
+	private Collection<Comment> comment;
 
 	public int getId() {
 		return id;
@@ -104,13 +94,12 @@ public class KhachThue implements Comparable<KhachThue>{
 		this.lichHen = lichHen;
 	}
 
-	@Override
-	public int compareTo(KhachThue o) {
-		// TODO Auto-generated method stub
-		int diem = 0;
-		if(o.getNamSinh()-2 < this.getNamSinh() && this.getNamSinh() < o.getNamSinh()+2) diem++;
-		if(o.getTruong()==this.getTruong()) diem++;
-		if(o.getQueQuan()==this.getQueQuan()) diem++;
+	public float getDiem(KhachThue khachthue) {
+		float diem = 0;
+		if(khachthue.getNamSinh()-2 < this.getNamSinh() && this.getNamSinh() < khachthue.getNamSinh()+2) diem+=1;
+		if(khachthue.getTruong()==this.getTruong()) diem+=1;
+		if(khachthue.getQueQuan()==this.getQueQuan()) diem+=1;
+		if(khachthue.isGioiTinh()==this.isGioiTinh()) diem+=1;
 		return diem;
 	}
 }

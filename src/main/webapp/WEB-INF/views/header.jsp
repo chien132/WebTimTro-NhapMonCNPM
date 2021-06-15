@@ -7,14 +7,19 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Tìm nhà trọ</title>
+<title>G trọ Việt Nam</title>
 <base href="${pageContext.servletContext.contextPath}/">
 <script src="resources/js/jquery-3.6.0.js" type="text/javascript"></script>
-<link rel="stylesheet" type="text/css"
-	href="resources/semantic/semantic.min.css">
-<script src="resources/semantic/semantic.min.js" type="text/javascript"></script>
 <script src="resources/ckfinder/ckfinder.js" type="text/javascript"></script>
 <script type="text/javascript" src= "resources/ckeditor/ckeditor.js"></script>
+<link rel="icon" href="resources/images/icon/google.png" sizes="64x64">
+<link rel="stylesheet" type="text/css" href="resources/semantic/semantic.min.css">
+<script src="resources/semantic/semantic.min.js"></script>
+<!-- datatables:css -->
+<link rel="stylesheet" href="resources/vendors/datatables.net/datatables.net-se/css/dataTables.semanticui.min.css">
+<link rel="stylesheet" href="resources/vendors/datatables.net/datatables.net-responsive-se/css/responsive.semanticui.min.css">
+<link rel="stylesheet" href="resources/vendors/datatables.net/datatables.net-buttons-se/css/buttons.semanticui.min.css">
+<!-- endinject -->
 <style type="text/css">
 .dropbtn {
 	background-color: #ffffff00;
@@ -78,29 +83,55 @@
 }
 </style>
 </head>
-
 <body>
 	<!-- Following Menu -->
-	<div class="ui large top fixed hidden menu">
-			<a href="index.htm" class="item">
-				<i class="home icon"></i>
-			</a>
-			<div class="right menu">
-					<a href="register.htm" class="item">
-						<i class="user plus icon"></i>
-						Đăng kí
-					</a>
-					<a href="login.htm" class=" item">
-						<i class="sign in alternate icon"></i>
-						Đăng nhập
-					</a>
-				</div>
+	<div class="ui top fixed inverted menu">
+		<a href="index.htm" class="item">
+			<i class="google icon"></i>trọ Việt Nam
+		</a>
+		<div class="right menu">
+				<a href="register.htm" class="item">
+					<i class="user plus icon"></i>
+					Đăng kí
+				</a>
+				<a href="login.htm" class=" item">
+					<i class="sign in alternate icon"></i>
+					Đăng nhập
+				</a>
 			</div>
-	<h3 class="ui inverted header">Padding</h3>
-	<h1 style="text-align: center; color: white; -webkit-text-stroke-width: 1px;
-  -webkit-text-stroke-color: black;">KÊNH THÔNG TIN PHÒNG TRỌ SỐ MỘT VIỆT NAM</h1>
+		</div>
+	<h4 class="ui inverted header">Padding</h4>
+	<h1 style="text-align: center; color: #00ffff">KÊNH THÔNG TIN PHÒNG TRỌ SỐ MỘT VIỆT NAM</h1>
+	<div class="ui grid">
+		<div class="fourteen wide column">
+	  	<c:if test="${message!=null}"> 
+	  		<div class="ui teal message"> 
+	  			<i class="close icon"></i> 
+	  			<div class="header"> Thông báo </div>
+	  			<p> ${message} </p> 
+	  		</div> 
+	  	</c:if>
+	  	<c:if test="${error!=null}"> 
+	  		<div class="ui red message"> 
+	  			<i class="close icon"></i> 
+	  			<div class="header"> Lỗi! </div>
+	  			<p> ${error} </p> 
+	  		</div> 
+	  	</c:if>
+		<c:if test="${success!=null}"> 
+			<div class="ui green message"> 
+				<i class="close icon"></i> 
+	  			<div class="header"> Thành Công! </div>
+	  			<p> ${success} </p> 
+			</div> 
+		</c:if>
+		</div>
+	</div>
 
 <script>
+$('.message .close').on('click', function() {
+	$(this).closest('.message').transition('fade');
+});
 </script>
 </body>
 </html>

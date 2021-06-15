@@ -14,52 +14,53 @@
 <link rel="stylesheet" type="text/css" href="resources/semantic/semantic.css">
 <script src="resources/semantic/semantic.js" type="text/javascript"></script>
 
-<body>
-<form method="get" action="${pageContext.servletContext.contextPath}/khachthue/timkiem.htm" >		
-	<div class="ui grid" style="padding-left: 10%">
-		<div class="four wide column">
-		<b>Tỉnh/Thành phố</b> 
-		<select class="ui search dropdown" id="comboboxProvince" name="province"> <option disabled="disabled">--Chọn tỉnh--</option>
-			<c:forEach var="p" items="${provinces}">
-				<option value="${p.id}">${p.name}</option>
-			</c:forEach>
-		</select>
-	</div>
-	<div class="four wide column">
-		<b>Quận/Huyện</b> 
-		<select class="ui search dropdown" id="comboboxDistrict" name="district"><option disabled="disabled">--Chọn huyện--</option></select>
-	</div>
-	<div class="four wide column">
-		<b>Xã/Phường</b> 
-		<select class="ui search dropdown" id="comboboxWard" name="ward"><option disabled="disabled">--Chọn xã--</option></select>
-	</div>
-	<div class="three wide column">
-		<button class="ui primary button" style="margin-top: 20px;">Tìm kiếm</button>
-	</div>
-	</div>
-</form>
-	<div class="row">
-	<div class="ui text container big breadcrumb">
-		<h3>
-		<c:if test="${province!=null}">
-			<a href="khachthue/timkiem.htm?province=${province.id}">${province.name}></a>
-			<c:if test="${district!=null}">
-				<a href="khachthue/timkiem.htm?province=${province.id}&district=${district.id}">${district.name}></a>
-				<c:if test="${ward!=null}">
-				<a href="khachthue/timkiem.htm?province=${province.id}&district=${district.id}&ward=${ward.id}">${ward.name}></a>
+<form method="get" action="khachthue/timkiem.htm" >		
+	<div class="ui grid" style="padding-left:10%; backgroundz: white; border-radius: 5px; max-width: 120%; margin-top: 17px;">
+			<div class="four wide column">
+				<b>Tỉnh/Thành phố</b> <select class="fluid ui search selection dropdown" id="comboboxProvince" name="province">
+					<option disabled="disabled">--Chọn tỉnh--</option>
+					<c:forEach var="p" items="${provinces}">
+						<option value="${p.id}">${p.name}</option>
+					</c:forEach>
+				</select>
+			</div>
+			<div class="four wide column">
+				<b>Quận/Huyện</b> 
+				<select class="fluid ui search selection dropdown" id="comboboxDistrict" name="district">
+					<option disabled="disabled">--Chọn huyện--</option></select>
+			</div>
+			<div class="four wide column">
+				<b>Xã/Phường</b> 
+				<select class="fluid ui search selection dropdown" id="comboboxWard" name="ward">
+					<option disabled="disabled">--Chọn xã--</option></select>
+			</div>
+			<div class="four wide column">
+				<b></b>
+				<button class="ui left icon primary button" style="margin-top: 20px;"><i class="search icon"></i>Tìmkiếm</button>
+			</div>
+		</div>
+	</form>
+	<div class="row" style="padding-left:10%;">
+		<div class="ui text container big breadcrumb">
+			<h3>
+				<c:if test="${province!=null}">
+					<a href="khachthue/timkiem.htm?province=${province.id}">${province.name}></a>
+					<c:if test="${district!=null}">
+						<a
+							href="khachthue/timkiem.htm?province=${province.id}&amp;district=${district.id}">${district.name}></a>
+						<c:if test="${ward!=null}">
+							<a
+								href="khachthue/timkiem.htm?province=${province.id}&amp;district=${district.id}&amp;ward=${ward.id}">${ward.name}></a>
+						</c:if>
+					</c:if>
 				</c:if>
-			</c:if>
-		</c:if>
-		
-		
-		</h3>
+
+
+			</h3>
+		</div>
 	</div>
-	</div>
-	
 	<script type="text/javascript">
-	$('.ui.dropdown')
-	  .dropdown()
-	;
+	$('.ui.dropdown').dropdown();
 	
 let selected_province = "$('#comboboxProvince').find('option:selected')";
 let selected_district = '';
