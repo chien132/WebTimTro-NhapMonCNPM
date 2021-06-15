@@ -58,7 +58,12 @@ public class AdminController {
 	SessionFactory factory;
 	@Autowired
 	ServletContext context;
-	
+	public static boolean isContainSpecialWord(String str) {
+		Pattern VALID_INPUT_REGEX = Pattern.compile("[$&+,:;=\\\\\\\\?@#|/'<>.^*()%!-]",
+				Pattern.CASE_INSENSITIVE);
+		Matcher matcher = VALID_INPUT_REGEX.matcher(str);
+		return matcher.find();
+	}
 	@SuppressWarnings("unchecked")
 	List<Object> getList(String hql) {
 		Session session = factory.getCurrentSession();
@@ -889,4 +894,93 @@ public class AdminController {
 		ChuTro chutro = (ChuTro) list.get(0);
 		return "redirect:thongkechutro.htm?chutro="+chutro.getId()+"&begin=2021-01-01&end="+date;
 	}
+	@RequestMapping(value="truong", method = RequestMethod.GET)
+	public String truong(ModelMap model, HttpSession session) {
+		String hql = "FROM Truong";
+		model.addAttribute("truongs", getList(hql));
+		model.addAttribute("provinces", session.getAttribute("provinces"));
+		return "admin/truong";
+	}
+	@RequestMapping(value="truong/themtruong", method = RequestMethod.POST)
+	public String themtruong(RedirectAttributes re, 
+			@RequestParam("ten") String ten, @RequestParam("idprovince") int idprovince) {
+		if(isContainSpecialWord(ten)) {
+			re.addFlashAttribute("error", "Bạn đang muốn hack trang web à?");
+			return "redirect:../../logout.htm";
+		}
+		Session session2 = factory.getCurrentSession();
+		Province province = (Province) session2.get(Province.class, idprovince);
+		if(province==null) {
+			re.addFlashAttribute("error", "Không tìm thấy tỉnh bạn chọn!");
+			session2.clear();
+			return "redirect:../truong.htm";
+		}
+		String hql="FROM Truong WHERE ten='" + ten +"'";
+		List<Object> finds = getList(hql);
+		if(!finds.isEmpty()) {
+			re.addFlashAttribute("error", "Trùng tên trường!");
+			session2.clear();
+			return "redirect:../truong.htm";
+		}
+		session2.clear();
+		session2 = factory.openSession();
+		Transaction t = session2.beginTransaction();
+		try {
+			Truong truong = new Truong();
+			truong.setTen(ten);
+			truong.setProvince(province);
+			session2.save(truong);
+			t.commit();
+			re.addFlashAttribute("success", "Thêm thành công! ");
+		} catch (Exception e) {
+			t.rollback();
+			re.addFlashAttribute("error", "Lỗi! " + e);
+		} finally {
+			session2.clear();
+			return "redirect:../truong.htm";
+		}
+	}
+	@RequestMapping(value="truong/chinhsuatruong", method = RequestMethod.POST)
+	public String chinhsuatruong(RedirectAttributes re, @RequestParam("idtruong") int idtruong, 
+			@RequestParam("ten") String ten, @RequestParam("idprovince") int idprovince) {
+		if(isContainSpecialWord(ten)) {
+			re.addFlashAttribute("error", "Bạn đang muốn hack trang web à?");
+			return "redirect:../../logout.htm";
+		}
+		Session session2 = factory.getCurrentSession();
+		Province province = (Province) session2.get(Province.class, idprovince);
+		Truong truong = (Truong) session2.get(Truong.class, idtruong);
+		if(province==null) {
+			re.addFlashAttribute("error", "Không tìm thấy tỉnh/thành phố bạn chọn!");
+			session2.clear();
+			return "redirect:../truong.htm";
+		}
+		if(truong==null) {
+			re.addFlashAttribute("error", "Không tìm thấy trường bạn chọn!");
+			session2.clear();
+			return "redirect:../truong.htm";
+		}
+		String hql="FROM Truong WHERE ten='" + ten +"' AND NOT id=" + String.valueOf(idtruong);
+		List<Object> finds = getList(hql);
+		if(!finds.isEmpty()) {
+			re.addFlashAttribute("error", "Trùng tên trường!");
+			session2.clear();
+			return "redirect:../truong.htm";
+		}
+		session2.clear();
+		session2 = factory.openSession();
+		Transaction t = session2.beginTransaction();
+		try {
+			truong.setProvince(province);
+			truong.setTen(ten);
+			session2.update(truong);
+			t.commit();
+		} catch (Exception e) {
+			t.rollback();
+			re.addFlashAttribute("error", "Lỗi! " + e);
+		} finally {
+			session2.clear();
+			return "redirect:../truong.htm";
+		}
+	}	
 }
