@@ -231,7 +231,7 @@ public class AccountController {
 							+ user.getUsername() + ".png"));
 					Files.copy(from, to);
 					switch(Integer.parseInt(request.getParameter("roles"))){
-					case 1: {
+					case 2: {
 						KhachThue khachThue = new KhachThue();
 						khachThue.setAccount(user);
 						user.setKhachThue(khachThue);
@@ -240,7 +240,7 @@ public class AccountController {
 						session2.save(khachThue);
 						break;
 					}
-					case 2: {
+					case 1: {
 						ChuTro chuTro = new ChuTro();
 						chuTro.setAccount(user);
 						user.setChuTro(chuTro);

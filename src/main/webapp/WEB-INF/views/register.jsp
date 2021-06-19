@@ -99,13 +99,13 @@ body>.grid {
 							<label style="float: left;">Mục đích của bạn là gì?</label>
 							<div class="field" style="float: left;">
 								<div class="ui radio checkbox">
-									<input type="radio"  checked="checked" name="roles" value="1">
+									<input type="radio"  checked="checked" name="roles" value="2">
 									<label>Tìm trọ</label>
 								</div>
 							</div>
 							<div class="field" style="float: left;">
 								<div class="ui radio checkbox">
-									<input type="radio" name="roles" value="2"> <label>Cho thuê trọ</label>
+									<input type="radio" name="roles" value="1"> <label>Cho thuê trọ</label>
 								</div>
 							</div>
 						</div>
