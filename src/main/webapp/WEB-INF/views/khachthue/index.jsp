@@ -103,12 +103,11 @@
 				<jsp:include page="diachi.jsp"></jsp:include>
 		</div>
 	</div>
-	<br>
 	<div class="ui grid" style="padding-left:15%; max-width: 150%; margin-top: 17px; border-radius: 5px">
 		<div class="fourteen wide column" style="background-color: white; border-radius: 5px">
 			<br>
 			<div class="ui divided items" style="padding-left: 2%; padding-right: 5%">
-				<c:if test="${message!=null}"> <h3>${message}</h3> </c:if>
+				<c:if test="${nhatros!=null}">
 				<c:forEach var="nhatro" items="${nhatros}" begin="${page*10-10}" end="${page*10}">
 					<div class="item">
 						<div class="ui small image">
@@ -118,7 +117,6 @@
 								</a>
 							</div>
 						</div>
-
 						<div class="content">
 							<a class="header" href="khachthue/nhatro/${nhatro.id}.htm">${nhatro.tieuDe}</a>
 							<div class="meta">
@@ -147,22 +145,16 @@
 						<br>
 					</div>
 				</c:forEach>
+				</c:if>
 			</div>
-			<form action="${pageContext.servletContext.contextPath}/khachthue/timkiem.htm">
-			<div class="row">
-				<br><button class="ui basic button" name="page" value="1">Đầu</button>
-				<c:forEach var="pagenumber" begin="${page}" end="${page + 5}">
-					<c:if test="${page+5<=end}">
-					<button class="ui basic button" name="page" value="pagenumber">${pagenumber}</button>
-					</c:if>
-				</c:forEach>
-				<c:if test="${page+5<=end}"><button class="ui basic button" name="page" value="${end}">Cuối</button></c:if>
+			<form action="${pageContext.servletContext.contextPath}/khachthue/timkiem.htm" class="uig grid">
+			<div class="fourteen wide column">
+				<b>Trang: </b>
+				<div class="ui input"><input name="page" value="${page}"></div>
 			</div>
 			</form>
 		</div>
 	</div>
-
-
 	<div></div>
 	<script type="text/javascript">
 		$('.special.cards .image').dimmer({

@@ -140,7 +140,6 @@ public class NhaTro {
 			for (Comment comment:this.getComment()) {
 				diem+=comment.getDiem();
 			}
-			
 		}
 		diem=(diem+5)/(this.getComment().size()+1);
 		return diem;
@@ -194,7 +193,6 @@ public class NhaTro {
 		for (LichHen lichhen:this.getLichHen()) {
 			if(lichhen.getThanhcong()) diem+= khachthue.getDiem(lichhen.getKhachThue());
 		}
-		diem+=this.getDiem();
 		return diem;
 	}
 	public List<Object> getGioitinh(){
