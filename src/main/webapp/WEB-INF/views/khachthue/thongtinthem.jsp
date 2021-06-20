@@ -115,7 +115,6 @@
 							</div>
 						</div>
 						<div class="field">
-							<label><input type="hidden" name="username" value="${user.username}"> </label>
 							<button type="submit" class="ui positive right labeled icon button">
 								Lưu thay đổi
 								<i class="checkmark icon"></i>
