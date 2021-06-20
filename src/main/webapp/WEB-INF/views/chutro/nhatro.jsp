@@ -190,7 +190,8 @@
 		   XÓA BÀI ĐĂNG
   		</div>
   		<div class="content">
-			<p>Bạn thực sự muốn xóa bài đăng này?</p>
+			<p>Bạn chắc chắn muốn xóa bài đăng này?</p>
+			<p>Một khi bài đăng được xóa, rất nhiều thông tin liên quan sẽ bị thay đổi nghiêm trọng (lịch hẹn, comment đánh giá)</p>
 		</div>
 		<div class="actions">
 		  <div class="ui black basic cancel inverted button">
@@ -232,7 +233,7 @@
 				<div class="three fields">
 					<div class="field">
 						<label> Tỉnh/Thành phố </label> 
-						<select class="fluid ui search selection dropdown" id="comboboxProvince" name="province">
+						<select class="fluid ui search selection dropdown" id="comboboxProvince" name="province" required="required">
 							<option disabled="disabled">--Chọn tỉnh--</option>
 							<c:forEach var="p" items="${provinces}">
 								<option value="${p.id}">${p.name}</option>
@@ -241,17 +242,17 @@
 					</div>
 					<div class="field">
 						<label> Quận/Huyện </label> 
-						<select class="fluid ui search selection dropdown" id="comboboxDistrict" name="district">
+						<select class="fluid ui search selection dropdown" id="comboboxDistrict" name="district" required="required">
 							<option disabled="disabled">--Chọn huyện--</option></select>
 					</div>
 					<div class="field">
 						<label>Xã/Phường</label> 
-						<select class="fluid ui search selection dropdown" id="comboboxWard" name="ward">
+						<select class="fluid ui search selection dropdown" id="comboboxWard" name="ward" required="required">
 							<option disabled="disabled">--Chọn xã--</option></select>
 					</div>
 				</div>
 				<div class="field">
-				<input type="hidden" name="id" value="${nhatro.id}">
+				<input type="hidden" name="id" value="${nhatro.id}" required="required">
 					<button type="submit" class="ui positive right labeled icon button">
 						Lưu thay đổi
 						<i class="checkmark icon"></i>
@@ -406,7 +407,9 @@
 		$('.star.rating').rating({initialRating: 5, maxRating: 5}).rating('enable');
 		$(':radio').change(function() {console.log('New star rating: ' + this.value);});
 		$('.ui.pointing.dientich.dropdown').dropdown();
-		var ckeditor=CKEDITOR.replace('mota');
+		var ckeditor=CKEDITOR.replace('mota',{
+			height: '700px',
+		});
 		CKFinder.setupCKEditor(ckeditor,'${pageContext.request.contextPath}/resources/ckfinder/');
 		
 		function show(){

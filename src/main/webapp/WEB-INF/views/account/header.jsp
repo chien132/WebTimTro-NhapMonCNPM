@@ -172,7 +172,7 @@ body{
 	</div>
 	<h1 class="ui inverted header">Padding</h1>
 	<h1 style="text-align: center; color: #00ffff">KÊNH THÔNG TIN PHÒNG TRỌ SỐ MỘT VIỆT NAM</h1>
-  	<div class="ui grid">
+  	<div class="ui grid" style="padding-left: 15%">
 		<div class="fourteen wide column">
 	  	<c:if test="${message!=null}"> 
 	  		<div class="ui teal message"> 

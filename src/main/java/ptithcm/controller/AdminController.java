@@ -395,6 +395,7 @@ public class AdminController {
 		Session session = factory.openSession();
 		NhaTro nhaTro = (NhaTro) session.get(NhaTro.class, id);
 		nhaTro.setTinhtrang(1);
+		nhaTro.setNgayThem(new Date());
 		Transaction t = session.beginTransaction();
 		try {
 			session.update(nhaTro);
@@ -473,6 +474,7 @@ public class AdminController {
 			oldNhaTro.setMoTa(nhaTro.getMoTa());
 			oldNhaTro.getDiachi().setDiaChi(nhaTro.getDiachi().getDiaChi());
 			oldNhaTro.getDiachi().setWard((Ward) session.get(Ward.class, nhaTro.getDiachi().getWard().getId()));
+			oldNhaTro.setNgayThem(new Date());
 			Transaction t = session.beginTransaction();
 			try {
 				if (photo1.getOriginalFilename().isEmpty()) {

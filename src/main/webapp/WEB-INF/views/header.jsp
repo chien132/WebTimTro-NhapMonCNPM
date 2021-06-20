@@ -100,9 +100,9 @@
 				</a>
 			</div>
 		</div>
-	<h4 class="ui inverted header">Padding</h4>
+	<span class="ui inverted header">Padding</span>
 	<h1 style="text-align: center; color: #00ffff">KÊNH THÔNG TIN PHÒNG TRỌ SỐ MỘT VIỆT NAM</h1>
-	<div class="ui grid">
+	<div class="ui grid" style="margin-left: 15%">
 		<div class="fourteen wide column">
 	  	<c:if test="${message!=null}"> 
 	  		<div class="ui teal message"> 

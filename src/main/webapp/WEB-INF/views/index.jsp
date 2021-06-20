@@ -2,7 +2,7 @@
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
 <%@taglib uri="http://java.sun.com/jstl/fmt_rt" prefix="f"%>
 <jsp:include page="header.jsp"></jsp:include>
-<body style="background: url('resources/images/background/background.png') no-repeat; background-size: cover;">
+<body style="background: url('resources/images/background/background.png'); background-size: cover;">
 	<!-- Page Contents -->
 	<div class="five wide column" style="padding-left: 2%;">
 		<div class="ui segment column" style="position: fixed; max-width: 10%">
@@ -141,7 +141,7 @@
 			<form action="timkiem.htm" class="ui grid">
 			<div class="fourteen wide column">
 				<b>Trang: </b>
-				<div class="ui input"><input name="page" value="${page}"></div>
+				<div class="ui input"><input name="page" value="${page}" required="required" min="1" type="number"></div>
 			</div>
 			</form>
 		</div>

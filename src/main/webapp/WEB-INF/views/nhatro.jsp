@@ -37,7 +37,7 @@
 			</button>
 			<div class="ui basic modal">
 			  <div class="ui icon header">
-			    <i class="red exclamation triangle icon"></i>Thông báo</div>
+			    <i class="yellow exclamation triangle icon"></i>Thông báo</div>
 			  <div class="content">
 			    <p>Bạn cần đăng kí tài khoản để sử dụng tính năng này! </p>
 			  </div>
@@ -77,7 +77,10 @@
 							<span>${nhatro.soNguoiTrenPhong} người/phòng</span>
 						</div>
 						<div class="meta">
-							<span>Có tất cả: ${nhatro.soPhongChoThue} phòng</span>
+							<span>Số phòng cho thuê: ${nhatro.soPhongChoThue} phòng</span>
+						</div>
+						<div class="meta">
+							<span>Số phòng đã thuê: ${nhatro.soPhongChoThue-nhatro.soPhongCoSan} phòng</span>
 						</div>
 						<div class="meta">
 							<span>Giá thuê: ${nhatro.tienThue}vnd</span>

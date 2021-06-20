@@ -3,7 +3,7 @@
 <%@taglib uri="http://java.sun.com/jstl/fmt_rt" prefix="f"%>
 <jsp:include page="header.jsp"></jsp:include>
 	<!-- Page Contents -->
-<body style="background: url('resources/images/background/background(1).png') no-repeat; background-size: cover;">
+<body style="background: url('resources/images/background/background(1).png'); background-size: cover;">
 	<div class="five wide column" style="padding-left: 1%;">
 			<div class="ui segment column" style="position: fixed; max-width: 10%; ">
 				<form action="khachthue/loc.htm" method="post">
@@ -150,7 +150,7 @@
 			<form action="${pageContext.servletContext.contextPath}/khachthue/timkiem.htm" class="uig grid">
 			<div class="fourteen wide column">
 				<b>Trang: </b>
-				<div class="ui input"><input name="page" value="${page}"></div>
+				<div class="ui input"><input name="page" value="${page}" required="required" min="1" type="number"></div>
 			</div>
 			</form>
 		</div>

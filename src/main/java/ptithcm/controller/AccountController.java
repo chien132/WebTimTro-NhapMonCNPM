@@ -235,8 +235,8 @@ public class AccountController {
 						KhachThue khachThue = new KhachThue();
 						khachThue.setAccount(user);
 						user.setKhachThue(khachThue);
-						session2.save(user);
 						khachThue.setNamSinh(2000);
+						session2.save(user);
 						session2.save(khachThue);
 						break;
 					}
@@ -256,7 +256,7 @@ public class AccountController {
 					return "redirect:/login.htm";
 				} catch (Exception e) {
 					t.rollback();
-					model.addAttribute("message", 
+					re.addFlashAttribute("message", 
 							"Tạo tài khoản không thành công!");
 					return "redirect:/register.htm";
 				} finally {
@@ -371,7 +371,7 @@ public class AccountController {
 				re.addFlashAttribute("error", "Your password is not correct!");
 			}
 		}
-		return "redirect:../" + username  + ".htm";
+		return "redirect:../../account.htm";
 	}
 	@RequestMapping(value="account/doipassword/{username}", method=RequestMethod.POST)
 	public String doipassword(@PathVariable("username") String username,
@@ -419,7 +419,7 @@ public class AccountController {
 				re.addFlashAttribute("error", "Your old password is not correct!");
 			}
 		}
-		return "redirect:../" + username  + ".htm";
+		return "redirect:../../account.htm";
 	}
 	@RequestMapping(value="account/doicmnd/{username}", method=RequestMethod.POST)
 	public String doicmnd(@PathVariable("username") String username,
@@ -464,7 +464,7 @@ public class AccountController {
 				re.addFlashAttribute("error", "Your password is not correct!");
 			}
 		}
-		return "redirect:../" + username  + ".htm";
+		return "redirect:../../account.htm";
 	}
 	@RequestMapping(value="account/doisdt/{username}", method=RequestMethod.POST)
 	public String doisdt(@PathVariable("username") String username,
@@ -507,7 +507,7 @@ public class AccountController {
 				re.addFlashAttribute("error", "Your password is not correct!");
 			}
 		}
-		return "redirect:../" + username  + ".htm";
+		return "redirect:../../account.htm";
 	}
 	@RequestMapping(value="account/doiemail/{username}", method=RequestMethod.POST)
 	public String doiemail(@PathVariable("username") String username,
@@ -552,7 +552,7 @@ public class AccountController {
 				re.addFlashAttribute("error", "Your password is not correct!");
 			}
 		}
-		return "redirect:../" + username  + ".htm";
+		return "redirect:../../account.htm";
 	}
 	@RequestMapping(value="account/doirole/{username}", method=RequestMethod.POST)
 	public String doiemail(@PathVariable("username") String username,
@@ -578,7 +578,7 @@ public class AccountController {
 		}else {
 			re.addFlashAttribute("error", "Bạn không có quyền thực hiện hành động này");
 		}
-		return "redirect:../" + username  + ".htm";
+		return "redirect:../../account.htm";
 	}
 	@RequestMapping(value="account/doiavata/{username}", method=RequestMethod.POST)
 	public String doiavata(@PathVariable("username") String username, 
@@ -603,7 +603,7 @@ public class AccountController {
 				re.addFlashAttribute("error", "Lỗi!" + e);
 			}
 		}
-		return "redirect:../" + username  + ".htm";
+		return "redirect:../../account.htm";
 	}
 	@RequestMapping(value="report", method = RequestMethod.POST)
 	public String report(HttpSession session, RedirectAttributes re,

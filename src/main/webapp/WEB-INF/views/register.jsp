@@ -110,6 +110,7 @@ body>.grid {
 							</div>
 						</div>
 					</div>
+					<c:if test="${message!=null}"><div style="color: red; font: italic;">${message}</div></c:if>
 					<button class="ui fluid large teal submit button">Tạo tài khoản</button>
 				</div>
 			</form:form>

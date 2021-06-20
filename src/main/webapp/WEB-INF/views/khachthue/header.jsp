@@ -204,7 +204,7 @@
 		<a onclick="closeInfo()" style="color: white"> <i class="mail icon"></i> Thông Báo </a>
 		<c:forEach var="thongbao" items="${thongbaos}">
 			<c:if test="${thongbao!=null}">
-				<a href="${thongbao.link}" class="item">${thongbao.thongbao}</a>
+				<a href="${thongbao.link}" class="item">[${thongbao.thoigian}] ${thongbao.thongbao}</a>
 			</c:if>
 		</c:forEach>
 		</div>
@@ -230,7 +230,7 @@
 	</div>
 	<h1 class="ui inverted header">Padding</h1>
 	<h1 style="text-align: center; color: #00ffff">KÊNH THÔNG TIN PHÒNG TRỌ SỐ MỘT VIỆT NAM</h1>
-	<div class="ui grid">
+	<div class="ui grid" style="padding-left: 15%">
 		<div class="fourteen wide column">
 	  	<c:if test="${message!=null}"> 
 	  		<div class="ui teal message"> 

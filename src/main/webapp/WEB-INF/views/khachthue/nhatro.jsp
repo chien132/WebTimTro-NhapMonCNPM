@@ -63,7 +63,10 @@
 							<span>${nhatro.soNguoiTrenPhong} người/phòng</span>
 						</div>
 						<div class="meta">
-							<span>Có tất cả: ${nhatro.soPhongChoThue} phòng</span>
+							<span>Số phòng cho thuê: ${nhatro.soPhongChoThue} phòng</span>
+						</div>
+						<div class="meta">
+							<span>Số phòng đã thuê: ${nhatro.soPhongChoThue-nhatro.soPhongCoSan} phòng</span>
 						</div>
 						<div class="meta">
 							<span>Giá thuê: ${nhatro.tienThue} vnd </span>
@@ -79,7 +82,7 @@
 						</div>
 						<div class="extra">
 							<span><i class="user icon"></i>${nhatro.soLuot} đã
-								thuê</span>
+								thuê. Trong đó</span>
 							<c:if test="${nhatro.gioitinh[0]&&nhatro.gioitinh[1]>0}">
 								<span><i class="pink female icon"></i>${nhatro.gioitinh[1]} nam đã thuê</span>
 							</c:if>
@@ -200,7 +203,7 @@
 						    <i class="star icon"></i>
 						  </label>
 						  <label>
-						    <input type="radio" name="diem" value="5" id="diem_5"/>
+						    <input type="radio" name="diem" value="5" id="diem_5" checked="checked"/>
 						    <i class="star icon"></i>
 						    <i class="star icon"></i>
 						    <i class="star icon"></i>
