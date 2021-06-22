@@ -562,12 +562,13 @@ public class KhachThueController {
 		Comment c = (Comment) session2.get(Comment.class, idc);
 		session2.clear();
 		if(!comment.isBlank()) {
-			String[] temp = comment.trim().split("\r\n");
-			String after = new String();
-			for (String str:temp) {
-				after += String.format("<div class='text'>%s</div>", str);
-			}
-			comment = after;
+//			String[] temp = comment.trim().split("\r\n");
+//			String after = new String();
+//			for (String str:temp) {
+//				after += String.format("<div class='text'>%s</div>", str);
+//			}
+//			comment = after;
+			comment=comment.replaceAll("\r\n", "<br>");
 		}
 		if(c.getNhatro().getId()==id) {
 			session2 = factory.openSession();
@@ -613,7 +614,7 @@ public class KhachThueController {
 		} else {
 			re.addFlashAttribute("error", "Bạn không có quyền này");
 		}
-		return "redirect:" + String.valueOf(idnhatro) + ".htm";
+		return "redirect:../" + String.valueOf(idnhatro) + ".htm";
 	}
 	@RequestMapping(value="lichhen/td", method=RequestMethod.POST)
 	public String thaydoi(HttpSession session, RedirectAttributes re, 

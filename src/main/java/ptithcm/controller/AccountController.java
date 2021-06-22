@@ -103,7 +103,7 @@ public class AccountController {
 		if (!errors.hasErrors()) {
 			Session session = factory.getCurrentSession();
 			Account account = (Account) session.get(Account.class, user.getUsername());
-			if (account.getPassword().equals(user.getPassword())) {
+			if (account!=null && account.getPassword().equals(user.getPassword())) {
 				httpSession.setAttribute("username", account.getUsername());
 				httpSession.setAttribute("account", account);
 				if (account.getChuTro()!=null) {
