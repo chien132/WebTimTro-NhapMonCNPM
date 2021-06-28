@@ -588,7 +588,7 @@ public class AdminController {
 	// Thong bao
 
 	@RequestMapping(value = "thongbao", params = "user")
-	public String viewnhatro(@PathParam("user") String user, ModelMap model) {
+	public String viewthongbao(@PathParam("user") String user, ModelMap model) {
 		String hql = "";
 		if (user.equals("-1") || user.equals("")) {
 			hql = "from ThongBao";

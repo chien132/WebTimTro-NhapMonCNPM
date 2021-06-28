@@ -318,6 +318,9 @@ public class KhachThueController {
 			@RequestParam("songuoi") String sn, @RequestParam("giathue") String gt, 
 			RedirectAttributes re) {
 		try {
+			String hql="FROM NhaTro "
+					+ "WHERE tinhtrang = 1 ";
+			this.nhatros = getList(hql);
 			if (!d.isEmpty()) {
 				float diem = Float.parseFloat(d);
 				for (int i=0; i<this.nhatros.size();) {
