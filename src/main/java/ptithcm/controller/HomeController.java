@@ -41,20 +41,56 @@ public class HomeController {
 	District district;
 	Ward ward;
 	
-	public void sort(){
-		for(int i=0; i<this.nhatros.size()-1;i++) {
-			NhaTro ntmax = (NhaTro) this.nhatros.get(i);//nhà trọ vị trí max
-			int max=i;//vị trí
-			for(int j=this.nhatros.size()-1; j>i; j--) {
-				NhaTro nhatroj = (NhaTro) this.nhatros.get(j);
-				if(ntmax.getDiem()<nhatroj.getDiem()) {
-					max = j;
-					ntmax=nhatroj;
-				}
+	public int partition1(int low, int high) {
+		NhaTro pivot = (NhaTro) nhatros.get(high);
+		int left = low, right = high-1;
+		NhaTro temp;
+		while (true) {
+			while (left<=right) {
+				temp = (NhaTro) nhatros.get(left);
+				if (temp.getDiem()>pivot.getDiem()) break; 
+				left++;
 			}
-			NhaTro temp = (NhaTro) this.nhatros.get(i);
-			this.nhatros.set(i, ntmax);
-			this.nhatros.set(max, temp);
+			while (right>=left) {
+				temp = (NhaTro) nhatros.get(right);
+				if (temp.getDiem()<pivot.getDiem()) break; 
+				right--;
+			}
+			if(left>=right) break;
+			temp = (NhaTro) nhatros.get(left);
+			nhatros.set(left, nhatros.get(right));
+			nhatros.set(right, temp);
+			left++; right--;
+		}
+		temp = (NhaTro) nhatros.get(left);
+		nhatros.set(left, nhatros.get(high));
+		nhatros.set(high, temp);
+		return left;
+	}
+	
+//	public void sort(){
+//		for(int i=0; i<this.nhatros.size()-1;i++) {
+//			NhaTro ntmax = (NhaTro) this.nhatros.get(i);//nhà trọ vị trí max
+//			int max=i;//vị trí
+//			for(int j=this.nhatros.size()-1; j>i; j--) {
+//				NhaTro nhatroj = (NhaTro) this.nhatros.get(j);
+//				if(ntmax.getDiem()<nhatroj.getDiem()) {
+//					max = j;
+//					ntmax=nhatroj;
+//				}
+//			}
+//			NhaTro temp = (NhaTro) this.nhatros.get(i);
+//			this.nhatros.set(i, ntmax);
+//			this.nhatros.set(max, temp);
+//		}
+//	}
+	
+	public void quicksort(int low, int high) {
+		if(low<high) {
+			int pi = partition1(low, high);
+			quicksort(low, pi-1);
+			quicksort(pi+1, high);
+			
 		}
 	}
 	
@@ -83,7 +119,7 @@ public class HomeController {
 				+ "WHERE tinhtrang = 1 ";
 		this.nhatros = getList(hql);
 		if(this.nhatros.isEmpty()) model.addAttribute("error", "Không tìm thấy trang !");
-		else sort();
+		else quicksort(0, nhatros.size()-1);
 		model.addAttribute("nhatros", this.nhatros);
 		model.addAttribute("page", 1);
 		this.province = null;
@@ -115,7 +151,7 @@ public class HomeController {
 			if(this.nhatros.isEmpty()) {
 				model.addAttribute("error", "Không tìm thấy trang !");
 			} else {
-			sort();
+			quicksort(0, nhatros.size()-1);
 			Session session = factory.getCurrentSession();
 			this.province = (Province) session.get(Province.class, province);
 			this.district = (District) session.get(District.class, district);
@@ -154,7 +190,7 @@ public class HomeController {
 			if(this.nhatros.isEmpty()) {
 				model.addAttribute("error", "Không tìm thấy trang !");
 			}else {
-				sort();
+				quicksort(0, nhatros.size()-1);
 				Session session = factory.getCurrentSession();
 				this.province = (Province) session.get(Province.class, province);
 				this.district = (District) session.get(District.class, district);
@@ -192,7 +228,7 @@ public class HomeController {
 			if(this.nhatros.isEmpty()) {
 				model.addAttribute("error", "Không tìm thấy trang !");
 			}else {
-				sort();
+				quicksort(0, nhatros.size()-1);
 				Session session = factory.getCurrentSession();
 				this.province = (Province) session.get(Province.class, province);
 				this.district = null;
@@ -273,6 +309,7 @@ public class HomeController {
 					} else i++;
 				}
 			}
+			if (this.nhatros.isEmpty()) model.addAttribute("error", "Không tìm thấy trang !");
 			model.addAttribute("nhatros", nhatros);
 			model.addAttribute("page", 1);
 		}catch(Exception e) {
