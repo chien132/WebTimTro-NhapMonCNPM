@@ -2,12 +2,10 @@
 	pageEncoding="UTF-8"%>
 <%@taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
-<!DOCTYPE html>
-<html>
 <jsp:include page="header.jsp"></jsp:include>
 	<div class="ui grid" style='background: url(resources/images/background/background.png) repeat;'>
 		<div class="right floated thirteen wide computer sixteen wide phone column" id="content">
-			<div class="ui container grid" style="width: 100%; margin-top: 1%">
+			<div class="ui container grid" style="width: 100%; margin-top: 5px">
 				<div class="row">
 					<div class="fifteen wide computer sixteen wide phone centered column">
 						<h2> <a href="admin/thongkechutro.htm?chutro=${chutro}"> 
@@ -17,7 +15,7 @@
 						<div class="ui form">
 						<div class="fluid inline field">
 							<b> Chủ trọ </b>
-							<select name="chutro" class="ui search dropdown" >
+							<select name="chutro" class="ui search dropdown">
 							<c:forEach items="${chutros}" var="ct">
 								<option value="${ct.id}" label="${ct.account.username}" ${chutro==ct.id?'selected':''}/>
 							</c:forEach>

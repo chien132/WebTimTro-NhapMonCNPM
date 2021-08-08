@@ -40,22 +40,57 @@ public class HomeController {
 	Province province;
 	District district;
 	Ward ward;
-	int page;
 	
-	public void sort(){
-		for(int i=0; i<this.nhatros.size()-1;i++) {
-			NhaTro ntmax = (NhaTro) this.nhatros.get(i);//nhà trọ vị trí max
-			int max=i;//vị trí
-			for(int j=this.nhatros.size()-1; j>i; j--) {
-				NhaTro nhatroj = (NhaTro) this.nhatros.get(j);
-				if(ntmax.getDiem()<nhatroj.getDiem()) {
-					max = j;
-					ntmax=nhatroj;
-				}
+	public int partition1(int low, int high) {
+		NhaTro pivot = (NhaTro) nhatros.get(high);
+		int left = low, right = high-1;
+		NhaTro temp;
+		while (true) {
+			while (left<=right) {
+				temp = (NhaTro) nhatros.get(left);
+				if (temp.getDiem()>pivot.getDiem()) break; 
+				left++;
 			}
-			NhaTro temp = (NhaTro) this.nhatros.get(i);
-			this.nhatros.set(i, ntmax);
-			this.nhatros.set(max, temp);
+			while (right>=left) {
+				temp = (NhaTro) nhatros.get(right);
+				if (temp.getDiem()<pivot.getDiem()) break; 
+				right--;
+			}
+			if(left>=right) break;
+			temp = (NhaTro) nhatros.get(left);
+			nhatros.set(left, nhatros.get(right));
+			nhatros.set(right, temp);
+			left++; right--;
+		}
+		temp = (NhaTro) nhatros.get(left);
+		nhatros.set(left, nhatros.get(high));
+		nhatros.set(high, temp);
+		return left;
+	}
+	
+//	public void sort(){
+//		for(int i=0; i<this.nhatros.size()-1;i++) {
+//			NhaTro ntmax = (NhaTro) this.nhatros.get(i);//nhà trọ vị trí max
+//			int max=i;//vị trí
+//			for(int j=this.nhatros.size()-1; j>i; j--) {
+//				NhaTro nhatroj = (NhaTro) this.nhatros.get(j);
+//				if(ntmax.getDiem()<nhatroj.getDiem()) {
+//					max = j;
+//					ntmax=nhatroj;
+//				}
+//			}
+//			NhaTro temp = (NhaTro) this.nhatros.get(i);
+//			this.nhatros.set(i, ntmax);
+//			this.nhatros.set(max, temp);
+//		}
+//	}
+	
+	public void quicksort(int low, int high) {
+		if(low<high) {
+			int pi = partition1(low, high);
+			quicksort(low, pi-1);
+			quicksort(pi+1, high);
+			
 		}
 	}
 	
@@ -65,8 +100,11 @@ public class HomeController {
 	}
 	
 	@ModelAttribute("provinces")
-	public List<Province> getProvinces(){
-		return ProvinceService.findAll(factory);
+	public List<Province> getProvinces(HttpSession session){
+		if (session.getAttribute("provinces")==null) {
+			session.setAttribute("provinces", ProvinceService.findAll(factory));
+		}
+		return (List<Province>) session.getAttribute("provinces");
 	}
 		
 	List<Object> getList(String hql) {
@@ -75,25 +113,19 @@ public class HomeController {
 		List<Object> list = query.list();
 		return list;
 	}
-
 	@RequestMapping("index")
 	public String index(ModelMap model, HttpSession httpSession) {
 		String hql="FROM NhaTro "
 				+ "WHERE tinhtrang = 1 ";
 		this.nhatros = getList(hql);
-		if(this.nhatros.isEmpty()) {
-			model.addAttribute("error", "Không tìm thấy trang !");
-		}else {
-			sort();
-			this.page = 1;
-			model.addAttribute("nhatros", this.nhatros);
-			model.addAttribute("page", 1);
-			model.addAttribute("end", this.nhatros.size()%10!=0?this.nhatros.size()/10+1:this.nhatros.size()/10);
-			this.province = null;
-			this.district = null;
-			this.ward = null;
-			model.addAttribute("feature","index");
-		}
+		if(this.nhatros.isEmpty()) model.addAttribute("error", "Không tìm thấy trang !");
+		else quicksort(0, nhatros.size()-1);
+		model.addAttribute("nhatros", this.nhatros);
+		model.addAttribute("page", 1);
+		this.province = null;
+		this.district = null;
+		this.ward = null;
+		model.addAttribute("feature","index");
 		return "index";
 	}
 	@RequestMapping(value="timkiem", params = {"province","district","ward"})
@@ -119,15 +151,13 @@ public class HomeController {
 			if(this.nhatros.isEmpty()) {
 				model.addAttribute("error", "Không tìm thấy trang !");
 			} else {
-			sort();
-			this.page = 1;
+			quicksort(0, nhatros.size()-1);
 			Session session = factory.getCurrentSession();
 			this.province = (Province) session.get(Province.class, province);
 			this.district = (District) session.get(District.class, district);
 			this.ward = (Ward) session.get(Ward.class, ward);
 			model.addAttribute("nhatros", this.nhatros);
 			model.addAttribute("page", 1);
-			model.addAttribute("end", this.nhatros.size()%10!=0?this.nhatros.size()/10+1:this.nhatros.size()/10);
 			model.addAttribute("province", this.province);
 			model.addAttribute("district", this.district);
 			model.addAttribute("ward", this.ward);
@@ -150,31 +180,23 @@ public class HomeController {
 			int province = Integer.parseInt(p);
 			int district = Integer.parseInt(d);
 			if(district!=0) {
-				int dem=0;
-				while (true) {
-					for (Object nt:this.nhatros) {
-						NhaTro nhatro = (NhaTro) nt;
-						if(nhatro.getDistrictId()!=district) {
-							this.nhatros.remove(nt);
-							break;
-						}else dem++;
-						
-					} if(dem==this.nhatros.size()) break;
-					else dem=0;
+				for (int i=0; i<this.nhatros.size();) {
+					NhaTro nt = (NhaTro) this.nhatros.get(i);
+					if(nt.getDistrictId()!=district) {
+						this.nhatros.remove(i);
+					} else i++;
 				}
 			}
 			if(this.nhatros.isEmpty()) {
 				model.addAttribute("error", "Không tìm thấy trang !");
 			}else {
-				sort();
-				this.page = 1;
+				quicksort(0, nhatros.size()-1);
 				Session session = factory.getCurrentSession();
 				this.province = (Province) session.get(Province.class, province);
 				this.district = (District) session.get(District.class, district);
 				this.ward = null;
 				model.addAttribute("nhatros", this.nhatros);
 				model.addAttribute("page", 1);
-				model.addAttribute("end", this.nhatros.size()%10!=0?this.nhatros.size()/10+1:this.nhatros.size()/10);
 				model.addAttribute("province", this.province);
 				model.addAttribute("district", this.district);
 				model.addAttribute("ward", this.ward);
@@ -196,31 +218,23 @@ public class HomeController {
 		try {
 			int province = Integer.parseInt(p);
 			if(province!=0) {
-				int dem=0;
-				while (true) {
-					for (Object nt:this.nhatros) {
-						NhaTro nhatro = (NhaTro) nt;
-						if(nhatro.getProvinceId()!=province) {
-							this.nhatros.remove(nt);
-							break;
-						}else dem++;
-						
-					} if(dem==this.nhatros.size()) break;
-					else dem=0;
+				for (int i=0; i<this.nhatros.size();) {
+					NhaTro nt = (NhaTro) this.nhatros.get(i);
+					if(nt.getProvinceId()!=province) {
+						this.nhatros.remove(i);
+					} else i++;
 				}
 			}
 			if(this.nhatros.isEmpty()) {
 				model.addAttribute("error", "Không tìm thấy trang !");
 			}else {
-				sort();
-				this.page = 1;
+				quicksort(0, nhatros.size()-1);
 				Session session = factory.getCurrentSession();
 				this.province = (Province) session.get(Province.class, province);
 				this.district = null;
 				this.ward = null;
 				model.addAttribute("nhatros", this.nhatros);
 				model.addAttribute("page", 1);
-				model.addAttribute("end", this.nhatros.size()%10!=0?this.nhatros.size()/10+1:this.nhatros.size()/10);
 				model.addAttribute("province", this.province);
 				model.addAttribute("district", this.district);
 				model.addAttribute("ward", this.ward);
@@ -248,7 +262,6 @@ public class HomeController {
 	public String page(ModelMap model, @RequestParam("page") int page) {
 		model.addAttribute("nhatros", this.nhatros);
 		model.addAttribute("page", page);
-		model.addAttribute("end", this.nhatros.size()%10!=0?this.nhatros.size()/10+1:this.nhatros.size()/10);
 		return "index";
 	}
 	@RequestMapping(value="loc", method=RequestMethod.POST)
@@ -257,63 +270,48 @@ public class HomeController {
 			@RequestParam("songuoi") String sn, @RequestParam("giathue") String gt,
 			RedirectAttributes re) {
 		try {
+			String hql="FROM NhaTro "
+					+ "WHERE tinhtrang = 1 ";
+			this.nhatros = getList(hql);
 			if(!d.isEmpty()) {
 				float diem = Float.parseFloat(d);
-				int dem=0;
-				while(true) {
-					for (Object nt:this.nhatros) {
-						NhaTro nhatro = (NhaTro) nt;
-						if(nhatro.getDiem()<diem) {
-							this.nhatros.remove(nt);
-							break;
-						} else dem++;
-					}if(dem==this.nhatros.size()) break;
-					else dem=0;
+				for (int i=0; i<this.nhatros.size();) {
+					NhaTro nt = (NhaTro) this.nhatros.get(i);
+					if(nt.getDiem()<diem) {
+						this.nhatros.remove(i);
+					} else i++;
 				}
 			}
 			if(!sl.isEmpty()) {
-				int soluot = Integer.parseInt(sl), dem=0;
-				while(true) {
-					for (Object nt:this.nhatros) {
-						NhaTro nhatro = (NhaTro) nt;
-						if(nhatro.getSoLuot()<soluot) {
-							this.nhatros.remove(nt);
-							break;
-						}else dem++;
-					}if(dem==this.nhatros.size()) break;
-					else dem=0;
+				int soluot = Integer.parseInt(sl);
+				for (int i=0; i<this.nhatros.size();) {
+					NhaTro nt = (NhaTro) this.nhatros.get(i);
+					if(nt.getSoLuot()<soluot) {
+						this.nhatros.remove(i);
+					} else i++;
 				}
 			}
 			if(!sn.isEmpty()) {
-				int songuoi = Integer.parseInt(sn), dem=0;
-				while(true) {
-					for (Object nt:this.nhatros) {
-						NhaTro nhatro = (NhaTro) nt;
-						if(nhatro.getSoNguoiTrenPhong()<songuoi) {
-							this.nhatros.remove(nt);
-							break;
-						}else dem++;
-					}if(dem==this.nhatros.size()) break;
-					else dem=0;
+				int songuoi = Integer.parseInt(sn);
+				for (int i=0; i<this.nhatros.size();) {
+					NhaTro nt = (NhaTro) this.nhatros.get(i);
+					if(nt.getSoNguoiTrenPhong()<songuoi) {
+						this.nhatros.remove(i);
+					} else i++;
 				}
 			}
 			if(!gt.isEmpty()&&!gt.equals("0")) {
 				BigDecimal giathue = new BigDecimal(gt);
-				int dem=0;
-				while(true) {
-					for (Object nt:this.nhatros) {
-						NhaTro nhatro = (NhaTro) nt;
-						if(nhatro.getTienThue().compareTo(giathue)>0) {
-							this.nhatros.remove(nt);
-							break;
-						}else dem++;
-					}if(dem==this.nhatros.size()) break;
-					else dem=0;
+				for (int i=0; i<this.nhatros.size();) {
+					NhaTro nt = (NhaTro) this.nhatros.get(i);
+					if(nt.getTienThue().compareTo(giathue)>0) {
+						this.nhatros.remove(i);
+					} else i++;
 				}
 			}
+			if (this.nhatros.isEmpty()) model.addAttribute("error", "Không tìm thấy trang !");
 			model.addAttribute("nhatros", nhatros);
 			model.addAttribute("page", 1);
-			model.addAttribute("end", nhatros.size()%10!=0?nhatros.size()/10+1:nhatros.size()/10);
 		}catch(Exception e) {
 			re.addFlashAttribute("message", "Không thể lọc ! " + e);
 			return "redirect:index.htm";

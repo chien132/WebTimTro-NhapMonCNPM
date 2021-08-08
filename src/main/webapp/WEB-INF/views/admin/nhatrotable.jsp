@@ -2,19 +2,11 @@
 	pageEncoding="UTF-8"%>
 <%@taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
 <%@taglib uri="http://java.sun.com/jstl/fmt_rt" prefix="f"%>
-<!DOCTYPE html>
-<html>
-
-<head>
-
-</head>
-
-<body>
-	<div class="ui grid">
-		<jsp:include page="header.jsp"></jsp:include>
+<jsp:include page="header.jsp"></jsp:include>
+	<div class="ui grid" style="background: url(resources/images/background/background.png) repeat; background-size: cover;">	
 		<!-- BEGIN CONTEN -->
 		<div class="right floated thirteen wide computer sixteen wide phone column" id="content">
-			<div class="ui container grid" style="width: 100%;">
+			<div class="ui container grid" style="width: 100%; margin-top: 5px">
 				<div class="row">
 					<div class="fifteen wide computer sixteen wide phone centered column">
 						<h2>

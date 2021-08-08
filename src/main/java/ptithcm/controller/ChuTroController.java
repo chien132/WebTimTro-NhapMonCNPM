@@ -257,8 +257,8 @@ public class ChuTroController {
 			session2 = factory.openSession();
 			Transaction t = session2.beginTransaction();
 			try {
-				session2.save(nhatro);
 				session2.save(diaChi);
+				session2.save(nhatro);
 				ThongBao thongbao = new ThongBao();
 				thongbao.setAccount(account);
 				thongbao.setThoigian(new Date());
@@ -272,7 +272,7 @@ public class ChuTroController {
 				re.addFlashAttribute("success", "Bài viết đã lưu thành công!");
 			} catch (Exception e) {
 				t.rollback();
-				re.addAttribute("error", "Lỗi! Bài viết của bạn chưa được lưu! Hãy kiểm tra lại thông tin và gửi lại! Nếu vẫn không được hãy báo với admin!");
+				re.addFlashAttribute("error", "Lỗi! Bài viết của bạn chưa được lưu! Hãy kiểm tra lại thông tin và gửi lại! Nếu vẫn không được hãy báo với admin!");
 				return "redirect:taobaidang.htm";
 			} finally {
 				session2.clear();
@@ -321,7 +321,7 @@ public class ChuTroController {
 			re.addFlashAttribute("success", "Thay đổi thành công!");
 		} catch (Exception e) {
 			t.rollback();
-			re.addAttribute("error", "Lỗi! Bài viết của bạn chưa được lưu! Hãy kiểm tra lại thông tin và gửi lại! Nếu vẫn không được hãy báo với admin!");
+			re.addFlashAttribute("error", "Lỗi! Bài viết của bạn chưa được lưu! Hãy kiểm tra lại thông tin và gửi lại! Nếu vẫn không được hãy báo với admin!");
 			return "redirect:" + id + ".htm";
 		} finally {
 			session2.clear();
@@ -354,7 +354,7 @@ public class ChuTroController {
 			re.addFlashAttribute("success", "Thay đổi thành công!");
 		} catch (Exception e) {
 			t.rollback();
-			re.addAttribute("error", "Lỗi! Bài viết của bạn chưa được lưu! Hãy kiểm tra lại thông tin và gửi lại! Nếu vẫn không được hãy báo với admin!");
+			re.addFlashAttribute("error", "Lỗi! Bài viết của bạn chưa được lưu! Hãy kiểm tra lại thông tin và gửi lại! Nếu vẫn không được hãy báo với admin!");
 			return "redirect:" + id + ".htm";
 		} finally {
 			session2.clear();
@@ -388,7 +388,7 @@ public class ChuTroController {
 			re.addFlashAttribute("success", "Thay đổi thành công!");
 		} catch (Exception e) {
 			t.rollback();
-			re.addAttribute("error", "Lỗi! Bài viết của bạn chưa được lưu! Hãy kiểm tra lại thông tin và gửi lại! Nếu vẫn không được hãy báo với admin!");
+			re.addFlashAttribute("error", "Lỗi! Bài viết của bạn chưa được lưu! Hãy kiểm tra lại thông tin và gửi lại! Nếu vẫn không được hãy báo với admin!");
 			return "redirect:" + id + ".htm";
 		} finally {
 			session2.clear();
@@ -422,7 +422,7 @@ public class ChuTroController {
 			re.addFlashAttribute("success", "Thay đổi thành công!");
 		} catch (Exception e) {
 			t.rollback();
-			re.addAttribute("error", "Lỗi! Bài viết của bạn chưa được lưu! Hãy kiểm tra lại thông tin và gửi lại! Nếu vẫn không được hãy báo với admin!");
+			re.addFlashAttribute("error", "Lỗi! Bài viết của bạn chưa được lưu! Hãy kiểm tra lại thông tin và gửi lại! Nếu vẫn không được hãy báo với admin!");
 			return "redirect:" + id + ".htm";
 		} finally {
 			session2.clear();
@@ -456,7 +456,7 @@ public class ChuTroController {
 			re.addFlashAttribute("success", "Thay đổi thành công!");
 		} catch (Exception e) {
 			t.rollback();
-			re.addAttribute("error", "Lỗi! Bài viết của bạn chưa được lưu! Hãy kiểm tra lại thông tin và gửi lại! Nếu vẫn không được hãy báo với admin!");
+			re.addFlashAttribute("error", "Lỗi! Bài viết của bạn chưa được lưu! Hãy kiểm tra lại thông tin và gửi lại! Nếu vẫn không được hãy báo với admin!");
 			return "redirect:" + id + ".htm";
 		} finally {
 			session2.clear();
@@ -490,7 +490,7 @@ public class ChuTroController {
 			re.addFlashAttribute("success", "Thay đổi thành công!");
 		} catch (Exception e) {
 			t.rollback();
-			re.addAttribute("error", "Lỗi! Bài viết của bạn chưa được lưu! Hãy kiểm tra lại thông tin và gửi lại! Nếu vẫn không được hãy báo với admin!");
+			re.addFlashAttribute("error", "Lỗi! Bài viết của bạn chưa được lưu! Hãy kiểm tra lại thông tin và gửi lại! Nếu vẫn không được hãy báo với admin!");
 			return "redirect:" + id + ".htm";
 		} finally {
 			session2.clear();
@@ -524,7 +524,7 @@ public class ChuTroController {
 			re.addFlashAttribute("success", "Thay đổi thành công!");
 		} catch (Exception e) {
 			t.rollback();
-			re.addAttribute("error", "Lỗi! Bài viết của bạn chưa được lưu! Hãy kiểm tra lại thông tin và gửi lại! Nếu vẫn không được hãy báo với admin!");
+			re.addFlashAttribute("error", "Lỗi! Bài viết của bạn chưa được lưu! Hãy kiểm tra lại thông tin và gửi lại! Nếu vẫn không được hãy báo với admin!");
 			return "redirect:" + id + ".htm";
 		} finally {
 			session2.clear();
@@ -555,7 +555,7 @@ public class ChuTroController {
 			re.addFlashAttribute("success", "Thay đổi thành công!");
 		} catch (Exception e) {
 			t.rollback();
-			re.addAttribute("error", "Lỗi! Bài viết của bạn chưa được lưu! Hãy kiểm tra lại thông tin và gửi lại! Nếu vẫn không được hãy báo với admin!");
+			re.addFlashAttribute("error", "Lỗi! Bài viết của bạn chưa được lưu! Hãy kiểm tra lại thông tin và gửi lại! Nếu vẫn không được hãy báo với admin!");
 			return "redirect:" + id + ".htm";
 		} finally {
 			session2.clear();
@@ -586,7 +586,7 @@ public class ChuTroController {
 			re.addFlashAttribute("success", "Thay đổi thành công!");
 		} catch (Exception e) {
 			t.rollback();
-			re.addAttribute("error", "Lỗi! Bài viết của bạn chưa được lưu! Hãy kiểm tra lại thông tin và gửi lại! Nếu vẫn không được hãy báo với admin!");
+			re.addFlashAttribute("error", "Lỗi! Bài viết của bạn chưa được lưu! Hãy kiểm tra lại thông tin và gửi lại! Nếu vẫn không được hãy báo với admin!");
 			return "redirect:" + id + ".htm";
 		} finally {
 			session2.clear();

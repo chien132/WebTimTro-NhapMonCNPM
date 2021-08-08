@@ -30,16 +30,16 @@
 		</div>
 		<div class="field">
 			<label> Tiêu đề </label>
-			<input name="tieuDe" value="${nhatro.tieuDe}" placeholder="Tiêu đề">
+			<input name="tieuDe" value="${nhatro.tieuDe}" placeholder="Tiêu đề" required="required">
 		</div>	
 		<div class="field">
 				<label> Địa chỉ </label>
-				<input name="diachi" value="${nhatro.diachi.diachi}" placeholder="Số nhà">
+				<input name="diachi" value="${nhatro.diachi.diachi}" placeholder="Số nhà" required="required">
 		</div>
 		<div class="three fields">
 			<div class="field">
 				<label> Tỉnh/Thành phố </label> 
-				<select class="fluid ui search selection dropdown" id="comboboxProvince" name="province">
+				<select class="fluid ui search selection dropdown" id="comboboxProvince" name="province" required="required">
 					<option disabled="disabled">--Chọn tỉnh--</option>
 					<c:forEach var="p" items="${provinces}">
 						<option value="${p.id}">${p.name}</option>
@@ -48,46 +48,46 @@
 			</div>
 			<div class="field">
 				<label> Quận/Huyện </label> 
-				<select class="fluid ui search selection dropdown" id="comboboxDistrict" name="district">
+				<select class="fluid ui search selection dropdown" id="comboboxDistrict" name="district" required="required">
 					<option disabled="disabled">--Chọn huyện--</option></select>
 			</div>
 			<div class="field">
 				<label>Xã/Phường</label> 
-				<select class="fluid ui search selection dropdown" id="comboboxWard" name="ward">
+				<select class="fluid ui search selection dropdown" id="comboboxWard" name="ward" required="required">
 					<option disabled="disabled">--Chọn xã--</option></select>
 			</div>
 		</div>
 		<div class="three fields">
 			<div class="field">
 				<label> Tổng số phòng </label>
-				<input name="soPhongChoThue" type="number" value="${nhatro.soPhongChoThue}" placeholder="1">
+				<input name="soPhongChoThue" type="number" value="${nhatro.soPhongChoThue}" placeholder="1" required="required">
 			</div>
 			<div class="field">
 				<label> Số người trên phòng </label>
-				<input name="soNguoiTrenPhong" type="number" value="${nhatro.soNguoiTrenPhong}" placeholder="1">
+				<input name="soNguoiTrenPhong" type="number" value="${nhatro.soNguoiTrenPhong}" placeholder="1" required="required">
 			</div>
 			<div class="field">
 				<label> Số phòng cho thuê </label>
-				<input name="soPhongCoSan" type="number" value="${nhatro.soPhongCoSan}" placeholder="1">
+				<input name="soPhongCoSan" type="number" value="${nhatro.soPhongCoSan}" placeholder="1" required="required">
 			</div>
 		</div>
 		<div class="three fields">
 			<div class="field">
 				<label> Diện tích (m2) </label>
-				<input name="dienTich" value="${nhatro.dienTich}" placeholder="2">
+				<input name="dienTich" value="${nhatro.dienTich}" placeholder="2" required="required">
 			</div>
 			<div class="field">
 				<label> Tiền Cọc (vnd) </label>
-				<input name="tienCoc" value="${nhatro.tienCoc}" placeholder="1000000">
+				<input name="tienCoc" value="${nhatro.tienCoc}" placeholder="1000000" required="required">
 			</div>
 			<div class="field">
 				<label> Giá thuê (vnd) </label>
-				<input name="tienThue" value="${nhatro.tienThue}" placeholder="1000000">
+				<input name="tienThue" value="${nhatro.tienThue}" placeholder="1000000" required="required">
 			</div>
 		</div>
 		<div class="field">
 			<label> Nội dung </label>
-			<textarea id="mota" name="mota" cols="100" rows="200" placeholder="Nội dung">${nhatro.moTa}</textarea>
+			<textarea id="mota" name="mota" cols="100" rows="200" placeholder="Nội dung" required="required">${nhatro.moTa}</textarea>
 		</div>
 		<button class="ui divided green labeled icon submit button" type="submit">
 			<c:choose>

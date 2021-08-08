@@ -25,13 +25,6 @@
 		<div class="meta">
 			<i class="calendar icon"></i> Tham gia: ${user.ngayDangKy}
 		</div>
-		<c:if test="${sessionScope['role']==3}">
-			<div class="fluid ui red left icon button">
-				<a href="account/delete.htm"> Xóa tài khoản <i
-					class="user times icon"></i>
-				</a>
-			</div>
-		</c:if>
 	</div>
 </div>
 <div class="ui grid"
@@ -101,25 +94,10 @@
 				<tr>
 					<td><h4>Tài khoản:</h4></td>
 					<td>${user.role.name}</td>
-					<td><c:if test="${sessionScope['role']==3}">
-							<button class="circular ui basic icon button"
-								onclick="$('.basic.role.modal').modal('show');">
-								<i class="icon teal edit"></i>
-							</button>
-						</c:if></td>
+					<td></td>
 				</tr>
 			</tbody>
 		</table>
-		<c:if test="${error}">
-			<div class="ui error">
-				<div class="header">${error}</div>
-			</div>
-		</c:if>
-		<c:if test="${success}">
-			<div class="ui error">
-				<div class="header" style="color: green">${success}</div>
-			</div>
-		</c:if>
 		<div class="ui large hoten modal">
 			<div class="header">Chỉnh sửa họ tên</div>
 			<div class="content">
@@ -127,11 +105,11 @@
 					<div class="ui form">
 						<div class="field">
 							<label>Họ tên: </label> <input class="ui input" type="text"
-								name="hoten" value="${user.hoTen}">
+								name="hoten" value="${user.hoTen}" required="required">
 						</div>
 						<div class="field">
 							<label>Password: </label> <input class="ui input" type="password"
-								name="password">
+								name="password" required="required">
 						</div>
 						<div class="field">
 							<button type="submit"
@@ -151,15 +129,15 @@
 					<div class="ui form">
 						<div class="field">
 							<label>Password cũ: </label> <input class="ui input"
-								type="password" name="oldpassword">
+								type="password" name="oldpassword" required="required">
 						</div>
 						<div class="field">
 							<label>Password mới: </label> <input class="ui input"
-								type="password" name="password">
+								type="password" name="password" required="required">
 						</div>
 						<div class="field">
 							<label>Nhập lại password: </label> <input class="ui input"
-								type="password" name="repassword">
+								type="password" name="repassword" required="required">
 						</div>
 						<div class="field">
 							<button type="submit"
@@ -178,11 +156,11 @@
 					<div class="ui form">
 						<div class="field">
 							<label>Chứng minh thư/căn cước </label> <input class="ui input"
-								type="text" name="cmnd" value="${user.cmnd}">
+								type="text" name="cmnd" value="${user.cmnd}" required="required">
 						</div>
 						<div class="field">
 							<label>Password: </label> <input class="ui input" type="password"
-								name="password">
+								name="password" required="required">
 						</div>
 						<div class="field">
 							<button type="submit"
@@ -201,11 +179,11 @@
 					<div class="ui form">
 						<div class="field">
 							<label>Số điện thoại: </label> <input class="ui input"
-								type="text" name="sdt" value="${user.dienThoai}">
+								type="text" name="sdt" value="${user.dienThoai}" required="required">
 						</div>
 						<div class="field">
 							<label>Password: </label> <input class="ui input" type="password"
-								name="password">
+								name="password" required="required">
 						</div>
 						<div class="field">
 							<button type="submit"
@@ -225,11 +203,11 @@
 					<div class="ui form">
 						<div class="field">
 							<label>Email: </label> <input class="ui input" type="text"
-								name="email" value="${user.email}">
+								name="email" value="${user.email}" required="required">
 						</div>
 						<div class="field">
 							<label>Password: </label> <input class="ui input" type="password"
-								name="password">
+								name="password" required="required">
 						</div>
 						<div class="field">
 							<button class="ui positive right labeled icon button">
@@ -239,24 +217,6 @@
 					</div>
 				</form>
 			</div>
-		</div>
-		<div class="ui basic role modal">
-			<div class="ui icon header">
-				<i class="yellow exclamation triangle icon"></i> Thay đổi role?
-			</div>
-			<div class="content">
-				<p>Bạn muốn thay đổi role của tài khoản này?</p>
-			</div>
-			<form action="account/doirole/${user.username}.htm" method="post">
-				<div class="actions">
-					<div class="ui red basic cancel inverted button">
-						<i class="remove icon"></i> Không
-					</div>
-					<button type="submit" class="ui positive right labeled icon button">
-						<i class="checkmark icon"></i> Có
-					</button>
-				</div>
-			</form>
 		</div>
 		<div class="ui large avata modal">
 			<div class="header">Đổi avata</div>

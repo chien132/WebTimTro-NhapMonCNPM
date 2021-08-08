@@ -3,16 +3,11 @@
 <%@taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
 <%@taglib uri="http://java.sun.com/jstl/fmt_rt" prefix="f"%>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
-<!DOCTYPE html>
-<html>
-<head>
-</head>
-<body>
-	<div class="ui grid">
-		<jsp:include page="header.jsp"></jsp:include>
+<jsp:include page="header.jsp"></jsp:include>
+	<div class="ui grid">	
 		<!-- BEGIN CONTEN -->
 		<div class="right floated thirteen wide computer sixteen wide phone column" id="content">
-			<div class="ui container grid" style="width: 100%;">
+			<div class="ui container grid" style="width: 100%; margin-top: 5px">
 				<div class="row">
 					<div class="fifteen wide computer sixteen wide phone centered column">
 						<h2><i class="map icon"></i> Quản lý trường </h2>
@@ -35,8 +30,6 @@
 								</c:if>
 								<!-- BEGIN DATATABLE -->
 								<div class="ui stacked segment rig" style="overflow: auto;">
-									<h3><i class="map icon"></i> Danh sách các trường thuộc ${province.id} </h3>
-									<div class="ui divider"></div>
 									<table id="mytable" class="ui celled table responsive nowrap unstackable"
 										style="width: 100%;">
 										<thead style="text-align: center;">
@@ -62,13 +55,14 @@
 									</table>
 								</div>
 								<!-- END DATATABLE -->
-							</div> 
-							<form action="admin/truong/themtruong.htm" method="post" class="right aligned sixteen wide computer sixteen wide phone centered column">
+							</div>
+							<div class="right aligned sixteen wide computer sixteen wide phone centered column">
+							<form action="admin/truong/themtruong.htm" method="post">
 							<div class="ui grid">
-								<div class="six wide column"><div class="ui fluid input">
+								<div class="seven wide column"><div class="ui fluid input">
 								<input name="ten" placeholder="Tên trường">
 								</div></div>
-								<div class="six wide column">
+								<div class="seven wide column">
 									<select class="ui fluid search dropdown" required="required" name="idprovince">
 									<option disabled="disabled">--Chọn tỉnh/thành phố--</option>
 									<c:forEach var="p" items="${provinces}">
@@ -79,6 +73,7 @@
 								<div class="two wide column"><button type="submit" class="ui positive icon button"> <i class="plus icon"></i> Thêm trường </button></div>
 							</div>
 							</form>
+							</div>
 							<div class="right aligned sixteen wide computer sixteen wide phone centered column">
 								<span class="meta">Lưu ý: 
 								Những thông tin này không thể xóa, chúng ảnh hưởng nghiêm trọng đến các thông tin liên quan.</span>

@@ -2,26 +2,16 @@
 	pageEncoding="UTF-8"%>
 <%@taglib uri="http://java.sun.com/jstl/core_rt" prefix="c"%>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
-<!DOCTYPE html>
-<html>
-<head>
-
-</head>
-<body>
+<jsp:include page="header.jsp"></jsp:include>
 	<div class="ui grid">
-		<jsp:include page="header.jsp"></jsp:include>
 		<!-- BEGIN CONTEN -->
-		<div
-			class="right floated thirteen wide computer sixteen wide phone column"
+		<div class="right floated thirteen wide computer sixteen wide phone column"
 			id="content">
-			<div class="ui container grid" style="width: 100%;">
+			<div class="ui container grid" style="width: 100%; margin-top: 5px">
 				<div class="row">
-					<div
-						class="fifteen wide computer sixteen wide phone centered column">
-						<h2>
-							<a href="admin/account.htm"> <i class="table icon"></i> Quản
-								lý tài khoản
-							</a>
+					<div class="fifteen wide computer sixteen wide phone centered column">
+						<h2> <a href="admin/account.htm"> 
+						<i class="table icon"></i> Quản lý tài khoản </a>
 						</h2>
 						<div class="ui divider"></div>
 						<div class="ui grid">

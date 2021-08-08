@@ -53,7 +53,6 @@ public class KhachThueController {
 	Province province;
 	District district;
 	Ward ward;
-	int page;
 	//Sắp xếp theo điểm đánh giá
 	public void sort(){
 		for(int i=0; i<this.nhatros.size()-1;i++) {
@@ -76,7 +75,7 @@ public class KhachThueController {
 		for(int i=0; i<this.nhatros.size()-1;i++) {
 			NhaTro ntmax = (NhaTro) this.nhatros.get(i);//nhà trọ vị trí max
 			int max=i;//vị trí
-			for(int j=this.nhatros.size()-1-i; j>i; j++) {
+			for(int j=this.nhatros.size()-1; j>i; j--) {
 				NhaTro nhatroj = (NhaTro) nhatros.get(j);
 				if(ntmax.getDiem2(khachthue)<nhatroj.getDiem2(khachthue)) {
 					max=j;
@@ -179,20 +178,14 @@ public class KhachThueController {
 	public String index(ModelMap model) {
 		String hql = "FROM NhaTro " + "WHERE tinhtrang=1 ";
 		this.nhatros = getList(hql);
-		if (this.nhatros.isEmpty()) {
-			model.addAttribute("error", "Không tìm thấy trang !");
-		} else {
-			sort();
-			this.page = 1;
-			model.addAttribute("nhatros", this.nhatros);
-			model.addAttribute("page", 1);
-			model.addAttribute("end",
-					this.nhatros.size() % 10 != 0 ? this.nhatros.size() / 10 + 1 : this.nhatros.size() / 10);
-			this.province = null;
-			this.district = null;
-			this.ward = null;
-			model.addAttribute("feature", "index");
-		}
+		if (this.nhatros.isEmpty()) model.addAttribute("error", "Không tìm thấy trang !");
+		else sort();
+		model.addAttribute("nhatros", this.nhatros);
+		model.addAttribute("page", 1);
+		this.province = null;
+		this.district = null;
+		this.ward = null;
+		model.addAttribute("feature", "index");
 		return "khachthue/index";
 	}
 	@RequestMapping(value = "timkiem", params = { "province", "district", "ward" })
@@ -205,37 +198,25 @@ public class KhachThueController {
 			this.nhatros = getList(hql);
 			int ward = Integer.parseInt(w);
 			if (ward != 0) {
-				int dem = 0;
-				while (true) {//Danh sách được lọc bằng cách xóa đi những phần tử không phù hợp
-					for (Object nt : this.nhatros) {
-						NhaTro nhatro = (NhaTro) nt;
-						if (nhatro.getWardId() != ward) {
-							this.nhatros.remove(nt);
-							break;
-						} else dem++;
-					}
-					if (dem == this.nhatros.size()) break;
-					else dem = 0;
+				for (int i=0; i<this.nhatros.size();) {
+					NhaTro nt = (NhaTro) this.nhatros.get(i);
+					if(nt.getWardId()!=ward) {
+						this.nhatros.remove(i);
+					} else i++;
 				}
 			}
-			if (this.nhatros.isEmpty()) {
-				model.addAttribute("error", "Không tìm thấy bài đăng !");
-			} else {
-				sort();
-				this.page = 1;
-				Session session = factory.getCurrentSession();
-				this.ward = (Ward) session.get(Ward.class, ward);
-				this.district = this.ward.getDistrict();
-				this.province = this.district.getProvince();
-				model.addAttribute("nhatros", this.nhatros);
-				model.addAttribute("page", 1);
-				model.addAttribute("end",
-						this.nhatros.size() % 10 != 0 ? this.nhatros.size() / 10 + 1 : this.nhatros.size() / 10);
-				model.addAttribute("province", this.province);
-				model.addAttribute("district", this.district);
-				model.addAttribute("ward", this.ward);
-				model.addAttribute("feature", "timkiem");
-			}
+			if (this.nhatros.isEmpty()) model.addAttribute("error", "Không tìm thấy bài đăng !");
+			else sort();
+			Session session = factory.getCurrentSession();
+			this.ward = (Ward) session.get(Ward.class, ward);
+			this.district = this.ward.getDistrict();
+			this.province = this.district.getProvince();
+			model.addAttribute("nhatros", this.nhatros);
+			model.addAttribute("page", 1);
+			model.addAttribute("province", this.province);
+			model.addAttribute("district", this.district);
+			model.addAttribute("ward", this.ward);
+			model.addAttribute("feature", "timkiem");
 		} catch (Exception e) {
 			model.addAttribute("error", "Tìm kiếm thất bại!");
 		}
@@ -249,38 +230,25 @@ public class KhachThueController {
 			this.nhatros = getList(hql);
 			int district = Integer.parseInt(d);
 			if (district != 0) {
-				int dem = 0;
-				while (true) {
-					for (Object nt : this.nhatros) {
-						NhaTro nhatro = (NhaTro) nt;
-						if (nhatro.getDistrictId() != district) {
-							this.nhatros.remove(nt);
-							break;
-						} else dem++;
-
-					}
-					if (dem == this.nhatros.size()) break;
-					else dem = 0;
+				for (int i=0; i<this.nhatros.size();) {
+					NhaTro nt = (NhaTro) this.nhatros.get(i);
+					if(nt.getDistrictId()!=district) {
+						this.nhatros.remove(i);
+					} else i++;
 				}
 			}
-			if (this.nhatros.isEmpty()) {
-				model.addAttribute("error", "Không tìm thấy bài đăng !");
-			} else {
-				sort();
-				this.page = 1;
-				Session session = factory.getCurrentSession();
-				this.ward = null;
-				this.district = (District) session.get(District.class, district);
-				this.province = this.district.getProvince();		
-				model.addAttribute("nhatros", this.nhatros);
-				model.addAttribute("page", 1);
-				model.addAttribute("end",
-						this.nhatros.size() % 10 != 0 ? this.nhatros.size() / 10 + 1 : this.nhatros.size() / 10);
-				model.addAttribute("province", this.province);
-				model.addAttribute("district", this.district);
-				model.addAttribute("ward", this.ward);
-				model.addAttribute("feature", "timkiem");
-			}
+			if (this.nhatros.isEmpty()) model.addAttribute("error", "Không tìm thấy bài đăng !");
+			else sort();
+			Session session = factory.getCurrentSession();
+			this.ward = null;
+			this.district = (District) session.get(District.class, district);
+			this.province = this.district.getProvince();		
+			model.addAttribute("nhatros", this.nhatros);
+			model.addAttribute("page", 1);
+			model.addAttribute("province", this.province);
+			model.addAttribute("district", this.district);
+			model.addAttribute("ward", this.ward);
+			model.addAttribute("feature", "timkiem");
 		} catch (Exception e) {
 			model.addAttribute("error", "Tìm kiếm thất bại!");
 		}
@@ -294,38 +262,25 @@ public class KhachThueController {
 			this.nhatros = getList(hql);
 			int province = Integer.parseInt(p);
 			if (province != 0) {
-				int dem = 0;
-				while (true) {
-					for (Object nt : this.nhatros) {
-						NhaTro nhatro = (NhaTro) nt;
-						if (nhatro.getProvinceId() != province) {
-							this.nhatros.remove(nt); 
-							break;
-						} else dem++;
-
-					}
-					if (dem == this.nhatros.size()) break;
-					else dem = 0;
+				for (int i=0; i<this.nhatros.size();) {
+					NhaTro nt = (NhaTro) this.nhatros.get(i);
+					if(nt.getProvinceId()!=province) {
+						this.nhatros.remove(i);
+					} else i++;
 				}
 			}
-			if (this.nhatros.isEmpty()) {
-				model.addAttribute("error", "Không tìm thấy bài đăng !");
-			} else {
-				sort();
-				this.page = 1;
-				Session session = factory.getCurrentSession();
-				this.province = (Province) session.get(Province.class, province);
-				this.district = null;
-				this.ward = null;
-				model.addAttribute("nhatros", this.nhatros);
-				model.addAttribute("page", 1);
-				model.addAttribute("end",
-						this.nhatros.size() % 10 != 0 ? this.nhatros.size() / 10 + 1 : this.nhatros.size() / 10);
-				model.addAttribute("province", this.province);
-				model.addAttribute("district", this.district);
-				model.addAttribute("ward", this.ward);
-				model.addAttribute("feature", "timkiem");
-			}
+			if (this.nhatros.isEmpty()) model.addAttribute("error", "Không tìm thấy bài đăng !");
+			else sort();
+			Session session = factory.getCurrentSession();
+			this.province = (Province) session.get(Province.class, province);
+			this.district = null;
+			this.ward = null;
+			model.addAttribute("nhatros", this.nhatros);
+			model.addAttribute("page", 1);
+			model.addAttribute("province", this.province);
+			model.addAttribute("district", this.district);
+			model.addAttribute("ward", this.ward);
+			model.addAttribute("feature", "timkiem");
 		} catch (Exception e) {
 			model.addAttribute("error", "Tìm kiếm thất bại!");
 		}
@@ -354,8 +309,6 @@ public class KhachThueController {
 		}
 		model.addAttribute("nhatros", this.nhatros);
 		model.addAttribute("page", page);
-		model.addAttribute("end",
-				this.nhatros.size() % 10 != 0 ? this.nhatros.size() / 10 + 1 : this.nhatros.size() / 10);
 		return "khachthue/index";
 	}
 
@@ -365,63 +318,47 @@ public class KhachThueController {
 			@RequestParam("songuoi") String sn, @RequestParam("giathue") String gt, 
 			RedirectAttributes re) {
 		try {
+			String hql="FROM NhaTro "
+					+ "WHERE tinhtrang = 1 ";
+			this.nhatros = getList(hql);
 			if (!d.isEmpty()) {
 				float diem = Float.parseFloat(d);
-				int dem = 0;
-				while (true) {
-					for (Object nt : this.nhatros) {
-						NhaTro nhatro = (NhaTro) nt;
-						if (nhatro.getDiem()<diem) {
-							this.nhatros.remove(nt); break;
-						} else dem++;
-					}
-					if (dem == this.nhatros.size()) break;
-					else dem = 0;
+				for (int i=0; i<this.nhatros.size();) {
+					NhaTro nt = (NhaTro) this.nhatros.get(i);
+					if(nt.getDiem()<diem) {
+						this.nhatros.remove(i);
+					} else i++;
 				}
 			}
 			if (!sl.isEmpty()) {
-				int soluot = Integer.parseInt(sl), dem = 0;
-				while (true) {
-					for (Object nt : this.nhatros) {
-						NhaTro nhatro = (NhaTro) nt;
-						if (nhatro.getSoLuot()<soluot) {
-							this.nhatros.remove(nt); break;
-						} else dem++;
-					}
-					if (dem == this.nhatros.size()) break;
-					else dem = 0;
+				int soluot = Integer.parseInt(sl);
+				for (int i=0; i<this.nhatros.size();) {
+					NhaTro nt = (NhaTro) this.nhatros.get(i);
+					if(nt.getSoLuot()<soluot) {
+						this.nhatros.remove(i);
+					} else i++;
 				}
 			}
 			if (!sn.isEmpty()) {
-				int songuoi = Integer.parseInt(sn), dem = 0;
-				while (true) {
-					for (Object nt : this.nhatros) {
-						NhaTro nhatro = (NhaTro) nt;
-						if (nhatro.getSoNguoiTrenPhong()<songuoi) {
-							this.nhatros.remove(nt); break;
-						} else dem++;
-					}
-					if (dem == this.nhatros.size()) break;
-					else dem = 0;
+				int songuoi = Integer.parseInt(sn);
+				for (int i=0; i<this.nhatros.size();) {
+					NhaTro nt = (NhaTro) this.nhatros.get(i);
+					if(nt.getSoNguoiTrenPhong()<songuoi) {
+						this.nhatros.remove(i);
+					} else i++;
 				}
 			}
 			if(!gt.isEmpty()&&!gt.equals("0")) {
 				BigDecimal giathue = new BigDecimal(gt);
-				int dem=0;
-				while(true) {
-					for (Object nt:this.nhatros) {
-						NhaTro nhatro = (NhaTro) nt;
-						if(nhatro.getTienThue().compareTo(giathue)>0) {
-							this.nhatros.remove(nt);
-							break;
-						}else dem++;
-					}if(dem==this.nhatros.size()) break;
-					else dem=0;
+				for (int i=0; i<this.nhatros.size();) {
+					NhaTro nt = (NhaTro) this.nhatros.get(i);
+					if(nt.getTienThue().compareTo(giathue)>0) {
+						this.nhatros.remove(i);
+					} else i++;
 				}
 			}
 			model.addAttribute("nhatros", this.nhatros);
 			model.addAttribute("page", 1);
-			model.addAttribute("end", this.nhatros.size() % 10 != 0 ? this.nhatros.size() / 10 + 1 : this.nhatros.size() / 10);
 		} catch (Exception e) {
 			re.addFlashAttribute("message", "Không thể lọc ! " + e);
 			return "redirect:index.htm";
@@ -433,20 +370,13 @@ public class KhachThueController {
 	public String tudong(ModelMap model, HttpSession session, RedirectAttributes re) {
 		Session session2 = factory.getCurrentSession();
 		Account account = (Account) session2.get(Account.class, (String) session.getAttribute("username"));
-		if (this.nhatros.isEmpty()) {
-			model.addAttribute("error", "Không tìm thấy trang !");
-		} else {
-			sort(account.getKhachThue());
-			this.page = 1;
-			model.addAttribute("nhatros", this.nhatros);
-			model.addAttribute("page", 1);
-			model.addAttribute("end",
-					this.nhatros.size() % 10 != 0 ? this.nhatros.size() / 10 + 1 : this.nhatros.size() / 10);
-			this.province = null;
-			this.district = null;
-			this.ward = null;
-			model.addAttribute("feature", "index");
-		}
+		sort(account.getKhachThue());
+		model.addAttribute("nhatros", this.nhatros);
+		model.addAttribute("page", 1);
+		this.province = null;
+		this.district = null;
+		this.ward = null;
+		model.addAttribute("feature", "index");
 		return "khachthue/index";
 	}
 
@@ -536,27 +466,29 @@ public class KhachThueController {
 
 	@RequestMapping(value = "thongtinthem", method = RequestMethod.POST)
 	public String themthongtin(HttpSession session, RedirectAttributes re,
-			@RequestParam("username") String username, @RequestParam("truong") int idtruong,
+			@RequestParam("truong") int idtruong,
 			@RequestParam("province") int idprovince, @RequestParam("que") String que,
 			@RequestParam("namsinh") int namsinh, @RequestParam("gioitinh") int gioitinh) {
 		Session session2 = factory.getCurrentSession();
-		Account account = (Account) session2.get(Account.class, username);
+		Account account = (Account) session.getAttribute("account");
 		try {
 			Province province = (Province) session2.get(Province.class, idprovince);
 			List<Truong> truongs = (List<Truong>) province.getTruongs();
-			for (Truong truong : truongs) {
-				if (truong.getId() == idtruong) {
-					account.getKhachThue().setTruong(truong);
-					break;
+			boolean co=false;
+			Truong truong = new Truong();
+			for (Truong tr : truongs) 
+				if(tr.getId()==idtruong) {
+					co=true; truong=tr;
+					break;	
 				}
-				if (truongs.get(truongs.size() - 1) != truong) {
-					re.addFlashAttribute("error", "Không tìm thấy trường bạn chọn! ");
-					return "redirect:thongtinthem.htm";
-				}
+			if(!co) {
+				re.addFlashAttribute("error", "Không tìm thấy trường bạn chọn");
+				return "redirect:thongtinthem.htm";
 			}
 			account.getKhachThue().setQueQuan(que);
 			account.getKhachThue().setNamSinh(namsinh);
 			account.getKhachThue().setGioiTinh(gioitinh==1? true : false);
+			account.getKhachThue().setTruong(truong);
 			ThongBao thongbao = new ThongBao();
 			thongbao.setAccount(account);
 			thongbao.setThoigian(new Date());
@@ -633,12 +565,13 @@ public class KhachThueController {
 		Comment c = (Comment) session2.get(Comment.class, idc);
 		session2.clear();
 		if(!comment.isBlank()) {
-			String[] temp = comment.trim().split("\r\n");
-			String after = new String();
-			for (String str:temp) {
-				after += String.format("<div class='text'>%s</div>", str);
-			}
-			comment = after;
+//			String[] temp = comment.trim().split("\r\n");
+//			String after = new String();
+//			for (String str:temp) {
+//				after += String.format("<div class='text'>%s</div>", str);
+//			}
+//			comment = after;
+			comment=comment.replaceAll("\r\n", "<br>");
 		}
 		if(c.getNhatro().getId()==id) {
 			session2 = factory.openSession();
@@ -684,7 +617,7 @@ public class KhachThueController {
 		} else {
 			re.addFlashAttribute("error", "Bạn không có quyền này");
 		}
-		return "redirect:" + String.valueOf(idnhatro) + ".htm";
+		return "redirect:../" + String.valueOf(idnhatro) + ".htm";
 	}
 	@RequestMapping(value="lichhen/td", method=RequestMethod.POST)
 	public String thaydoi(HttpSession session, RedirectAttributes re, 

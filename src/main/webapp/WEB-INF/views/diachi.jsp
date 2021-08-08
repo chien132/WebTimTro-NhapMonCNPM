@@ -14,12 +14,11 @@
 <link rel="stylesheet" type="text/css" href="resources/semantic/semantic.css">
 <script src="resources/semantic/semantic.js" type="text/javascript"></script>
 
-<body>
 <form method="get" action="timkiem.htm" >		
 	<div class="ui grid" style="padding-left:10%; backgroundz: white; border-radius: 5px; max-width: 120%; margin-top: 17px;">
 			<div class="four wide column">
 				<b>Tỉnh/Thành phố</b> <select class="fluid ui search selection dropdown" id="comboboxProvince" name="province">
-					<option disabled="disabled">--Chọn tỉnh--</option>
+					<option disabled="disabled">--Chọn tỉnh/thành phố--</option>
 					<c:forEach var="p" items="${provinces}">
 						<option value="${p.id}">${p.name}</option>
 					</c:forEach>
@@ -45,18 +44,14 @@
 		<div class="ui text container big breadcrumb">
 			<h3>
 				<c:if test="${province!=null}">
-					<a href="khachthue/timkiem.htm?province=${province.id}">${province.name}></a>
+					<a href="khachthue/timkiem.htm?province=${province.id}">${province.name}</a>
 					<c:if test="${district!=null}">
-						<a
-							href="khachthue/timkiem.htm?province=${province.id}&amp;district=${district.id}">${district.name}></a>
+						<a href="khachthue/timkiem.htm?province=${province.id}&amp;district=${district.id}">, ${district.name}</a>
 						<c:if test="${ward!=null}">
-							<a
-								href="khachthue/timkiem.htm?province=${province.id}&amp;district=${district.id}&amp;ward=${ward.id}">${ward.name}></a>
+							<a href="khachthue/timkiem.htm?province=${province.id}&amp;district=${district.id}&amp;ward=${ward.id}">, ${ward.name} </a>
 						</c:if>
 					</c:if>
 				</c:if>
-
-
 			</h3>
 		</div>
 	</div>
@@ -157,13 +152,5 @@ function init() {
 			list_provinces.push(province);
 			
    	<%}%>
-   	
-   
 }
-
 </script>
-
-
-</body>
-
-</html>

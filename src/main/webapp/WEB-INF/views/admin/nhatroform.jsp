@@ -19,11 +19,11 @@
 <script src="resources/semantic/semantic.js" type="text/javascript"></script>
 </head>
 <body>
-<div class="ui grid">
 	<jsp:include page="header.jsp"></jsp:include>
+	<div class="ui grid" style="background: url(resources/images/background/background.png) repeat; background-size: cover;">
 	<!-- BEGIN CONTEN -->
 	<div class="right floated thirteen wide computer sixteen wide phone column" id="content">
-		<div class="ui container grid" style="width: 100%;">
+		<div class="ui container grid" style="width: 100%; margin-top: 5px">
 			<div class="row">
 				<div class="fifteen wide computer sixteen wide phone centered column">
 					<h2><a href="admin/nhatro.htm?chu=${chu}"> <i class="table icon"></i> Quản lý bài đăng </a></h2>
@@ -263,7 +263,9 @@
 	<script type="text/javascript">
 	$('.ui.dropdown').dropdown();
 	
-	var ckeditor=CKEDITOR.replace('moTa');
+	var ckeditor=CKEDITOR.replace('moTa',{
+		height: '600px',
+	});
 	CKFinder.setupCKEditor(ckeditor,'${pageContext.request.contextPath}/resources/ckfinder/');
 	
 let selected_province = "$('#comboboxProvince').find('option:selected')";

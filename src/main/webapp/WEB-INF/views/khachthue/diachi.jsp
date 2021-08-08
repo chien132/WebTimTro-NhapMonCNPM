@@ -47,10 +47,10 @@
 					<a href="khachthue/timkiem.htm?province=${province.id}">${province.name}></a>
 					<c:if test="${district!=null}">
 						<a
-							href="khachthue/timkiem.htm?province=${province.id}&amp;district=${district.id}">${district.name}></a>
+							href="khachthue/timkiem.htm?province=${province.id}&amp;district=${district.id}">, ${district.name}></a>
 						<c:if test="${ward!=null}">
 							<a
-								href="khachthue/timkiem.htm?province=${province.id}&amp;district=${district.id}&amp;ward=${ward.id}">${ward.name}></a>
+								href="khachthue/timkiem.htm?province=${province.id}&amp;district=${district.id}&amp;ward=${ward.id}">, ${ward.name}></a>
 						</c:if>
 					</c:if>
 				</c:if>
@@ -161,8 +161,3 @@ function init() {
 }
 
 </script>
-
-
-</body>
-
-</html>
