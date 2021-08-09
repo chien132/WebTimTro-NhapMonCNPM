@@ -65,8 +65,17 @@
 														<button class="positive ui button" style="color: white; font-size: 13px">Sửa thông tin thêm</button></a>
 														<a href="admin/editaccount/${i.account.username}.htm">
 														<button class="positive ui button" style="color: white; font-size: 13px">Sửa tài khoản</button></a> 
+														<c:if
+														test="${i.account.thongBao.size()==0}">
 														<a href="admin/deleteaccount/${i.account.username}.htm">
 														<button class="negative ui button" style="color: white; font-size: 13px">Xóa</button></a>
+														</c:if>
+														<c:if
+														test="${i.account.thongBao.size()>0}">
+														<a href="admin/deleteaccount/${i.account.username}.htm">
+														<button class="negative ui button" style="color: white; font-size: 13px" disabled="disabled">Xóa</button></a>
+														</c:if>
+														
 													</td>
 												</tr>
 											</c:forEach>
