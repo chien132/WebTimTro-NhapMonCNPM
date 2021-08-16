@@ -69,10 +69,19 @@
 													<td style="text-align: center;"><a
 														href="admin/editaccount/${i.username}.htm"><button
 																class="positive ui button"
-																style="color: white; font-size: 13px">Sửa</button></a> <a
-														href="admin/deleteaccount/${i.username}.htm"><button
+																style="color: white; font-size: 13px">Sửa</button></a> <c:if
+														test="${i.thongBao.size()==0}">
+														<a href="admin/deleteaccount/${i.username}.htm"><button
 																class="negative ui button"
-																style="color: white; font-size: 13px">Xóa</button></a></td>
+																style="color: white; font-size: 13px">Xóa</button></a>
+													</c:if>
+													<c:if
+														test="${i.thongBao.size()>0}">
+														<a href="admin/deleteaccount/${i.username}.htm"><button
+																class="negative ui button"
+																style="color: white; font-size: 13px" disabled="disabled">Xóa</button></a>
+													</c:if>
+													</td>
 												</tr>
 											</c:forEach>
 
