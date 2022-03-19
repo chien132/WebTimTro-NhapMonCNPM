@@ -57,13 +57,13 @@
 										</thead>
 										<tbody>
 											<c:forEach var="i" items="${nhatros}">
-												<c:if test="${i.tinhtrang==-1}">
+												<c:if test="${i.tinhtrang=='-1'}">
 													<tr style="background-color: lightpink;">
 												</c:if>
-												<c:if test="${i.tinhtrang==0}">
+												<c:if test="${i.tinhtrang=='0'}">
 													<tr style="background-color: lightgoldenrodyellow">
 												</c:if>
-												<c:if test="${i.tinhtrang==1}">
+												<c:if test="${i.tinhtrang=='1'}">
 													<tr style="background-color: lightgreen;">
 												</c:if>
 												<%-- <td>${i.id}</td> --%>
